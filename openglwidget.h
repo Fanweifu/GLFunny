@@ -1,0 +1,4 @@
+#ifndef OPENGLWIDGET_H
+#define OPENGLWIDGET_H
+
+#endif // OPENGLWIDGET_H
