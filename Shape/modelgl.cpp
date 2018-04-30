@@ -102,7 +102,7 @@ void ModelGL::init()
 void ModelGL::initLights()
 {
     // set up light colors (ambient, diffuse, specular)
-    GLfloat lightKa[] = {.0f, .0f, .0f, 1.0f};      // ambient light
+    GLfloat lightKa[] = {1.0f, 1.0f, 1.0f, 1.0f};      // ambient light
     GLfloat lightKd[] = {.9f, .9f, .9f, 1.0f};      // diffuse light
     GLfloat lightKs[] = {1, 1, 1, 1};               // specular light
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightKa);
@@ -110,7 +110,7 @@ void ModelGL::initLights()
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
 
     // position the light in eye space
-    float lightPos[4] = {0, 1, 1, 0};               // directional light
+    float lightPos[4] = {0, -1, -1, 0};               // directional light
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
     glEnable(GL_LIGHT0);                            // MUST enable each light source after configuration
@@ -626,9 +626,10 @@ void ModelGL::updateViewMatrix()
     // inverse of camera transform    matrixView.identity();
     matrixView.identity();
     matrixView.translate(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
+    matrixView.rotateZ(-cameraAngle[2]);
+    matrixView.rotateY(-cameraAngle[1]);
     matrixView.rotateX(-cameraAngle[0]);    // pitch
-    matrixView.rotateY(-cameraAngle[1]);    // heading
-    matrixView.rotateZ(-cameraAngle[2]);    // roll
+
 
     matrixModelView = matrixView * matrixModel;
 }

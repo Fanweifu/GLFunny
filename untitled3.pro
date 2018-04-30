@@ -3,7 +3,6 @@
 # Project created by QtCreator 2018-02-15T20:55:18
 #
 #-------------------------------------------------
-
 QT       += core gui
 QT += opengl
 
@@ -24,28 +23,48 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    openglwidget.cpp \
-    matrices.cpp \
-    modelgl.cpp
+SOURCES += main.cpp\        
+    ui\openglwidget.cpp \
+    math\matrices.cpp \
+    shape\modelgl.cpp \
+    shape\image3d.cpp \
+    shape\camera.cpp \
+    shape\shape.cpp \
+    shape\layer.cpp \
+    ui\opengltest.cpp \
+    shape/image3dex.cpp \
+    mainwindow.cpp \
+    shape/vaoarray.cpp
 
-HEADERS  += mainwindow.h \
-    openglwidget.h \
-    matrices.h \
-    vector.h \
-    modelgl.h
+HEADERS  += ui\openglwidget.h \
+    math\matrices.h \
+    math\vector.h \
+    shape\modelgl.h \
+    shape\image3d.h \
+    shape\camera.h \
+    shape\shape.h \
+    shape\layer.h \
+    shape\light.h \
+    ui\opengltest.h \
+    shape/image3dex.h \
+    mainwindow.h \
+    shape/vaoarray.h
 
 INCLUDEPATH +=C:\opencv\mingw32\include\opencv\
               C:\opencv\mingw32\include\opencv2\
-              C:\opencv\mingw32\include
+              C:\opencv\mingw32\include\
+              C:\ProgramData\glewMinGW\include\
 
 
 
-FORMS    += mainwindow.ui
-
+LIBS += C:\opencv\mingw32\lib\libopencv_*.a
+LIBS += C:\ProgramData\glewMinGW\lib\libglew32.dll.a
 LIBS += -lopengl32 \
     -lglu32 \
     -lglut \
 
-LIBS += C:\opencv\mingw32\lib\libopencv_*.a
+FORMS += \
+    mainwindow.ui
+
+DISTFILES += \
+    default.fsh

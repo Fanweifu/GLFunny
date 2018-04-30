@@ -1,26 +1,34 @@
 #ifndef OPENGLWIDGET_H
 #define OPENGLWIDGET_H
 
-#include <QtOpenGL>
 #include <opencv.hpp>
-#include"modelgl.h"
+#include"shape\image3dex.h"
+#include"shape\camera.h"
+#include"shape\layer.h"
+#include"shape\light.h"
+
+#include <qevent.h>
+#include <QWidget>
+#include <QtCore>
+#include <QOpenGLWidget>
+
 using namespace cv;
 using namespace std;
 
 
-class OpenglWidget : public QGLWidget
+class OpenglWidget : public QOpenGLWidget
 {
 public:
-    float stepLength = 0.1;
-    ModelGL control;
+    float stepLength = 3;
+    Camera camera;
+
     OpenglWidget(QWidget* parent = 0,bool fs = false);
 
     bool loadImg(string path);
 
 protected:
+
     bool fullScreen;
-    GLfloat Rtri;
-    GLfloat Rquad;
 
 
     void initWidget();
@@ -32,8 +40,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) ;
     void mouseMoveEvent(QMouseEvent *event) ;
     void wheelEvent(QWheelEvent * event);
-
-
     void keyPressEvent(QKeyEvent *event);
 
 private :
@@ -46,15 +52,17 @@ private :
     int lastY = 0;
 
     //move
-    double cameraPosZ = 0;
+    double cameraPosZ = 100;
     double cameraPosX = 0;
     double cameraPosY = 0;
     //timer
     void initTimer();
     void uninitTimer();
     void updateCamera();
-    Mat inputImg;
-    Mat resultImg;
+    Image3DEx inputImg;
+
+    Mat iImg;
+    Mat rImg;
 
 };
 

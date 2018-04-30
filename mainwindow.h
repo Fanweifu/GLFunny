@@ -15,8 +15,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_actionImage_triggered();
+
 private:
     Ui::MainWindow *ui;
+    QList<QDockWidget*> m_docks;
+    void init();
+
 };
 
 #endif // MAINWINDOW_H
