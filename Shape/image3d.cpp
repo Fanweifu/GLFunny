@@ -61,21 +61,21 @@ void Image3D::generateData(){
 
             float height = heights[stp];
 
-            vertexs[(4*stp)*3+0] = x;
-            vertexs[(4*stp)*3+1] = y;
-            vertexs[(4*stp)*3+2] = height;
+            vertexs[12*stp+0] = x;
+            vertexs[12*stp+1] = y;
+            vertexs[12*stp+2] = height;
 
-            vertexs[(4*stp+1)*3+0] = x+1;
-            vertexs[(4*stp+1)*3+1] = y;
-            vertexs[(4*stp+1)*3+2] = height;
+            vertexs[12*stp+3] = x+1;
+            vertexs[12*stp+4] = y;
+            vertexs[12*stp+5] = height;
 
-            vertexs[(4*stp+2)*3+0] = x+1;
-            vertexs[(4*stp+2)*3+1] = y+1;
-            vertexs[(4*stp+2)*3+2] = height;
+            vertexs[12*stp+6] = x+1;
+            vertexs[12*stp+7] = y+1;
+            vertexs[12*stp+8] = height;
 
-            vertexs[(4*stp+3)*3+0] = x;
-            vertexs[(4*stp+3)*3+1] = y+1;
-            vertexs[(4*stp+3)*3+2] = height;
+            vertexs[12*stp+9] = x;
+            vertexs[12*stp+10] = y+1;
+            vertexs[12*stp+11] = height;
 
         }
     }

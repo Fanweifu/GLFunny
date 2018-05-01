@@ -2,7 +2,7 @@
 #define VAOARRAY_H
 
 
-#include<glew.h>
+#include<gl/glew.h>
 #include<assert.h>
 #define VAONUM 10000
 #define VBONUM 4

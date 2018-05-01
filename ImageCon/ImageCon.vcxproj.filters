@@ -28,6 +28,21 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="shaderInput.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test1.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test2.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test3.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="test4.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -66,11 +81,11 @@
     <ClInclude Include="..\Math\vector.h">
       <Filter>头文件\Math</Filter>
     </ClInclude>
+    <ClInclude Include="TextReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\Shape\camera.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
@@ -78,9 +93,6 @@
       <Filter>源文件\Shape</Filter>
     </ClCompile>
     <ClCompile Include="..\Shape\image3dex.cpp">
-      <Filter>源文件\Shape</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageCon.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
     <ClCompile Include="..\Shape\layer.cpp">
@@ -97,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="..\Math\matrices.cpp">
       <Filter>源文件\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCon.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

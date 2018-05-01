@@ -35,7 +35,7 @@ void VAOArrayMan::setVertex(GLuint vaoId, GLfloat *arr){
     glBindVertexArray(VAOArrayMan::VAOS[vaoId]);
     glBindBuffer(GL_ARRAY_BUFFER, VAOArrayMan::VBOS[0]);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(arr), arr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(arr), arr, GL_STATIC_DRAW);
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, NULL);
 }
