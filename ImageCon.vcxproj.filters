@@ -27,7 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
     <Text Include="shaderInput.txt">
       <Filter>资源文件</Filter>
     </Text>
