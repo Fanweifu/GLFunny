@@ -45,73 +45,73 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape\camera.h">
-      <Filter>头文件\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape\image3d.h">
-      <Filter>头文件\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape\image3dex.h">
-      <Filter>头文件\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape\layer.h">
-      <Filter>头文件\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape\light.h">
-      <Filter>头文件\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape\modelgl.h">
-      <Filter>头文件\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape\shape.h">
-      <Filter>头文件\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Shape\vaoarray.h">
-      <Filter>头文件\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Math\matrices.h">
-      <Filter>头文件\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Math\vector.h">
-      <Filter>头文件\Math</Filter>
-    </ClInclude>
     <ClInclude Include="TextReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Shape\camera.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape\image3d.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape\image3dex.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape\layer.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape\light.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape\modelgl.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape\shape.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape\vaoarray.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\matrices.h">
+      <Filter>头文件\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\vector.h">
+      <Filter>头文件\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape\shader.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Shape\camera.cpp">
+    <ClCompile Include="Shape\image3dex.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shape\image3d.cpp">
+    <ClCompile Include="Shape\camera.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shape\image3dex.cpp">
+    <ClCompile Include="Shape\image3d.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shape\layer.cpp">
+    <ClCompile Include="Shape\layer.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shape\modelgl.cpp">
+    <ClCompile Include="Shape\modelgl.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shape\shape.cpp">
+    <ClCompile Include="Shape\shape.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shape\vaoarray.cpp">
+    <ClCompile Include="Shape\vaoarray.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="..\Math\matrices.cpp">
+    <ClCompile Include="Math\matrices.cpp">
       <Filter>源文件\Math</Filter>
     </ClCompile>
     <ClCompile Include="ImageCon.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape\shader.cpp">
+      <Filter>源文件\Shape</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

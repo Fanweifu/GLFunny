@@ -216,6 +216,11 @@ void Camera::setViewPort(int x, int y, int w, int h){
     windowsChanged = true;
 }
 
+
+void Camera::setWindowSize(int width, int height) {
+    Camera::setViewPort(0, 0, width, height);
+}
+
 void Camera::updateViewPort(){
     glViewport((GLsizei)left, (GLsizei)buttom, (GLsizei)width, (GLsizei)height);
     updateProjection();

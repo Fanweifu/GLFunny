@@ -89,8 +89,7 @@ void  VAOArray::setTexCoord(GLfloat *arr){
     VAOArrayMan::setTexCoord(vaoID,arr);
 }
 
-void VAOArray::renderData(){
+void VAOArray::renderData(GLenum mode){
     glBindVertexArray(vaoID);
-    glDrawArrays(GL_QUADS, 0, 4);
-
+    glDrawArrays(mode, 0, 4);
 }

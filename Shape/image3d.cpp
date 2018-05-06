@@ -109,7 +109,7 @@ void Image3D::ondraw(){
     glTranslatef(-(float)cols/2,-(float)rows/2,0);
     glScalef(pixelSzie,pixelSzie,1);
 
-    vao->renderData();
+    vao->renderData(GL_QUADS);
     //drawpiexls(0,0,cols,rows);
 
     glDisable(GL_COLOR_MATERIAL);

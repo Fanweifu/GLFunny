@@ -150,29 +150,29 @@
     <Text Include="test4.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Math\matrices.h" />
-    <ClInclude Include="..\Math\vector.h" />
-    <ClInclude Include="..\Shape\camera.h" />
-    <ClInclude Include="..\Shape\image3d.h" />
-    <ClInclude Include="..\Shape\image3dex.h" />
-    <ClInclude Include="..\Shape\layer.h" />
-    <ClInclude Include="..\Shape\light.h" />
-    <ClInclude Include="..\Shape\modelgl.h" />
-    <ClInclude Include="..\Shape\shape.h" />
-    <ClInclude Include="..\Shape\vaoarray.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Math\matrices.h" />
+    <ClInclude Include="Math\vector.h" />
+    <ClInclude Include="Shape\camera.h" />
+    <ClInclude Include="Shape\image3d.h" />
+    <ClInclude Include="Shape\image3dex.h" />
+    <ClInclude Include="Shape\layer.h" />
+    <ClInclude Include="Shape\light.h" />
+    <ClInclude Include="Shape\modelgl.h" />
+    <ClInclude Include="Shape\shader.h" />
+    <ClInclude Include="Shape\shape.h" />
+    <ClInclude Include="Shape\vaoarray.h" />
     <ClInclude Include="TextReader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Math\matrices.cpp" />
-    <ClCompile Include="..\Shape\camera.cpp" />
-    <ClCompile Include="..\Shape\image3d.cpp" />
-    <ClCompile Include="..\Shape\image3dex.cpp" />
-    <ClCompile Include="..\Shape\layer.cpp" />
-    <ClCompile Include="..\Shape\modelgl.cpp" />
-    <ClCompile Include="..\Shape\shape.cpp" />
-    <ClCompile Include="..\Shape\vaoarray.cpp" />
+    <ClCompile Include="Math\matrices.cpp" />
+    <ClCompile Include="Shape\camera.cpp" />
+    <ClCompile Include="Shape\image3d.cpp" />
+    <ClCompile Include="Shape\image3dex.cpp" />
+    <ClCompile Include="Shape\layer.cpp" />
+    <ClCompile Include="Shape\modelgl.cpp" />
+    <ClCompile Include="Shape\shader.cpp" />
+    <ClCompile Include="Shape\shape.cpp" />
+    <ClCompile Include="Shape\vaoarray.cpp" />
     <ClCompile Include="ImageCon.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

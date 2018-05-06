@@ -4,7 +4,6 @@
 #include<iostream>
 #include<fstream>
 #include<stdio.h>
-#include <direct.h>
 using namespace std;
 class reader
 {
@@ -26,9 +25,7 @@ reader::~reader()
 }
 
 string reader::readFile(char*filename) {
-    char buff[1000];
-    _getcwd(buff, 1000);
-    cout << "当前路径是：" << buff << endl;
+    
 
     ifstream in(filename, ios::in);
     std::stringstream  sb;

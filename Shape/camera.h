@@ -15,7 +15,6 @@ public:
     Camera();
     bool isOrtho = false;
     bool isMultiScreen = true;
-    //bool isdrawCameraAisx = true;
     Shape* scene = NULL;
 
     void setPosition(float x,float y,float z){

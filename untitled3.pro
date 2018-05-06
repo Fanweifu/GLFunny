@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     ui\opengltest.cpp \
     shape/image3dex.cpp \
     mainwindow.cpp \
-    shape/vaoarray.cpp
+    shape/vaoarray.cpp \
+    shape/shader.cpp
 
 HEADERS  += ui\openglwidget.h \
     math\matrices.h \
@@ -48,7 +49,8 @@ HEADERS  += ui\openglwidget.h \
     ui\opengltest.h \
     shape/image3dex.h \
     mainwindow.h \
-    shape/vaoarray.h
+    shape/vaoarray.h \
+    shape/shader.h
 
 INCLUDEPATH +=C:\opencv\mingw32\include\opencv\
               C:\opencv\mingw32\include\opencv2\

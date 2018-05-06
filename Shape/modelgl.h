@@ -12,7 +12,7 @@
 #ifndef MODEL_GL_H
 #define MODEL_GL_H
 
-#include "..\math\matrices.h"
+#include"..\Math\matrices.h"
 
 class ModelGL
 {

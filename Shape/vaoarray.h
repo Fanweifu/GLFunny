@@ -13,7 +13,7 @@ public :
     friend class VAOArrayMan;
     unsigned int getVAOID() { return vaoID ;}
 
-    void renderData();
+    void renderData(GLenum mode = GL_TRIANGLES);
 
     void setVertex(GLfloat* arr);
     void setColor(GLfloat* arr,int vecNum = 3);

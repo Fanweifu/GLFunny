@@ -7,14 +7,15 @@
 #include<gl/glut.h>
 #include<string>
 #include<functional>
-#include"../Shape/camera.h"
-
+#include"Shape/camera.h"
+#include"Shape\shader.h"
 using namespace std;
 
-GLuint shaderProgram;
-GLuint iResolutionIdx;
-GLuint iTimeIdx;
-GLuint iMouseIdx;
+string iResolution = "iResolution";
+string iTime = "iTime";
+string iMouse = "iMouse";
+string cameraRotationMat = "cameraRotationMat";
+string cameraPosition = "cameraPosition";
 
 GLuint VBO[2];
 GLuint VAO[2];
@@ -30,7 +31,9 @@ GLfloat rectColors[][3] = {{ 1,0,0 },{ 0,1,0 },{ 0,0,1 },{ 1,1,0 }};
 
 Camera cam;
 Shape obj;
+Shader shader;
 float timeVal = 0;
+
 void setShapes() {
     glewInit();
 
@@ -66,52 +69,16 @@ void setShapes() {
 
 void setShaders(char * path)
 {
-    string souce = reader::readFile(path);
-    const char* fragSouce = souce.data();
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragSouce , NULL);
-    glCompileShader(fragmentShader);
-
-    GLint success;
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-
-    char *info = NULL;
-
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, info);
-        cout << "ERROR::SHADER::FRAGMENT 2::COMPILATION_FAILED\n" << info;
-    }
-    else
-    {
-        cout << "Fragment Shader 2 compile success!";
-    }
-
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, info);
-        cout << "ERROR::SHADER::PROGRAM 2::LINKING_FAILED\n" << info;
-    }
-    else
-    {
-        cout << "Link Program2 success!";
-    }
-    glUseProgram(shaderProgram);
-
-    iResolutionIdx = glGetUniformLocation(shaderProgram, "iResolution");
-    iTimeIdx = glGetUniformLocation(shaderProgram, "iTime");
-    iMouseIdx = glGetUniformLocation(shaderProgram, "iMouse");
-
+    shader.loadFragFile(path);
+    shader.link();
+    shader.active();
 }
 
 
 void reshape(int width, int height) {
     cam.setViewPort(0, 0, width , height);
-    glUniform3f(iResolutionIdx, width, height, 0);
+
+    shader.setUniform3f(iResolution, width, height, 0);
 }
 
 void renderScene(void)
@@ -119,7 +86,7 @@ void renderScene(void)
     
     timeVal += 0.01;
 
-    glUniform1f(iTimeIdx, timeVal);
+    shader.setUniform1f(iTime, timeVal);
 
     //glBindVertexArray(VAO[0]);//重新激活顶点数组  
     //glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -151,7 +118,6 @@ int main(int arg,char**argv) {
     glutCreateWindow("GLSL的第一步");
 
    
-
     glutDisplayFunc(render);
     glutIdleFunc(render);
     glutReshapeFunc(reshape);
