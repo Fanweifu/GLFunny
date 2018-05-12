@@ -9,57 +9,51 @@
 #include<opencv2/opencv.hpp>
 
 #include"vaoarray.h"
+#include"shader.h"
 #include"shape.h"
-
-
 using namespace std;
 
-
-class Image3D: public Shape
+class Image3D : public Shape
 {
 public:
 
     float pixelSzie = 1;
-
+    float heightRate = 0.5f;
 
     Image3D();
     ~Image3D();
 
-    bool isEmpty(){ return isempty; }
-    void setSrcData(cv::Mat img);
-
-    virtual float getPiexlVal(uint x,uint y);
-
-
-protected :
-    bool havedata = false;
+    bool isEmpty() { return isempty; }
+    void setSrcData(cv::Mat& img);
     void generateData();
-
-
+protected:
+   
+    virtual void initShader();
     virtual void ondraw();
-    void drawpiexls(uint x,uint y,uint cols, uint rows);
-    void getColor(uint x,uint y,uchar*pixptr,uint chns, float* outputVec );
-private :
+    virtual void getColor(uint x, uint y, float* outputVec);
+    void getColor(uchar* pdata, uint x, uint y, float*outColor);
+    virtual void calcHeight();
 
     bool isempty = true;
 
-
     uint cols = 0;
     uint rows = 0;
-    uchar* data = NULL;
     uint step = 0;
     uint chns = 0;
+    uchar* data = NULL;
 
     float color4f[4];
 
     float* heights = NULL;
-    float * vertexs = NULL;
-    float * colors = NULL;
-    VAOArray* vao = NULL;
+    float* vertexs = NULL;
+    float* colors = NULL;
+    float* normal = NULL;
+    uint* vertexIdx = NULL;
 
-    bool initSize(int rows,int cols);
-    float* calcGray(uchar* data,uint step,uint rows,uint cols,uint chns);
+    ElementData vao;
 
+    bool reShape(int rows, int cols);
+    
 };
 
 #endif // IMAGE3D_H

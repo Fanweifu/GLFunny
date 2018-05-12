@@ -5,25 +5,23 @@
 #include<assert.h>
 #include<vector>
 
-
-class Layer: public Shape
+class Layer : public Shape
 {
 public:
     Layer();
 
-    virtual void add(Shape *shp){ if(shp!=NULL) items.push_back(shp); }
+    virtual void add(Shape *shp) { if (shp != NULL) items.push_back(shp); }
     virtual void addUnique(Shape *shp);
     virtual Shape* removeAt(int idx);
     virtual bool remove(Shape *shp);
-    virtual Shape * getItemAt(unsigned int idx){ assert(idx>=0&&idx<count()); return items.at(idx); }
-    virtual unsigned int count(){  return items.size(); }
+    virtual Shape * getItemAt(unsigned int idx) { assert(idx >= 0 && idx < count()); return items.at(idx); }
+    virtual unsigned int count() { return items.size(); }
 
 protected:
 
     std::vector<Shape *> items;
 
     void ondraw();
-
 };
 
 #endif // LAYER_H

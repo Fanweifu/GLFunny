@@ -160,7 +160,6 @@
     <ClInclude Include="Shape\shader.h" />
     <ClInclude Include="Shape\shape.h" />
     <ClInclude Include="Shape\vaoarray.h" />
-    <ClInclude Include="TextReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\matrices.cpp" />

@@ -2,60 +2,63 @@
 #include<cstring>
 Shape::Shape()
 {
-
 }
 
-
-
-void Shape::draw(){
-
+void Shape::draw() {
     glPushMatrix();
 
     glMultMatrixf(modelmat.get());
 
+    if (useShader) pshader.use();
     ondraw();
+    if (useShader) pshader.unuse();
 
-    if(isdrawAxis) Shape::drawAsix(axisLength);
+    if (isdrawAxis) Shape::drawAsix(axisLength);
 
     glPopMatrix();
 }
 
-void Shape::updateModel(){
+void Shape::updateModel() {
     modelmat.identity();
-    modelmat.translate(px,py,pz);
-    modelmat.scale(sx,sy,sz);
+    modelmat.translate(px, py, pz);
+    modelmat.scale(sx, sy, sz);
     modelmat.rotateZ(rz);
     modelmat.rotateY(ry);
     modelmat.rotateX(rx);
-    modelmatInv = modelmat.invert();
+
+    modelmatInv.identity();
+    modelmatInv.translate(-px, -py, -pz);
+    modelmatInv.scale(1 / sx, 1 / sy, 1 / sz);
+    modelmatInv.rotateZ(-rz);
+    modelmatInv.rotateY(-ry);
+    modelmatInv.rotateX(-rx);
 }
 
-float* Shape::getModelMat(){
+float* Shape::getModelMat() {
     const float* ar = modelmat.get();
     float dst[16];
-    memcpy(dst,ar,sizeof(ar));
+    memcpy(dst, ar, sizeof(ar));
     return dst;
 }
 
-void Shape::toLocalPos(float &x, float &y, float &z){
-    Vector3 vec(x,y,z);
-    vec =vec*modelmatInv;
+void Shape::toLocalPos(float &x, float &y, float &z) {
+    Vector3 vec(x, y, z);
+    vec = vec*modelmatInv;
 
     x = vec[0];
     y = vec[1];
     z = vec[2];
 }
 
-void Shape::toWorldPos(float &x, float &y, float &z){
-    Vector3 vec(x,y,z);
-    vec =vec*modelmat;
+void Shape::toWorldPos(float &x, float &y, float &z) {
+    Vector3 vec(x, y, z);
+    vec = vec*modelmat;
     x = vec[0];
     y = vec[1];
     z = vec[2];
 }
 
-void Shape::drawAsix(float size){
-
+void Shape::drawAsix(float size) {
     glDepthFunc(GL_ALWAYS);     // to avoid visual artifacts with grid lines
     glDisable(GL_LIGHTING);
     glPushMatrix();             //NOTE: There is a bug on Mac misbehaviours of
@@ -95,6 +98,6 @@ void Shape::drawAsix(float size){
     glDepthFunc(GL_LEQUAL);
 }
 
-void Shape::ondraw(){
-    if(testDrawFunc) (*testDrawFunc)();
+void Shape::ondraw() {
+    if (testDrawFunc) (*testDrawFunc)();
 }

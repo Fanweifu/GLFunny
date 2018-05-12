@@ -30,42 +30,41 @@ public:
     void setViewMatrix(float x, float y, float z, float pitch, float heading, float roll);
     void setModelMatrix(float x, float y, float z, float rx, float ry, float rz);
 
-    void setCameraX(float x)        { cameraPosition[0] = x; updateViewMatrix(); }
-    void setCameraY(float y)        { cameraPosition[1] = y; updateViewMatrix(); }
-    void setCameraZ(float z)        { cameraPosition[2] = z; updateViewMatrix(); }
-    void setCameraAngleX(float p)   { cameraAngle[0] = p; updateViewMatrix(); }
-    void setCameraAngleY(float h)   { cameraAngle[1] = h; updateViewMatrix(); }
-    void setCameraAngleZ(float r)   { cameraAngle[2] = r; updateViewMatrix(); }
-    float getCameraX()              { return cameraPosition[0]; }
-    float getCameraY()              { return cameraPosition[1]; }
-    float getCameraZ()              { return cameraPosition[2]; }
-    float getCameraAngleX()         { return cameraAngle[0]; }
-    float getCameraAngleY()         { return cameraAngle[1]; }
-    float getCameraAngleZ()         { return cameraAngle[2]; }
+    void setCameraX(float x) { cameraPosition[0] = x; updateViewMatrix(); }
+    void setCameraY(float y) { cameraPosition[1] = y; updateViewMatrix(); }
+    void setCameraZ(float z) { cameraPosition[2] = z; updateViewMatrix(); }
+    void setCameraAngleX(float p) { cameraAngle[0] = p; updateViewMatrix(); }
+    void setCameraAngleY(float h) { cameraAngle[1] = h; updateViewMatrix(); }
+    void setCameraAngleZ(float r) { cameraAngle[2] = r; updateViewMatrix(); }
+    float getCameraX() { return cameraPosition[0]; }
+    float getCameraY() { return cameraPosition[1]; }
+    float getCameraZ() { return cameraPosition[2]; }
+    float getCameraAngleX() { return cameraAngle[0]; }
+    float getCameraAngleY() { return cameraAngle[1]; }
+    float getCameraAngleZ() { return cameraAngle[2]; }
 
-    void setModelX(float x)         { modelPosition[0] = x; updateModelMatrix(); }
-    void setModelY(float y)         { modelPosition[1] = y; updateModelMatrix(); }
-    void setModelZ(float z)         { modelPosition[2] = z; updateModelMatrix(); }
-    void setModelAngleX(float a)    { modelAngle[0] = a; updateModelMatrix(); }
-    void setModelAngleY(float a)    { modelAngle[1] = a; updateModelMatrix(); }
-    void setModelAngleZ(float a)    { modelAngle[2] = a; updateModelMatrix(); }
-    float getModelX()               { return modelPosition[0]; }
-    float getModelY()               { return modelPosition[1]; }
-    float getModelZ()               { return modelPosition[2]; }
-    float getModelAngleX()          { return modelAngle[0]; }
-    float getModelAngleY()          { return modelAngle[1]; }
-    float getModelAngleZ()          { return modelAngle[2]; }
+    void setModelX(float x) { modelPosition[0] = x; updateModelMatrix(); }
+    void setModelY(float y) { modelPosition[1] = y; updateModelMatrix(); }
+    void setModelZ(float z) { modelPosition[2] = z; updateModelMatrix(); }
+    void setModelAngleX(float a) { modelAngle[0] = a; updateModelMatrix(); }
+    void setModelAngleY(float a) { modelAngle[1] = a; updateModelMatrix(); }
+    void setModelAngleZ(float a) { modelAngle[2] = a; updateModelMatrix(); }
+    float getModelX() { return modelPosition[0]; }
+    float getModelY() { return modelPosition[1]; }
+    float getModelZ() { return modelPosition[2]; }
+    float getModelAngleX() { return modelAngle[0]; }
+    float getModelAngleY() { return modelAngle[1]; }
+    float getModelAngleZ() { return modelAngle[2]; }
 
-   // return 16 elements of  target matrix
-    const float* getViewMatrixElements()        { return matrixView.get(); }
-    const float* getModelMatrixElements()       { return matrixModel.get(); }
-    const float* getModelViewMatrixElements()   { return matrixModelView.get(); }
-    const float* getProjectionMatrixElements()  { return matrixProjection.get(); }
+    // return 16 elements of  target matrix
+    const float* getViewMatrixElements() { return matrixView.get(); }
+    const float* getModelMatrixElements() { return matrixModel.get(); }
+    const float* getModelViewMatrixElements() { return matrixModelView.get(); }
+    const float* getProjectionMatrixElements() { return matrixProjection.get(); }
 
     void rotateCamera(int x, int y);
     void zoomCamera(int dist);
     void zoomCameraDelta(float delta);      // for mousewheel
-
 
 protected:
 
@@ -81,7 +80,7 @@ private:
     void drawFrustum(float fovy, float aspect, float near, float far);
     Matrix4 setFrustum(float l, float r, float b, float t, float n, float f);
     Matrix4 setFrustum(float fovy, float ratio, float n, float f);
-    Matrix4 setOrthoFrustum(float l, float r, float b, float t, float n=-1, float f=1);
+    Matrix4 setOrthoFrustum(float l, float r, float b, float t, float n = -1, float f = 1);
     void updateModelMatrix();
     void updateViewMatrix();
 

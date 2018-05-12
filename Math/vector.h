@@ -10,7 +10,6 @@
 // Copyright (C) 2007-2013 Song Ho Ahn
 ///////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef VECTORS_H_DEF
 #define VECTORS_H_DEF
 
@@ -59,8 +58,6 @@ struct Vector2
     friend std::ostream& operator<<(std::ostream& os, const Vector2& vec);
 };
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // 3D vector
 ///////////////////////////////////////////////////////////////////////////////
@@ -106,8 +103,6 @@ struct Vector3
     friend std::ostream& operator<<(std::ostream& os, const Vector3& vec);
 };
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // 4D vector
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,20 +147,16 @@ struct Vector4
     friend std::ostream& operator<<(std::ostream& os, const Vector4& vec);
 };
 
-
-
 // fast math routines from Doom3 SDK
 inline float invSqrt(float x)
 {
     float xhalf = 0.5f * x;
     int i = *(int*)&x;          // get bits for floating value
-    i = 0x5f3759df - (i>>1);    // gives initial guess
+    i = 0x5f3759df - (i >> 1);    // gives initial guess
     x = *(float*)&i;            // convert bits back to float
     x = x * (1.5f - xhalf*x*x); // Newton step
     return x;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // inline functions for Vector2
@@ -175,11 +166,11 @@ inline Vector2 Vector2::operator-() const {
 }
 
 inline Vector2 Vector2::operator+(const Vector2& rhs) const {
-    return Vector2(x+rhs.x, y+rhs.y);
+    return Vector2(x + rhs.x, y + rhs.y);
 }
 
 inline Vector2 Vector2::operator-(const Vector2& rhs) const {
-    return Vector2(x-rhs.x, y-rhs.y);
+    return Vector2(x - rhs.x, y - rhs.y);
 }
 
 inline Vector2& Vector2::operator+=(const Vector2& rhs) {
@@ -207,7 +198,7 @@ inline Vector2& Vector2::operator*=(const Vector2& rhs) {
 }
 
 inline Vector2 Vector2::operator/(const float a) const {
-    return Vector2(x/a, y/a);
+    return Vector2(x / a, y / a);
 }
 
 inline Vector2& Vector2::operator/=(const float a) {
@@ -223,10 +214,10 @@ inline bool Vector2::operator!=(const Vector2& rhs) const {
 }
 
 inline bool Vector2::operator<(const Vector2& rhs) const {
-    if(x < rhs.x) return true;
-    if(x > rhs.x) return false;
-    if(y < rhs.y) return true;
-    if(y > rhs.y) return false;
+    if (x < rhs.x) return true;
+    if (x > rhs.x) return false;
+    if (y < rhs.y) return true;
+    if (y > rhs.y) return false;
     return false;
 }
 
@@ -247,7 +238,7 @@ inline float Vector2::length() const {
 }
 
 inline float Vector2::distance(const Vector2& vec) const {
-    return sqrtf((vec.x-x)*(vec.x-x) + (vec.y-y)*(vec.y-y));
+    return sqrtf((vec.x - x)*(vec.x - x) + (vec.y - y)*(vec.y - y));
 }
 
 inline Vector2& Vector2::normalize() {
@@ -281,9 +272,6 @@ inline std::ostream& operator<<(std::ostream& os, const Vector2& vec) {
 }
 // END OF VECTOR2 /////////////////////////////////////////////////////////////
 
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // inline functions for Vector3
 ///////////////////////////////////////////////////////////////////////////////
@@ -292,11 +280,11 @@ inline Vector3 Vector3::operator-() const {
 }
 
 inline Vector3 Vector3::operator+(const Vector3& rhs) const {
-    return Vector3(x+rhs.x, y+rhs.y, z+rhs.z);
+    return Vector3(x + rhs.x, y + rhs.y, z + rhs.z);
 }
 
 inline Vector3 Vector3::operator-(const Vector3& rhs) const {
-    return Vector3(x-rhs.x, y-rhs.y, z-rhs.z);
+    return Vector3(x - rhs.x, y - rhs.y, z - rhs.z);
 }
 
 inline Vector3& Vector3::operator+=(const Vector3& rhs) {
@@ -324,7 +312,7 @@ inline Vector3& Vector3::operator*=(const Vector3& rhs) {
 }
 
 inline Vector3 Vector3::operator/(const float a) const {
-    return Vector3(x/a, y/a, z/a);
+    return Vector3(x / a, y / a, z / a);
 }
 
 inline Vector3& Vector3::operator/=(const float a) {
@@ -340,12 +328,12 @@ inline bool Vector3::operator!=(const Vector3& rhs) const {
 }
 
 inline bool Vector3::operator<(const Vector3& rhs) const {
-    if(x < rhs.x) return true;
-    if(x > rhs.x) return false;
-    if(y < rhs.y) return true;
-    if(y > rhs.y) return false;
-    if(z < rhs.z) return true;
-    if(z > rhs.z) return false;
+    if (x < rhs.x) return true;
+    if (x > rhs.x) return false;
+    if (y < rhs.y) return true;
+    if (y > rhs.y) return false;
+    if (z < rhs.z) return true;
+    if (z > rhs.z) return false;
     return false;
 }
 
@@ -366,7 +354,7 @@ inline float Vector3::length() const {
 }
 
 inline float Vector3::distance(const Vector3& vec) const {
-    return sqrtf((vec.x-x)*(vec.x-x) + (vec.y-y)*(vec.y-y) + (vec.z-z)*(vec.z-z));
+    return sqrtf((vec.x - x)*(vec.x - x) + (vec.y - y)*(vec.y - y) + (vec.z - z)*(vec.z - z));
 }
 
 inline float Vector3::angle(const Vector3& vec) const {
@@ -414,8 +402,6 @@ inline std::ostream& operator<<(std::ostream& os, const Vector3& vec) {
 }
 // END OF VECTOR3 /////////////////////////////////////////////////////////////
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // inline functions for Vector4
 ///////////////////////////////////////////////////////////////////////////////
@@ -424,11 +410,11 @@ inline Vector4 Vector4::operator-() const {
 }
 
 inline Vector4 Vector4::operator+(const Vector4& rhs) const {
-    return Vector4(x+rhs.x, y+rhs.y, z+rhs.z, w+rhs.w);
+    return Vector4(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w);
 }
 
 inline Vector4 Vector4::operator-(const Vector4& rhs) const {
-    return Vector4(x-rhs.x, y-rhs.y, z-rhs.z, w-rhs.w);
+    return Vector4(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
 }
 
 inline Vector4& Vector4::operator+=(const Vector4& rhs) {
@@ -456,7 +442,7 @@ inline Vector4& Vector4::operator*=(const Vector4& rhs) {
 }
 
 inline Vector4 Vector4::operator/(const float a) const {
-    return Vector4(x/a, y/a, z/a, w/a);
+    return Vector4(x / a, y / a, z / a, w / a);
 }
 
 inline Vector4& Vector4::operator/=(const float a) {
@@ -472,14 +458,14 @@ inline bool Vector4::operator!=(const Vector4& rhs) const {
 }
 
 inline bool Vector4::operator<(const Vector4& rhs) const {
-    if(x < rhs.x) return true;
-    if(x > rhs.x) return false;
-    if(y < rhs.y) return true;
-    if(y > rhs.y) return false;
-    if(z < rhs.z) return true;
-    if(z > rhs.z) return false;
-    if(w < rhs.w) return true;
-    if(w > rhs.w) return false;
+    if (x < rhs.x) return true;
+    if (x > rhs.x) return false;
+    if (y < rhs.y) return true;
+    if (y > rhs.y) return false;
+    if (z < rhs.z) return true;
+    if (z > rhs.z) return false;
+    if (w < rhs.w) return true;
+    if (w > rhs.w) return false;
     return false;
 }
 
@@ -500,7 +486,7 @@ inline float Vector4::length() const {
 }
 
 inline float Vector4::distance(const Vector4& vec) const {
-    return sqrtf((vec.x-x)*(vec.x-x) + (vec.y-y)*(vec.y-y) + (vec.z-z)*(vec.z-z) + (vec.w-w)*(vec.w-w));
+    return sqrtf((vec.x - x)*(vec.x - x) + (vec.y - y)*(vec.y - y) + (vec.z - z)*(vec.z - z) + (vec.w - w)*(vec.w - w));
 }
 
 inline Vector4& Vector4::normalize() {
@@ -524,7 +510,7 @@ inline float Vector4::dot(const Vector4& rhs) const {
 
 inline bool Vector4::equal(const Vector4& rhs, float epsilon) const {
     return fabs(x - rhs.x) < epsilon && fabs(y - rhs.y) < epsilon &&
-           fabs(z - rhs.z) < epsilon && fabs(w - rhs.w) < epsilon;
+        fabs(z - rhs.z) < epsilon && fabs(w - rhs.w) < epsilon;
 }
 
 inline Vector4 operator*(const float a, const Vector4 vec) {

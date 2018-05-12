@@ -44,9 +44,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TextReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Shape\camera.h">
       <Filter>头文件\Shape</Filter>
     </ClInclude>

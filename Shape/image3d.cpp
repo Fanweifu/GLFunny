@@ -1,181 +1,205 @@
 #include<cstring>
 #include "image3d.h"
 
-#define drawOne(ix,iy,fvl,rfvl,bfvl,color)   glColor4fv(color);\
-glBegin(GL_QUADS);\
-glVertex3f(ix,iy,fvl);\
-glVertex3f(ix+1,iy,fvl);\
-glVertex3f(ix+1,iy+1,fvl);\
-glVertex3f(ix,iy+1,fvl);\
-if(ix<cols-1){\
-    glVertex3f(ix+1,iy,fvl);\
-    glVertex3f(ix+1,iy,rfvl);\
-    glVertex3f(ix+1,iy+1,rfvl);\
-    glVertex3f(ix+1,iy+1,fvl);\
-}\
-if(iy<rows-1){\
-    glVertex3f(ix,iy+1,fvl);\
-    glVertex3f(ix,iy+1,bfvl);\
-    glVertex3f(ix+1,iy+1,bfvl);\
-    glVertex3f(ix+1,iy+1,fvl);\
-}\
-glEnd();
-
-
 Image3D::Image3D()
 {
-
 }
 
-Image3D::~Image3D(){
-    if(heights) delete heights;
-    if(colors) delete colors;
-    if(vertexs) delete vertexs;
-    isempty = true;
+Image3D::~Image3D() {
+    if (heights) delete heights;
+    if (colors) delete colors;
+    if (vertexs) delete vertexs;
+    if (normal) delete normal;
+    if (vertexIdx) delete vertexIdx;
 }
 
-void Image3D::setSrcData(cv::Mat img){
+void Image3D::setSrcData(cv::Mat& img) {
+    assert(img.depth() == CV_8U&&img.channels() == 3);
 
-    assert(img.depth()==CV_8U&&img.channels()==3);
-
-    initSize(img.rows,img.cols);
+    reShape(img.rows, img.cols);
 
     data = img.data;
     chns = img.channels();
     step = img.step;
 
-    calcGray(data,step,rows,cols,chns);
 
 
 }
 
-void Image3D::generateData(){
-    if(vao==NULL) vao = VAOArrayMan::createVAO();
+void Image3D::generateData() {
 
-    for(uint y =0;y<rows;y++){
-        for(uint x=0;x<cols;x++){
-            int stp = y*cols+x;
+    initShader();
+    calcHeight();
 
-            getColor(x,y,data+stp,chns,color4f);
-            memcpy(colors+stp,color4f,sizeof(color4f));
+    int pointNum = rows*cols * 4 * 3;
+    int idci = 0, idx = 0;
+    for (uint y = 0; y < rows; y++) {
+        for (uint x = 0; x < cols; x++) {
+            int curpxl = y*cols + x;
+            int rpxl = y*cols + (x + 1);
+            int bpxl = (y + 1)*cols + x;
 
-            float height = heights[stp];
+            getColor(x, y, color4f);
 
-            vertexs[12*stp+0] = x;
-            vertexs[12*stp+1] = y;
-            vertexs[12*stp+2] = height;
+            for (int i = 0; i < 12; i++)
+            {
+                memcpy(colors + (48 * curpxl) + i * 4, color4f, 4 * sizeof(float));
+            }
 
-            vertexs[12*stp+3] = x+1;
-            vertexs[12*stp+4] = y;
-            vertexs[12*stp+5] = height;
+            float h = heights[curpxl];
+            float r = x<cols-1? heights[rpxl]:0;
+            float b = y<rows-1? heights[bpxl]:0;
 
-            vertexs[12*stp+6] = x+1;
-            vertexs[12*stp+7] = y+1;
-            vertexs[12*stp+8] = height;
+            float ver[12][3] = {
+                {x,y,h},{x + 1,y,h},{x + 1,y + 1,h},{x,y + 1,h},
+                { x + 1,y + 1,h },{ x + 1,y,h },{x + 1,y,r},{x + 1,y + 1,r},
+                {x,y + 1,h},{x + 1,y + 1,h},{x + 1,y + 1,b},{x,y + 1,b}
+            };
 
-            vertexs[12*stp+9] = x;
-            vertexs[12*stp+10] = y+1;
-            vertexs[12*stp+11] = height;
+            memcpy(vertexs + 36 * curpxl, ver, 36 * sizeof(float));
 
+            float nor[12][3] = {
+                {0,0,1},{ 0,0,1 },{ 0,0,1 },{ 0,0,1 },
+                { 1,0,0 },{ 1,0,0 },{ 1,0,0 },{ 1,0,0 },
+                { 0,1,0 },{ 0,1,0 },{ 0,1,0 },{ 0,1,0 },
+            };
+
+            memcpy(normal + 36 * curpxl, ver, 36 * sizeof(float));
+
+            for(int i=0;i<4;i++) vertexIdx[idci++] = idx++;
+
+            if (x < cols - 1) {
+                for (int i = 0; i<4; i++) vertexIdx[idci++] = idx++;
+            }
+            else {
+                idx += 4;
+            }
+            if (y < rows - 1) {
+                for (int i = 0; i<4; i++) vertexIdx[idci++] = idx++;
+            }
         }
     }
 
-    vao->setVertex(vertexs);
-    //vao->setColor(colors,4);
-    havedata = true;
+    assert(idci == pointNum - (cols + rows) * 4);
+
+    vao.setVertex(vertexs, pointNum, vertexIdx, idci);
+    vao.setColor(colors, 4, pointNum);
+    vao.setNormal(normal, pointNum);
 }
 
-bool Image3D::initSize(int rowc, int colc){
-    if(rowc*colc==0) return false;
+void Image3D::initShader()
+{
+    pshader.loadVertexCode("#version 330 compatibility\n"
+        "layout(location = 0) in vec3 pos;\n"
+        "layout(location = 1) in vec4 clr;\n"
+        "layout(location = 2) in vec3 nor;\n"
+        "void main() {\n"
+        "   gl_Position= gl_ModelViewProjectionMatrix*vec4(pos,1.);\n"
+        "   vec3 normal= normalize(gl_NormalMatrix * nor);\n"
+        "   vec3 lightDir = normalize(vec3(gl_LightSource[0].position));\n"
+        "   float NdotL = max(dot(normal,lightDir), 0.0);\n"
+        "   vec4 diffuse = NdotL*clr * gl_LightSource[0].diffuse;\n"
+        "   vec4 ambient = clr*gl_LightSource[0].ambient;\n"
 
-    if(rows!=rowc||cols!=colc){
-        if(vertexs) delete vertexs;
-        vertexs = new float[rowc*colc*4*3];
+        "   float NdotHV = max(dot(nor, gl_LightSource[0].halfVector.xyz),0.0);\n"
+        "   vec4 specular = clr * gl_LightSource[0].specular *pow(NdotHV, 20);\n"
+        "   vec4 result = diffuse+ambient +specular;\n"
+        "   gl_FrontColor = result*0.8;\n"
+        "   gl_BackColor = result*0.8;\n"
+        "}\n"
+    );
 
-        if(colors) delete colors;
-        colors = new float[rowc*colc*4];
+    //void main()
+    //{
+    //    vec3 normal, lightDir;
+    //    vec4 diffuse, ambient, globalAmbient, specular;
+    //    float NdotL; float NdotHV;
 
-        rows = rowc;cols = colc;
+    //    normal = normalize(gl_NormalMatrix * gl_Normal);
+    //    lightDir = normalize(vec3(gl_LightSource[0].position));
+    //    NdotL = max(dot(normal, lightDir), 0.0);
+    //    diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
+    //    /* Compute the ambient and globalAmbient terms */
+
+    //    ambient = gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
+    //    globalAmbient = gl_LightModel.ambient * gl_FrontMaterial.ambient;
+
+    //    /* compute the specular term if NdotL is  larger than zero */
+    //    if (NdotL > 0.0) {
+    //        // normalize the half-vector, and then compute the
+    //        // cosine (dot product) with the normal
+    //        NdotHV = max(dot(normal, gl_LightSource[0].halfVector.xyz), 0.0);
+    //        specular = gl_FrontMaterial.specular * gl_LightSource[0].specular *
+    //            pow(NdotHV, gl_FrontMaterial.shininess);
+    //    }
+
+    //    gl_FrontColor = NdotL * diffuse + globalAmbient + ambient + specular;
+
+    //    gl_Position = ftransform();
+    //}
+
+    pshader.link();
+}
+
+bool Image3D::reShape(int rowc, int colc) {
+    if (rowc*colc == 0) return false;
+
+    int pointsNum = rowc*colc * 4 * 3;
+
+    if (rows != rowc || cols != colc) {
+        if (vertexs) delete vertexs;
+        vertexs = new float[pointsNum * 3];
+        if (colors) delete colors;
+        colors = new float[pointsNum * 4];
+        if (normal) delete colors;
+        normal = new float[pointsNum * 4];
+
+        if (vertexIdx) delete vertexIdx;
+        vertexIdx = new uint[pointsNum - rowc * 4 - cols * 4];
+
+        rows = rowc; cols = colc;
     }
 }
 
+void Image3D::ondraw() {
+    glTranslatef(-(float)cols / 2, -(float)rows / 2, 0);
+    glScalef(pixelSzie, pixelSzie, heightRate);
 
-void Image3D::ondraw(){
-
-    if(!havedata) generateData();
-
-    glEnable(GL_COLOR_MATERIAL);
-
-    glTranslatef(-(float)cols/2,-(float)rows/2,0);
-    glScalef(pixelSzie,pixelSzie,1);
-
-    vao->renderData(GL_QUADS);
-    //drawpiexls(0,0,cols,rows);
-
-    glDisable(GL_COLOR_MATERIAL);
-
+    vao.renderData(GL_QUADS);
 }
 
-void Image3D::drawpiexls(uint x, uint y, uint w, uint h){
+void Image3D::getColor(uint x, uint y, float*color4) {
+    getColor(data, x, y, color4);
+}
 
-    uint xcols = min(cols,x+w);
-    uint yrows = min(rows,y+h);
-
-        for(uint ix=x;ix<xcols;ix++){
-            for(uint iy =y;iy<yrows;iy++){
-                    float fval = getPiexlVal(ix,iy);
-                    float rval = getPiexlVal(ix+1,iy);
-                    float bval = getPiexlVal(ix,iy+1);
-
-                //}
-
-            }
-
+void Image3D::getColor(uchar * pdata, uint x, uint y, float * outColor)
+{
+    uchar* pixelPtr = pdata + y*step + x*chns;
+    if (chns >= 3) {
+        for (uint i = 0; i < 3; i++) outColor[i] = (float)pixelPtr[2 - i] / 255;
+        if (chns == 4) outColor[3] = (float)pixelPtr[3] / 255;
+        else outColor[3] = 1;
     }
-
-}
-
-float Image3D::getPiexlVal(uint x,uint y){
-    if(isempty) return 0;
-    return heights[y*rows+x];
-}
-
-
-void Image3D::getColor(uint x, uint y, uchar*pixelPtr, uint chns, float*color4){
-    if(isempty) return;
-
-    if(chns>=3){
-        for(uint i=0;i<3;i++) color4[i] = (float)pixelPtr[2-i]/255;
-        if(chns==4) color4[3] = (float)pixelPtr[3]/255;
-        else color4[3] = 1;
-    }else if(chns==1){
-        color4[1] = color4[2] = color4[3] = (float)pixelPtr[0]/255;
-        color4[3] = 1;
+    else if (chns == 1) {
+        outColor[1] = outColor[2] = outColor[3] = (float)pixelPtr[0] / 255;
+        outColor[3] = 1;
     }
 }
 
-
-
-
-
-float* Image3D::calcGray(uchar* data,uint step,uint rows,uint cols,uint chns){
-
-    if(heights==NULL) heights = new float[cols*rows];
-    else if(sizeof(heights)/sizeof(float)!= cols*rows){
-        delete [] heights;
+void Image3D::calcHeight() {
+    if (heights == NULL) heights = new float[cols*rows];
+    else if (sizeof(heights) / sizeof(float) != cols*rows) {
+        delete[] heights;
         heights = new float[cols*rows];
     }
 
-    for(uint x=0;x<rows;x++){
-        for(uint y=0;y<cols;y++){
-            uint sum =0;
-            for(uint c=0;c<chns;c++){
-                sum+= data[x*step+y*chns+c];
+    for (uint y = 0; y < rows; y++) {
+        for (uint x = 0; x < cols; x++) {
+            uint sum = 0;
+            for (uint c = 0; c < chns; c++) {
+                sum += data[y*step + x*chns + c];
             }
-            heights[x*cols+y] = (float)sum/chns;
+            heights[y*cols + x] = (float)sum / chns;
         }
     }
-
-    return heights;
-
 }

@@ -3,95 +3,105 @@
 
 Shader::Shader()
 {
-
 }
 
-Shader::~Shader(){
-
+Shader::~Shader() {
+    uninitProgram();
 }
 
-GLuint Shader::getProgramID(){
-    if(!createProgram) {
-        program = glCreateProgram();
-        createProgram = true;
-    }
-    return program;
-}
-
-string Shader::readFile(const char *filename){
+string Shader::readFile(const char *filename) {
     ifstream in(filename, ios::in);
     std::stringstream  sb;
     sb << in.rdbuf();
     return string(sb.str());
 }
 
-GLuint createShader(GLenum type,const char*source,GLint& success){
+GLuint createShader(GLenum type, const char*source, GLint& success) {
     GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &source, NULL);
     glCompileShader(shader);
-  
+
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
     if (!success)
     {
-        char info[300];
+        char info[500];
         glGetShaderInfoLog(shader, 512, NULL, info);
-        cout << "ERROR::SHADER::FRAGMENT 2::COMPILATION_FAILED\n" << info;
+        cout << "compile failed\n" << info;
     }
     else
     {
-        cout << "Fragment Shader 2 compile success!";
+        cout << "compile success!";
     }
 
-    
     return shader;
 }
 
-bool Shader::loadFragCode(const char *source){
-
+bool Shader::complie_attch(GLenum type, const char *source) {
     GLint succsee = 0;
-    GLuint shader = createShader(GL_FRAGMENT_SHADER,source,succsee);
-    if(succsee==0) return false;
+    GLuint shader = createShader(type, source, succsee);
+    if (succsee == 0) {
+        glDeleteShader(shader);
+        return false;
+    }
     else {
-        GLuint pro = getProgramID();
-        glAttachShader(pro, shader);
+        if (!inited) initProgram();
+        glAttachShader(program, shader);
+        return true;
     }
 }
 
+void Shader::initProgram()
+{
+    if (!inited) {
+        program = glCreateProgram();
+        inited = true;
+    }
+}
 
-bool Shader::loadFragFile(const char *filename){
+void Shader::uninitProgram()
+{
+    if (inited) {
+        glDeleteProgram(program);
+        inited = false;
+    }
+}
+
+bool Shader::loadFragCode(const char *source) {
+    return complie_attch(GL_FRAGMENT_SHADER, source);
+}
+
+bool Shader::loadFragFile(const char *filename) {
     string code = readFile(filename);
     return loadFragCode(code.c_str());
 }
 
-
-bool Shader::loadVertexCode(const char *source){
-    GLint succsee = 0;
-    GLuint shader = createShader(GL_VERTEX_SHADER,source,succsee);
-    if(succsee==0) return false;
-    else {
-        GLuint pro = getProgramID();
-        glAttachShader(pro, shader);
-    }
+bool Shader::loadVertexCode(const char *source) {
+    return complie_attch(GL_VERTEX_SHADER, source);
 }
 
-bool Shader::loadVertexFile(const char *filename){
+bool Shader::loadVertexFile(const char *filename) {
     string code = readFile(filename);
     return loadVertexCode(code.c_str());
 }
 
-GLint Shader::getParamID(string &pNm){
-    map<string,GLint>::iterator it = paramsMap.find(pNm);
-    if(it!= paramsMap.end()){
+GLint Shader::getParamID(string &pNm) {
+    map<string, GLint>::iterator it = paramsMap.find(pNm);
+    if (it != paramsMap.end()) {
         return (*it).second;
-    }else{
-        GLint idx = glGetUniformLocation(program,pNm.c_str());
-        paramsMap.insert(pair<string,GLint>(pNm,idx));
+    }
+    else {
+        GLint idx = glGetUniformLocation(program, pNm.data());
+        if (idx == -1) {
+            cout << pNm << " not find params!";
+            return -1;
+        }
+        paramsMap.insert(pair<string, GLint>(pNm, idx));
+        return idx;
     }
 }
 
-
-bool Shader::link(){
+bool Shader::link() {
     glLinkProgram(program);
 
     GLint success;
@@ -100,28 +110,34 @@ bool Shader::link(){
     if (!success) {
         glGetProgramInfoLog(program, 512, NULL, info);
         cout << "ERROR::SHADER::PROGRAM 2::LINKING_FAILED\n" << info;
-        return false;
+        return (isVaild = false);
     }
     else
     {
         cout << "Link Program2 success!";
-        return true;
+        return (isVaild=true);
     }
 }
 
-void Shader::active(){
+void Shader::use() {
     glUseProgram(program);
 }
 
-void Shader::setUniform1f(string&pNm,float val) {
+void Shader::unuse()
+{
+    glUseProgram(0);
+}
+
+void Shader::setUniform1f(string&pNm, float val) {
     GLint idx = getParamID(pNm);
     glUniform1f(idx, val);
 }
 
+
 void Shader::setUniform1fv(string & pNm, int size, float * ptr)
 {
     GLint idx = getParamID(pNm);
-    glUniform1fv(idx,size, ptr);
+    glUniform1fv(idx, size, ptr);
 }
 
 void Shader::setUniform2f(string & pNm, float val0, float val1)
@@ -139,11 +155,33 @@ void Shader::setUniform3f(string & pNm, float val0, float val1, float val2)
 void Shader::setUniform4f(string & pNm, float val0, float val1, float val2, float val3)
 {
     GLint idx = getParamID(pNm);
-    glUniform4f(idx, val0, val1, val2,val3);
+    glUniform4f(idx, val0, val1, val2, val3);
 }
 
 void Shader::setUniformMat4(string & pNm, float*matPtr)
 {
     GLint idx = getParamID(pNm);
     glUniformMatrix4fv(idx, 1, false, matPtr);
+}
+
+Shader * Shader::createDefaultShader()
+{
+    Shader* shd = new Shader();
+    shd->loadVertexCode("#version 330 compatibility\n"
+        "layout(location = 0) in vec3 pos;\n"
+        "layout(location = 1) in vec4 clr;\n"
+        "out vec4 vColor;"
+        "void main() {\n"
+        "gl_Position= gl_ModelViewProjectionMatrix*vec4(pos,1.);\n"
+        "vColor = vec4(clr);\n"
+        "}\n"
+        );
+
+    shd->loadFragCode("#version 330 core\n"
+        "in vec4 vColor;"
+        "void main() {\n"
+        "gl_FragColor = vec4(vColor);\n"
+        "}\n");
+    shd->link();
+    return shd;
 }

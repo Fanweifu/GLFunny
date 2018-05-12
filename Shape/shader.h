@@ -15,13 +15,16 @@ public:
     Shader();
     ~Shader();
 
+    bool available() { return isVaild; }
+
     bool loadFragCode(const char*source);
     bool loadFragFile(const char*filename);
     bool loadVertexCode(const char*source);
     bool loadVertexFile(const char*filename);
 
     bool link();
-    void active();
+    void use();
+    void unuse();
 
     void setUniform1f(string & pNm, float val);
 
@@ -33,22 +36,23 @@ public:
 
     void setUniform4f(string & pNm, float val0, float val1, float val2, float val3);
 
-    void setUniformMat4(string & pNm,float* matPtr);
+    void setUniformMat4(string & pNm, float* matPtr);
 
-    unsigned int getProgramID();
+    static Shader* createDefaultShader();
 
 protected:
-
-    string readFile(const char*filename);
-    int getParamID(string& pNm);
-
-    bool createProgram = false;
+    bool isVaild = false;
     unsigned int program;
+    map<string, int> paramsMap;
 
-    map<string,int> paramsMap;
+    int getParamID(string& pNm);
+    string readFile(const char*filename);
+    bool complie_attch(GLenum type, const char * source);
+    void initProgram();
+    void uninitProgram();
 
 private:
-
+    bool inited = false;
 };
 
 #endif // SHADER_H

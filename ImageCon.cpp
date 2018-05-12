@@ -1,14 +1,12 @@
-
 #include<gl/glew.h>
 #include<gl/GL.h>
-
-#include"TextReader.h"
 
 #include<gl/glut.h>
 #include<string>
 #include<functional>
 #include"Shape/camera.h"
 #include"Shape\shader.h"
+#include"Shape\image3dex.h"
 using namespace std;
 
 string iResolution = "iResolution";
@@ -21,95 +19,105 @@ GLuint VBO[2];
 GLuint VAO[2];
 
 //三角形顶点数据
-GLfloat triangleVertexs[][3] = {{ -0.8,-0.8,0 },{ -0.2,-0.2,0 },{ 0.5,-0.8,0 }};
-GLfloat triangleColors[][3] = {{ 1.0,0,0 },{ 0,1.0,0 },{ 0,0,1.0 }};
-
+GLfloat triangleVertexs[][3] = { { -0.8,-0.8,0 },{ -0.2,-0.2,0 },{ 0.5,-0.8,0 } };
+GLfloat triangleColors[][3] = { { 1.0,0,0 },{ 0,1.0,0 },{ 0,0,1.0 } };
+GLuint idx[] = { 0,1,2,3 };
 //四角形顶点数据
-GLfloat rectVertexs[][3] = {{ -1,-1,0 },{ 1,-1,0 },{ 1,1,0 },{ -1,1,0 }};
+GLfloat rectVertexs[] = { -1,-1,0 , 1,-1,0 ,1,1,0 , -1,1,0 };
 
-GLfloat rectColors[][3] = {{ 1,0,0 },{ 0,1,0 },{ 0,0,1 },{ 1,1,0 }};
+GLfloat rectColors[] = { 1,0,0,1 , 0,1,0,1 , 0,0,1,1, 1,1,0,1 };
 
 Camera cam;
 Shape obj;
 Shader shader;
+Shader* dshader = NULL;
+Image3DEx img3d;
+BufferData bdata;
+ElementData edata;
 float timeVal = 0;
 
 void setShapes() {
-    glewInit();
-
-    glGenVertexArrays(2, VAO);
-
-    glGenBuffers(2, VBO);
-    glBindVertexArray(VAO[0]);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertexs), triangleVertexs, GL_STATIC_DRAW);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangleColors), triangleColors, GL_STATIC_DRAW);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(3, GL_FLOAT, 0, NULL);
-
-    glBindVertexArray(VAO[1]);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(rectVertexs), rectVertexs, GL_STATIC_DRAW);
-    glEnableClientState(GL_VERTEX_ARRAY);
-
-    glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(rectColors), rectColors, GL_STATIC_DRAW);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(3, GL_FLOAT, 0, NULL);
+    edata.setVertex(rectVertexs, 4, idx , 4);
+    edata.setColor(rectColors, 4 , 4);
+    dshader = Shader::createDefaultShader();
+    dshader->use();
 }
-
 
 void setShaders(char * path)
 {
     shader.loadFragFile(path);
     shader.link();
-    shader.active();
+    shader.use();
 }
 
-
 void reshape(int width, int height) {
-    cam.setViewPort(0, 0, width , height);
+    cam.setViewPort(0, 0, width, height);
 
-    shader.setUniform3f(iResolution, width, height, 0);
+    //shader.setUniform3f(iResolution, width, height, 0);
+}
+void moveMouse(int x, int y) {
+    cam.moveMouse(x, y);
+}
+void dragMouse(int x, int y) {
+    cam.dragMouse(x, y);
+}
+
+void keyFunc(uchar key, int x, int y) {
+    cam.keyMove(key,1);
+}
+
+void renderQuads() {
+
+    edata.renderData(GL_QUADS);
 }
 
 void renderScene(void)
 {
-    
     timeVal += 0.01;
 
     shader.setUniform1f(iTime, timeVal);
 
-    //glBindVertexArray(VAO[0]);//重新激活顶点数组  
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
-    glBindVertexArray(VAO[1]);
-    glDrawArrays(GL_QUADS, 0, 4);
-    glutSwapBuffers();
+    renderQuads();
 }
 
 void render() {
     cam.drawView();
+    glutSwapBuffers();
 }
-
 
 void initCamera() {
     cam.init();
-    cam.setPosition(0, 0.001, 1);
+    cam.setPosition(0, 0.001, 100);
     cam.setViewPort(0, 0, 500, 500);
-    cam.scene = &obj;
-    obj.testDrawFunc = renderScene;
 }
 
+void shaderTest() {
+    obj.testDrawFunc = renderScene;
+    cam.Scene = &obj;
+    setShapes();
+    setShaders("test1.txt");
+}
 
-int main(int arg,char**argv) {
+void ImageTest() {
+    cv::Mat img = cv::imread("C:\\Users\\fwf\\Desktop\\7bd0d5d3ffe0edd98fa1e5af665d2bb5334af342.7.jpg");
+    cv::Mat aim;
+    cv::bilateralFilter(img, aim, 25,25*2,25/2);
+
+    img3d.setSrcData(img);
+    img3d.setAnimation(aim);
+    img3d.generateData();
+    img3d.active(true);
+    img3d.enableReplay(true);
+    cam.Scene = &img3d;
+}
+
+void quadTest() {
+    obj.testDrawFunc = renderQuads;
+    cam.Scene = &obj;
+    setShapes();
+}
+
+int main(int arg, char**argv) {
     glutInit(&arg, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100, 100);
@@ -117,15 +125,15 @@ int main(int arg,char**argv) {
 
     glutCreateWindow("GLSL的第一步");
 
-   
+    glutPassiveMotionFunc(moveMouse);
+    glutMotionFunc(dragMouse);
+    glutKeyboardFunc(keyFunc);
     glutDisplayFunc(render);
     glutIdleFunc(render);
     glutReshapeFunc(reshape);
 
     initCamera();
-    setShapes();
-    setShaders("test1.txt");
+    ImageTest();
     glutMainLoop();
     return 0;
 }
-

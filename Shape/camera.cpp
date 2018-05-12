@@ -2,11 +2,10 @@
 
 Camera::Camera()
 {
-
 }
 
-Matrix4 Camera::setFrustum(float fovy, float ratio, float n, float f){
-    float tangent = tanf(fovy/2 * DEG2RAD);   // tangent of half fovY
+Matrix4 Camera::setFrustum(float fovy, float ratio, float n, float f) {
+    float tangent = tanf(fovy / 2 * DEG2RAD);   // tangent of half fovY
     float height = n * tangent;           // half height of near plane
     float width = height * ratio;             // half width of near plane
 
@@ -14,24 +13,24 @@ Matrix4 Camera::setFrustum(float fovy, float ratio, float n, float f){
     return setFrustum(-width, width, -height, height, n, f);
 }
 
-Matrix4 Camera::setFrustum(float left, float right, float buttom, float top, float n, float f){
+Matrix4 Camera::setFrustum(float left, float right, float buttom, float top, float n, float f) {
     Matrix4 matrix;
-    matrix[0]  =  2 * n / (right - left);
-    matrix[5]  =  2 * n / (top - buttom);
-    matrix[8]  =  (right + left) / (right - left);
-    matrix[9]  =  (top + buttom) / (top - buttom);
+    matrix[0] = 2 * n / (right - left);
+    matrix[5] = 2 * n / (top - buttom);
+    matrix[8] = (right + left) / (right - left);
+    matrix[9] = (top + buttom) / (top - buttom);
     matrix[10] = -(f + n) / (f - n);
     matrix[11] = -1;
     matrix[14] = -(2 * f * n) / (f - n);
-    matrix[15] =  0;
+    matrix[15] = 0;
     return matrix;
 }
 
 Matrix4 Camera::setOrthoFrustum(float l, float r, float b, float t, float n, float f)
 {
     Matrix4 matrix;
-    matrix[0]  =  2 / (r - l);
-    matrix[5]  =  2 / (t - b);
+    matrix[0] = 2 / (r - l);
+    matrix[5] = 2 / (t - b);
     matrix[10] = -2 / (f - n);
     matrix[12] = -(r + l) / (r - l);
     matrix[13] = -(t + b) / (t - b);
@@ -39,45 +38,19 @@ Matrix4 Camera::setOrthoFrustum(float l, float r, float b, float t, float n, flo
     return matrix;
 }
 
-void Camera::updateViewMatrix(){
-    viewMat.identity();
-    viewMatInv.identity();
-
-    viewMat.translate(-px, -py, -pz);
-    viewMatInv.translate(px, py, pz);
-
-
-    viewMat.rotateZ(-rz);    // roll
-    viewMatInv.rotateZ(rz);
-
-    viewMat.rotateY(-ry);    // heading
-    viewMatInv.rotateY(ry);
-
-    viewMat.rotateX(-rx);    // pitch
-    viewMatInv.rotateX(rx);
-
-
-
-
-}
-
-
 //glMatrixMode(GL_PROJECTION);
 //glLoadMatrixf(matrixProjection.get());
 //glMatrixMode(GL_MODELVIEW);
 //glLoadIdentity();
-void Camera::drawView(){
-
-    if(!inited) init();
-
-    if(windowsChanged){
+void Camera::drawView() {
+    if (windowsChanged) {
         updateViewPort();
         windowsChanged = false;
     }
 
-    if(isMultiScreen){
+    if (isMultiScreen) {
         glViewport(left, buttom, width, height);
-        glScissor(left, buttom , width, height);
+        glScissor(left, buttom, width, height);
     }
 
     glMatrixMode(GL_PROJECTION);
@@ -85,19 +58,52 @@ void Camera::drawView(){
 
     glMatrixMode(GL_MODELVIEW);
 
-    glLoadMatrixf(viewMat.get());
+    glLoadMatrixf(modelmatInv.get());
 
-
-    glClearColor(backgroud[0],backgroud[1],backgroud[2],backgroud[3]);   // background color
+    glClearColor(backgroud[0], backgroud[1], backgroud[2], backgroud[3]);   // background color
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     mainlight.setPostion();
-    if(scene!=NULL) scene->draw();
+    if (Scene) Scene->draw();
+}
+
+void Camera::dragMouse(int x, int y, float speed)
+{
+    float Rz = rz + (mouseX - x)*speed;
+    float Rx = rx + (mouseY - y)*speed;
+    setRotation(Rx, ry, Rz);
+
+    moveMouse(x, y);
+}
+
+void Camera::moveMouse(int x, int y)
+{
+    mouseX = x;
+    mouseY = y;
+}
+
+void Camera::keyMove(char keyCmd, float step)
+{
+    double Px = px, Py = py, Pz = pz;
+    if (keyCmd == 'w')
+        Py += step;
+    if (keyCmd == 's')
+        Py -= step;
+    if (keyCmd == 'a')
+        Px -= step;
+    if (keyCmd == 'd')
+        Px += step;
+    if (keyCmd == 'q')
+        Pz += step;
+    if (keyCmd == 'e')
+        Pz -= step;
+
+    setPosition(Px, Py, Pz);
 }
 
 void drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
 {
-    float tangent = tanf(fovY/2 * DEG2RAD);
+    float tangent = tanf(fovY / 2 * DEG2RAD);
     float nearHeight = nearPlane * tangent;
     float nearWidth = nearHeight * aspectRatio;
     float farHeight = farPlane * tangent;
@@ -186,71 +192,63 @@ void drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
     glEnable(GL_LIGHTING);
 }
 
-void Camera::ondraw(){
-    drawFrustum(Fov,Ratio,Near,Far);
+void Camera::ondraw() {
+    drawFrustum(Fov, Ratio, Near, Far);
 }
 
-void Camera::lookAt(float tx, float ty, float tz,bool isup){
+void Camera::lookAt(float tx, float ty, float tz, bool isup) {
+    /*  double vx = tx - px,vy = ty -py, vz = tz -pz;
 
-    double vx = tx - px,vy = ty -py, vz = tz -pz;
+      float heading = atan2f(vz,vx);
+      float pitch = asinf(vy/sqrt(vx*vx+vz*vz));
 
-    float heading = atan2f(vz,vx);
-    float pitch = asinf(vy/sqrt(vx*vx+vz*vz));
+      ry = heading/DEG2RAD;
+      rx = pitch/DEG2RAD;
+      if(isup) rz = 0;
 
-    ry = heading/DEG2RAD;
-    rx = pitch/DEG2RAD;
-    if(isup) rz = 0;
-
-    updateViewMatrix();
+      updateViewMatrix();*/
 }
 
-void Camera::setViewPort(int x, int y, int w, int h){
-
+void Camera::setViewPort(int x, int y, int w, int h) {
     left = x;
     buttom = y;
     width = w;
     height = h;
-    Ratio = (float)(w)/h;
-
+    Ratio = (float)(w) / h;
 
     windowsChanged = true;
 }
-
 
 void Camera::setWindowSize(int width, int height) {
     Camera::setViewPort(0, 0, width, height);
 }
 
-void Camera::updateViewPort(){
+void Camera::updateViewPort() {
     glViewport((GLsizei)left, (GLsizei)buttom, (GLsizei)width, (GLsizei)height);
     updateProjection();
 }
 
-void Camera::init(){
-
+void Camera::init() {
     initGl();
     mainlight.init();
 
     inited = true;
 }
 
-
 void Camera::initGl() {
-
     glShadeModel(GL_SMOOTH);                        // shading mathod: GL_SMOOTH or GL_FLAT
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);          // 4-byte pixel alignment
-
 
     // enable/disable features
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glEnable(GL_POLYGON_SMOOTH);
-    glHint(GL_POLYGON_SMOOTH,GL_NICEST);
+    glHint(GL_POLYGON_SMOOTH, GL_NICEST);
 
     glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
     glEnable(GL_POINT_SMOOTH);
-    glHint(GL_POINT_SMOOTH,GL_NICEST);
+    glHint(GL_POINT_SMOOTH, GL_NICEST);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
@@ -260,15 +258,14 @@ void Camera::initGl() {
     glEnable(GL_SCISSOR_TEST);
 
     // track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
-    glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 
-    glClearColor(0, 0 , 0, 1);   // background color
+    glClearColor(0, 0, 0, 1);   // background color
     glClearStencil(0);                              // clear stencil buffer
     glClearDepth(1.0f);                             // 0 is near, 1 is far
     glDepthFunc(GL_LEQUAL);
 
-    VAOArrayMan::init();
+    glewInit();
 
 }
-
