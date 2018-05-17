@@ -27,23 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="shaderInput.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="test1.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="test2.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="test3.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="test4.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Shape\camera.h">
       <Filter>头文件\Shape</Filter>
     </ClInclude>

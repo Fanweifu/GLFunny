@@ -142,13 +142,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="test1.txt" />
-    <Text Include="shaderInput.txt" />
-    <Text Include="test2.txt" />
-    <Text Include="test3.txt" />
-    <Text Include="test4.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Math\matrices.h" />
     <ClInclude Include="Math\vector.h" />
     <ClInclude Include="Shape\camera.h" />
