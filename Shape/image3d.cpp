@@ -21,18 +21,14 @@ void Image3D::setSrcData(cv::Mat& img) {
     data = img.data;
     chns = img.channels();
     step = img.step;
-
-
-
 }
 
 void Image3D::generateData() {
-
     initShader();
     calcHeight();
 
     int pointNum = rows*cols * 4 * 3;
-    int idci = 0, idx = 0;
+    uint idci = 0, idx = 0;
     for (uint y = 0; y < rows; y++) {
         for (uint x = 0; x < cols; x++) {
             int curpxl = y*cols + x;
@@ -47,8 +43,8 @@ void Image3D::generateData() {
             }
 
             float h = heights[curpxl];
-            float r = x<cols-1? heights[rpxl]:0;
-            float b = y<rows-1? heights[bpxl]:0;
+            float r = x < cols - 1 ? heights[rpxl] : 0;
+            float b = y < rows - 1 ? heights[bpxl] : 0;
 
             float ver[12][3] = {
                 {x,y,h},{x + 1,y,h},{x + 1,y + 1,h},{x,y + 1,h},
@@ -66,16 +62,25 @@ void Image3D::generateData() {
 
             memcpy(normal + 36 * curpxl, ver, 36 * sizeof(float));
 
-            for(int i=0;i<4;i++) vertexIdx[idci++] = idx++;
+            for (int i = 0; i < 4; i++) {
+                vertexIdx[idci++] = idx++;
+            }
 
             if (x < cols - 1) {
-                for (int i = 0; i<4; i++) vertexIdx[idci++] = idx++;
+                for (int i = 0; i < 4; i++) {
+                    vertexIdx[idci++] = idx++;
+                }
             }
             else {
                 idx += 4;
             }
             if (y < rows - 1) {
-                for (int i = 0; i<4; i++) vertexIdx[idci++] = idx++;
+                for (int i = 0; i < 4; i++) {
+                    vertexIdx[idci++] = idx++;
+                }
+            }
+            else {
+                idx += 4;
             }
         }
     }
@@ -152,10 +157,10 @@ bool Image3D::reShape(int rowc, int colc) {
         if (colors) delete colors;
         colors = new float[pointsNum * 4];
         if (normal) delete colors;
-        normal = new float[pointsNum * 4];
+        normal = new float[pointsNum * 3];
 
         if (vertexIdx) delete vertexIdx;
-        vertexIdx = new uint[pointsNum - rowc * 4 - cols * 4];
+        vertexIdx = new uint[pointsNum - rowc * 4 - colc * 4];
 
         rows = rowc; cols = colc;
     }

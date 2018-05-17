@@ -170,18 +170,11 @@ Shader * Shader::createDefaultShader()
     shd->loadVertexCode("#version 330 compatibility\n"
         "layout(location = 0) in vec3 pos;\n"
         "layout(location = 1) in vec4 clr;\n"
-        "out vec4 vColor;"
         "void main() {\n"
         "gl_Position= gl_ModelViewProjectionMatrix*vec4(pos,1.);\n"
-        "vColor = vec4(clr);\n"
+        "gl_FrontColor = vec4(clr);\n"
         "}\n"
         );
 
-    shd->loadFragCode("#version 330 core\n"
-        "in vec4 vColor;"
-        "void main() {\n"
-        "gl_FragColor = vec4(vColor);\n"
-        "}\n");
-    shd->link();
     return shd;
 }

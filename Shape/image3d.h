@@ -26,6 +26,7 @@ public:
     bool isEmpty() { return isempty; }
     void setSrcData(cv::Mat& img);
     void generateData();
+    bool reShape(int rows, int cols);
 protected:
    
     virtual void initShader();
@@ -52,7 +53,7 @@ protected:
 
     ElementData vao;
 
-    bool reShape(int rows, int cols);
+    
     
 };
 

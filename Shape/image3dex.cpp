@@ -13,10 +13,13 @@ void Image3DEx::setAnimation(cv::Mat & dst)
 
 void Image3DEx::calT() {
     if (!actived) return;
-    t += curentspeed;
-    if (t >= 2 && needreplay) t = 0;
     
-    pshader.setUniform1f(tstr, t>1?1:t);
+    t += speed;
+
+    float val = (sin(t) + 1) / 2;
+    
+
+    pshader.setUniform1f(tstr, val);
 }
 
 void Image3DEx::calcHeight()
@@ -49,7 +52,9 @@ void Image3DEx::getColor(uint x, uint y, float * outputVec)
 
 void Image3DEx::initShader()
 {
-    pshader.loadVertexCode("#version 330 compatibility\n"
+    if (shaderinited) return;
+
+    bool res =pshader.loadVertexCode("#version 330 compatibility\n"
         "layout(location = 0) in vec3 pos;\n"
         "layout(location = 1) in vec4 clr;\n"
         "layout(location = 2) in vec3 nor;\n"
@@ -72,8 +77,11 @@ void Image3DEx::initShader()
         "}\n"
     );
 
-    pshader.link();
-
+    if (res) {
+        if (pshader.link()) {
+            shaderinited = true;
+        }
+    }
 }
 
 void Image3DEx::ondraw() {

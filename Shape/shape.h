@@ -66,7 +66,7 @@ public:
     void toLocalPos(float&x, float &y, float &z);
     void toWorldPos(float&x, float &y, float &z);
     void draw();
-    
+    virtual void initShader() {}
     voidHdl testDrawFunc = NULL;
 
 protected:
@@ -90,7 +90,7 @@ protected:
     Matrix4 modelmat;
     Matrix4 modelmatInv;
     Shader pshader;
-    virtual void initShader(){}
+   
     virtual void updateModel();
     virtual void ondraw();
 
