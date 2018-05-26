@@ -69,11 +69,11 @@ void Image3DEx::initShader()
         "   vec4 diffuse = NdotL*rclr * gl_LightSource[0].diffuse;\n"
         "   vec4 ambient = rclr*gl_LightSource[0].ambient;\n"
 
-        "   float NdotHV = max(dot(nor, gl_LightSource[0].halfVector.xyz),0.0);\n"
-        "   vec4 specular = rclr * gl_LightSource[0].specular *pow(NdotHV, 20);\n"
-        "   vec4 result = diffuse+ambient;//+specular;\n"
-        "   gl_FrontColor = result*0.8;\n"
-        "   gl_BackColor = result*0.8;\n"
+        "   float NdotHV = max(dot(normal, gl_LightSource[0].halfVector.xyz),0.0);\n"
+        "   vec4 specular = vec4(0,0,0.3,1) * gl_LightSource[0].specular *pow(NdotHV, 10);\n"
+        "   vec4 result = diffuse+ambient+specular;\n"
+        "   gl_FrontColor = result;\n"
+        "   gl_BackColor = result;\n"
         "}\n"
     );
 

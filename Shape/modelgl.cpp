@@ -42,10 +42,10 @@ cameraDistance(CAMERA_DISTANCE), windowSizeChanged(false)
     modelAngle[0] = modelAngle[1] = modelAngle[2] = 0;
     bgColor[0] = bgColor[1] = bgColor[2] = bgColor[3] = 0;
 
-    matrixView.identity();
-    matrixModel.identity();
-    matrixModelView.identity();
-    matrixProjection.identity();
+    matrixView = glm::mat4();
+    matrixModel = glm::mat4();
+    matrixModelView = glm::mat4();
+    matrixProjection = glm::mat4();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,53 +111,57 @@ void ModelGL::initLights()
 ///////////////////////////////////////////////////////////////////////////////
 void ModelGL::setCamera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ)
 {
-    float forward[4];
-    float up[4];
-    float left[4];
-    float position[4];
-    float invLength;
+    //float forward[4];
+    //float up[4];
+    //float left[4];
+    //float position[4];
+    //float invLength;
 
-    // determine forward vector (direction reversed because it is camera)
-    forward[0] = posX - targetX;    // x
-    forward[1] = posY - targetY;    // y
-    forward[2] = posZ - targetZ;    // z
-    forward[3] = 0.0f;              // w
-    // normalize it without w-component
-    invLength = 1.0f / sqrtf(forward[0] * forward[0] + forward[1] * forward[1] + forward[2] * forward[2]);
-    forward[0] *= invLength;
-    forward[1] *= invLength;
-    forward[2] *= invLength;
+    //// determine forward vector (direction reversed because it is camera)
+    //forward[0] = posX - targetX;    // x
+    //forward[1] = posY - targetY;    // y
+    //forward[2] = posZ - targetZ;    // z
+    //forward[3] = 0.0f;              // w
+    //// normalize it without w-component
+    //invLength = 1.0f / sqrtf(forward[0] * forward[0] + forward[1] * forward[1] + forward[2] * forward[2]);
+    //forward[0] *= invLength;
+    //forward[1] *= invLength;
+    //forward[2] *= invLength;
 
-    // assume up direction is straight up
-    up[0] = 0.0f;   // x
-    up[1] = 1.0f;   // y
-    up[2] = 0.0f;   // z
-    up[3] = 0.0f;   // w
+    //// assume up direction is straight up
+    //up[0] = 0.0f;   // x
+    //up[1] = 1.0f;   // y
+    //up[2] = 0.0f;   // z
+    //up[3] = 0.0f;   // w
 
-    // compute left vector with cross product
-    left[0] = up[1] * forward[2] - up[2] * forward[1];  // x
-    left[1] = up[2] * forward[0] - up[0] * forward[2];  // y
-    left[2] = up[0] * forward[1] - up[1] * forward[0];  // z
-    left[3] = 1.0f;                                 // w
+    //// compute left vector with cross product
+    //left[0] = up[1] * forward[2] - up[2] * forward[1];  // x
+    //left[1] = up[2] * forward[0] - up[0] * forward[2];  // y
+    //left[2] = up[0] * forward[1] - up[1] * forward[0];  // z
+    //left[3] = 1.0f;                                 // w
 
-    // re-compute orthogonal up vector
-    up[0] = forward[1] * left[2] - forward[2] * left[1];    // x
-    up[1] = forward[2] * left[0] - forward[0] * left[2];    // y
-    up[2] = forward[0] * left[1] - forward[1] * left[0];    // z
-    up[3] = 0.0f;                                       // w
+    //// re-compute orthogonal up vector
+    //up[0] = forward[1] * left[2] - forward[2] * left[1];    // x
+    //up[1] = forward[2] * left[0] - forward[0] * left[2];    // y
+    //up[2] = forward[0] * left[1] - forward[1] * left[0];    // z
+    //up[3] = 0.0f;                                       // w
 
-    // camera position
-    position[0] = -posX;
-    position[1] = -posY;
-    position[2] = -posZ;
-    position[3] = 1.0f;
+    //// camera position
+    //position[0] = -posX;
+    //position[1] = -posY;
+    //position[2] = -posZ;
+    //position[3] = 1.0f;
 
-    // copy axis vectors to matrix
-    matrixView.identity();
-    matrixView.setColumn(0, left);
-    matrixView.setColumn(1, up);
-    matrixView.setColumn(2, forward);
-    matrixView.setColumn(3, position);
+    //// copy axis vectors to matrix
+    //matrixView.identity();
+
+
+    //matrixView.setColumn(0, left);
+    //matrixView.setColumn(1, up);
+    //matrixView.setColumn(2, forward);
+    //matrixView.setColumn(3, position);
+
+    matrixView = glm::lookAt(glm::vec3(posX, posY, posZ), glm::vec3(targetX, targetY, targetZ), glm::vec3(0, 0, 1));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -184,7 +188,7 @@ void ModelGL::setViewport(int x, int y, int w, int h)
 
     // copy projection matrix to OpenGL
     glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(matrixProjection.get());
+    glLoadMatrixf(&matrixProjection[0][0]);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -199,11 +203,11 @@ void ModelGL::setViewportSub(int x, int y, int width, int height, float nearPlan
     glScissor(x, y, width, height);
 
     // set perspective viewing frustum
-    Matrix4 matrix = setFrustum(FOV_Y, (float)(width) / height, nearPlane, farPlane); // FOV, AspectRatio, NearClip, FarClip
+    glm::mat4 matrix = setFrustum(FOV_Y, (float)(width) / height, nearPlane, farPlane); // FOV, AspectRatio, NearClip, FarClip
 
     // copy projection matrix to OpenGL
     glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(matrix.get());
+    glLoadMatrixf(&matrix[0][0]);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -280,7 +284,7 @@ void ModelGL::drawSub1()
     //    glRotatef(-cameraAngle[1], 0, 1, 0); // heading
     //    glRotatef(-cameraAngle[0], 1, 0, 0); // pitch
     //    glTranslatef(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
-    glLoadMatrixf(matrixView.get());
+    glLoadMatrixf(&matrixView[0][0]);
 
     // always draw the grid at the origin (before any modeling transform)
     drawGrid(10, 1);
@@ -301,7 +305,7 @@ void ModelGL::drawSub1()
     // ModelView_M = View_M * Model_M
     // This modelview matrix transforms the objects from object space to eye space.
     // copy modelview matrix to OpenGL after transpose
-    glLoadMatrixf(matrixModelView.get());
+    glLoadMatrixf(&matrixModelView[0][0]);
 
     // draw a teapot after ModelView transform
     // v' = Mmv * v
@@ -320,11 +324,11 @@ void ModelGL::drawSub2()
     glScissor(0, 0, windowWidth, windowHeight / 2);
 
     // set perspective viewing frustum
-    Matrix4 matProj = setFrustum(FOV_Y, (float)(windowWidth) / (windowHeight / 2), 1, 1000); // FOV, AspectRatio, NearClip, FarClip
+    glm::mat4 matProj = setFrustum(FOV_Y, (float)(windowWidth) / (windowHeight / 2), 1, 1000); // FOV, AspectRatio, NearClip, FarClip
 
     // copy projection matrix to OpenGL
     glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(matProj.get());
+    glLoadMatrixf(&matProj[0][0]);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -333,31 +337,34 @@ void ModelGL::drawSub2()
 
     glPushMatrix();
 
-    Matrix4 matView, matModel, matModelView;
-    matView.identity();
-    matView.rotateY(cameraAngleY);
-    matView.rotateX(cameraAngleX);
-    matView.translate(0, 0, -cameraDistance);
-    glLoadMatrixf(matView.get());
+    glm::mat4 matView, matModel, matModelView;
+    glm::rotate(matView, cameraAngleY, glm::vec3(0, 1, 0));
+    glm::rotate(matView, cameraAngleX, glm::vec3(1, 0, 0));
+    glm::translate(matView, glm::vec3(0, 0, -cameraDistance));
+   
+    glLoadMatrixf(&matView[0][0]);
 
     drawGrid(10, 1);
 
-    matModel.rotateZ(modelAngle[2]);
-    matModel.rotateY(modelAngle[1]);
-    matModel.rotateX(modelAngle[0]);
-    matModel.translate(modelPosition[0], modelPosition[1], modelPosition[2]);
+    glm::rotate(matModel, modelAngle[2], glm::vec3(0, 0, 1));
+    glm::rotate(matModel, modelAngle[1], glm::vec3(0, 1, 0));
+    glm::rotate(matModel, modelAngle[0], glm::vec3(1, 0, 0));
+    glm::translate(matModel, glm::vec3(modelPosition[0], modelPosition[1], modelPosition[2]));
     matModelView = matView * matModel;
-    glLoadMatrixf(matModelView.get());
+    glLoadMatrixf(&matModelView[0][0]);
 
     drawAxis(4);
 
-    matModel.identity();
-    matModel.rotateZ(cameraAngle[2]);
-    matModel.rotateY(cameraAngle[1]);
-    matModel.rotateX(cameraAngle[0]);
-    matModel.translate(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+    matModel = glm::mat4();
+
+    glm::rotate(matModel, cameraAngle[2], glm::vec3(0, 0, 1));
+    glm::rotate(matModel, cameraAngle[1], glm::vec3(0, 1, 0));
+    glm::rotate(matModel, cameraAngle[0], glm::vec3(1, 0, 0));
+
+    
+    glm::translate(matModel, glm::vec3(cameraPosition[0], cameraPosition[1], cameraPosition[2]));
     matModelView = matView * matModel;
-    glLoadMatrixf(matModelView.get());
+    glLoadMatrixf(&matModelView[0][0]);
 
     drawFrustum(FOV_Y, 1, 1, 10);
 
@@ -580,11 +587,11 @@ void ModelGL::updateViewMatrix()
     // transform the camera (viewing matrix) from world space to eye space
     // Notice all values are negated, because we move the whole scene with the
     // inverse of camera transform    matrixView.identity();
-    matrixView.identity();
-    matrixView.translate(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
-    matrixView.rotateZ(-cameraAngle[2]);
-    matrixView.rotateY(-cameraAngle[1]);
-    matrixView.rotateX(-cameraAngle[0]);    // pitch
+    matrixView = glm::mat4();
+    glm::translate(matrixView,glm::vec3(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]));
+    glm::rotate(matrixView, -cameraAngle[2], glm::vec3(0, 0, 1));
+    glm::rotate(matrixView, -cameraAngle[1], glm::vec3(0, 1, 0));
+    glm::rotate(matrixView, -cameraAngle[0], glm::vec3(1, 0, 0));
 
     matrixModelView = matrixView * matrixModel;
 }
@@ -592,11 +599,11 @@ void ModelGL::updateViewMatrix()
 void ModelGL::updateModelMatrix()
 {
     // transform objects from object space to world space
-    matrixModel.identity();
-    matrixModel.rotateZ(modelAngle[2]);
-    matrixModel.rotateY(modelAngle[1]);
-    matrixModel.rotateX(modelAngle[0]);
-    matrixModel.translate(modelPosition[0], modelPosition[1], modelPosition[2]);
+    matrixModel = glm::mat4();
+    glm::rotate(matrixModel, -modelAngle[2], glm::vec3(0, 0, 1));
+    glm::rotate(matrixModel, -modelAngle[1], glm::vec3(0, 1, 0));
+    glm::rotate(matrixModel, -modelAngle[0], glm::vec3(1, 0, 0));
+    glm::translate(matrixModel, glm::vec3(modelPosition[0], modelPosition[1], modelPosition[2]));
 
     matrixModelView = matrixView * matrixModel;
 }
@@ -642,32 +649,23 @@ void ModelGL::setDrawMode(int mode)
 // (left, right, bottom, top, near, far)
 // Note: this is for row-major notation. OpenGL needs transpose it
 ///////////////////////////////////////////////////////////////////////////////
-Matrix4 ModelGL::setFrustum(float l, float r, float b, float t, float n, float f)
-{
-    Matrix4 matrix;
-    matrix[0] = 2 * n / (r - l);
-    matrix[5] = 2 * n / (t - b);
-    matrix[8] = (r + l) / (r - l);
-    matrix[9] = (t + b) / (t - b);
-    matrix[10] = -(f + n) / (f - n);
-    matrix[11] = -1;
-    matrix[14] = -(2 * f * n) / (f - n);
-    matrix[15] = 0;
-    return matrix;
+glm::mat4 ModelGL::setFrustum(float l, float r, float b, float t, float n, float f)
+{ 
+    return glm::frustum(l, r, b, t, n, f);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // set a symmetric perspective frustum with 4 params similar to gluPerspective
 // (vertical field of view, aspect ratio, near, far)
 ///////////////////////////////////////////////////////////////////////////////
-Matrix4 ModelGL::setFrustum(float fovY, float aspectRatio, float front, float back)
+glm::mat4 ModelGL::setFrustum(float fovY, float aspectRatio, float front, float back)
 {
     float tangent = tanf(fovY / 2 * DEG2RAD);   // tangent of half fovY
     float height = front * tangent;           // half height of near plane
     float width = height * aspectRatio;       // half width of near plane
 
     // params: left, right, bottom, top, near, far
-    return setFrustum(-width, width, -height, height, front, back);
+    return  glm::frustum(-width, width, -height, height, front, back);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -675,14 +673,15 @@ Matrix4 ModelGL::setFrustum(float fovY, float aspectRatio, float front, float ba
 // (left, right, bottom, top, near, far)
 // Note: this is for row-major notation. OpenGL needs transpose it
 ///////////////////////////////////////////////////////////////////////////////
-Matrix4 ModelGL::setOrthoFrustum(float l, float r, float b, float t, float n, float f)
+glm::mat4 ModelGL::setOrthoFrustum(float l, float r, float b, float t, float n, float f)
 {
-    Matrix4 matrix;
-    matrix[0] = 2 / (r - l);
-    matrix[5] = 2 / (t - b);
-    matrix[10] = -2 / (f - n);
-    matrix[12] = -(r + l) / (r - l);
-    matrix[13] = -(t + b) / (t - b);
-    matrix[14] = -(f + n) / (f - n);
-    return matrix;
+    //Matrix4 matrix;
+    //matrix[0] = 2 / (r - l);
+    //matrix[5] = 2 / (t - b);
+    //matrix[10] = -2 / (f - n);
+    //matrix[12] = -(r + l) / (r - l);
+    //matrix[13] = -(t + b) / (t - b);
+    //matrix[14] = -(f + n) / (f - n);
+
+    return glm::ortho(l, r, b, t, n, f);
 }

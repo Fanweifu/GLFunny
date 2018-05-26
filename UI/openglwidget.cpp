@@ -42,9 +42,8 @@ bool OpenglWidget::loadImg(string path){
         cv::erode(iImg,rImg,element,Point(-1,-1),1);
 
         inputImg.setSrcData(iImg);
-        inputImg.setDstData(rImg);
+        inputImg.setAnimation(rImg);
         inputImg.active(true);
-        inputImg.enableReplay(true);
 
         return true;
     }catch(exception e){
@@ -70,7 +69,7 @@ void OpenglWidget::initWidget()
     this->setMouseTracking(true);
     setWindowTitle(tr("opengl demo"));
 
-    camera.scene = &inputImg;
+    camera.Scene = &inputImg;
 
 }
 

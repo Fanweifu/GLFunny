@@ -40,7 +40,7 @@ public:
     void renderData(GLenum mode);
 
     BufferData():BindBufferClass() {}
-    ~BufferData() { BindBufferClass::~BindBufferClass(); }
+    //~BufferData() { BindBufferClass::~BindBufferClass(); }
 protected:
     
     
@@ -54,7 +54,7 @@ class ElementData :public BindBufferClass
 public:
     
     ElementData():BindBufferClass() {}
-    ~ElementData() { BindBufferClass::~BindBufferClass(); }
+    //~ElementData() { BindBufferClass::~BindBufferClass(); }
 
     void setVertex(GLfloat* arr,int ptNum,GLuint*indeice,int idxCnt);
     void setColor(GLfloat* arr,int vecSize, int ptNum);

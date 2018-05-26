@@ -19,12 +19,6 @@
     <Filter Include="源文件\Shape">
       <UniqueIdentifier>{aa75f220-63f3-41f9-b130-cafac86ab67a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Math">
-      <UniqueIdentifier>{a8f178ac-3c43-4544-b137-fa45c843fba9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\Math">
-      <UniqueIdentifier>{bcc540b0-8964-452f-92c5-3bd789970147}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shape\camera.h">
@@ -51,12 +45,6 @@
     <ClInclude Include="Shape\vaoarray.h">
       <Filter>头文件\Shape</Filter>
     </ClInclude>
-    <ClInclude Include="Math\matrices.h">
-      <Filter>头文件\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\vector.h">
-      <Filter>头文件\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Shape\shader.h">
       <Filter>头文件\Shape</Filter>
     </ClInclude>
@@ -82,9 +70,6 @@
     </ClCompile>
     <ClCompile Include="Shape\vaoarray.cpp">
       <Filter>源文件\Shape</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\matrices.cpp">
-      <Filter>源文件\Math</Filter>
     </ClCompile>
     <ClCompile Include="ImageCon.cpp">
       <Filter>源文件</Filter>

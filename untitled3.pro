@@ -25,17 +25,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\        
     ui\openglwidget.cpp \
+    ui\opengltest.cpp \
+    mainwindow.cpp \
     math\matrices.cpp \
     shape\modelgl.cpp \
     shape\image3d.cpp \
     shape\camera.cpp \
     shape\shape.cpp \
     shape\layer.cpp \
-    ui\opengltest.cpp \
-    shape/image3dex.cpp \
-    mainwindow.cpp \
-    shape/vaoarray.cpp \
-    shape/shader.cpp
+    shape\image3dex.cpp \
+    shape\vaoarray.cpp \
+    shape\shader.cpp
 
 HEADERS  += ui\openglwidget.h \
     math\matrices.h \
@@ -47,10 +47,10 @@ HEADERS  += ui\openglwidget.h \
     shape\layer.h \
     shape\light.h \
     ui\opengltest.h \
-    shape/image3dex.h \
+    shape\image3dex.h \
     mainwindow.h \
-    shape/vaoarray.h \
-    shape/shader.h
+    shape\vaoarray.h \
+    shape\shader.h
 
 INCLUDEPATH +=C:\opencv\mingw32\include\opencv\
               C:\opencv\mingw32\include\opencv2\

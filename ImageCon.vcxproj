@@ -142,8 +142,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Math\matrices.h" />
-    <ClInclude Include="Math\vector.h" />
     <ClInclude Include="Shape\camera.h" />
     <ClInclude Include="Shape\image3d.h" />
     <ClInclude Include="Shape\image3dex.h" />
@@ -155,7 +153,6 @@
     <ClInclude Include="Shape\vaoarray.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Math\matrices.cpp" />
     <ClCompile Include="Shape\camera.cpp" />
     <ClCompile Include="Shape\image3d.cpp" />
     <ClCompile Include="Shape\image3dex.cpp" />

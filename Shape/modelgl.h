@@ -11,9 +11,8 @@
 
 #ifndef MODEL_GL_H
 #define MODEL_GL_H
-
-#include"..\Math\matrices.h"
-
+#include"glm.hpp"
+#include"gtc/matrix_transform.hpp"
 class ModelGL
 {
 public:
@@ -57,10 +56,10 @@ public:
     float getModelAngleZ() { return modelAngle[2]; }
 
     // return 16 elements of  target matrix
-    const float* getViewMatrixElements() { return matrixView.get(); }
-    const float* getModelMatrixElements() { return matrixModel.get(); }
-    const float* getModelViewMatrixElements() { return matrixModelView.get(); }
-    const float* getProjectionMatrixElements() { return matrixProjection.get(); }
+    const float* getViewMatrixElements() { return &matrixView[0][0]; }
+    const float* getModelMatrixElements() { return &matrixModel[0][0]; }
+    const float* getModelViewMatrixElements() { return &matrixModelView[0][0]; }
+    const float* getProjectionMatrixElements() { return &matrixProjection[0][0]; }
 
     void rotateCamera(int x, int y);
     void zoomCamera(int dist);
@@ -78,9 +77,9 @@ private:
     void drawSub1();                                // draw upper window
     void drawSub2();                                // draw bottom window
     void drawFrustum(float fovy, float aspect, float near, float far);
-    Matrix4 setFrustum(float l, float r, float b, float t, float n, float f);
-    Matrix4 setFrustum(float fovy, float ratio, float n, float f);
-    Matrix4 setOrthoFrustum(float l, float r, float b, float t, float n = -1, float f = 1);
+    glm::mat4 setFrustum(float l, float r, float b, float t, float n, float f);
+    glm::mat4 setFrustum(float fovy, float ratio, float n, float f);
+    glm::mat4 setOrthoFrustum(float l, float r, float b, float t, float n = -1, float f = 1);
     void updateModelMatrix();
     void updateViewMatrix();
 
@@ -104,9 +103,9 @@ private:
     float bgColor[4];
 
     // 4x4 transform matrices
-    Matrix4 matrixView;
-    Matrix4 matrixModel;
-    Matrix4 matrixModelView;
-    Matrix4 matrixProjection;
+    glm::mat4 matrixView;
+    glm::mat4 matrixModel;
+    glm::mat4 matrixModelView;
+    glm::mat4 matrixProjection;
 };
 #endif

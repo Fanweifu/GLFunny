@@ -6,10 +6,12 @@
 #endif
 
 #include"shader.h"
+#include"glm.hpp"
+#include"gtc/matrix_transform.hpp"
 #include<GL/gl.h>
-#include"..\math\matrices.h"
-typedef unsigned int uint;
-typedef unsigned char uchar;
+
+#define DEG2RAD 3.141593f / 180
+
 
 typedef void(*xyzChangedHdl)(float x, float y, float z);
 typedef void(*voidHdl)();
@@ -22,13 +24,14 @@ public:
     bool isdrawAxis = false;
     float axisLength = 1;
 
-    float positionX() { return px; }
-    float positionY() { return py; }
-    float positionZ() { return pz; }
+    float posX() { return pvec.x; }
+    float posY() { return pvec.y; }
+    float posZ() { return pvec.z; }
     void setPosition(float x, float y, float z)
     {
-        bool diff = px != x || py != y || pz != z;
-        px = x; py = y; pz = z;
+        auto newv = glm::vec3(x, y, z);
+        bool diff = pvec != newv;
+        pvec = newv;
         if (diff) {
             updateModel();
             onPositionChanged();
@@ -36,12 +39,13 @@ public:
     }
     virtual void onPositionChanged() {}
 
-    float rotationX() { return rx; }
-    float rotationY() { return ry; }
-    float rotationZ() { return rz; }
+    float rotX() { return rvec.x; }
+    float rotY() { return rvec.y; }
+    float rotZ() { return rvec.z; }
     void setRotation(float x, float y, float z) {
-        bool diff = rx != x || ry != y || rz != z;
-        rx = x; ry = y; rz = z;
+        auto newv = glm::vec3(x, y, z);
+        bool diff = rvec != newv;
+        rvec = newv;
         if (diff) {
             updateModel();
             onRotationChanged();
@@ -49,12 +53,13 @@ public:
     }
     virtual void onRotationChanged() {}
 
-    float scaleX() { return sx; }
-    float scaleY() { return sy; }
-    float scaleZ() { return sz; }
+    float sclX() { return svec.x; }
+    float sclY() { return svec.y; }
+    float sclZ() { return svec.z; }
     void setScale(float x, float y, float z) {
-        bool diff = sx != x || sy != y || sz != z;
-        sx = x; sy = y; sz = z;
+        auto newv = glm::vec3(x, y, z);
+        bool diff = svec != newv;
+        svec = newv;
         if (diff) {
             updateModel();
             onScaleChanged();
@@ -62,7 +67,6 @@ public:
     }
     virtual void onScaleChanged() {}
 
-    float *getModelMat();
     void toLocalPos(float&x, float &y, float &z);
     void toWorldPos(float&x, float &y, float &z);
     void draw();
@@ -71,24 +75,17 @@ public:
 
 protected:
 
-    float px = 0;
-    float py = 0;
-    float pz = 0;
-    float rx = 0;
-    float ry = 0;
-    float rz = 0;
-    float sx = 1;
-    float sy = 1;
-    float sz = 1;
+    glm::vec3 pvec = glm::vec3(0);
+    glm::vec3 rvec = glm::vec3(0);
+    glm::vec3 svec = glm::vec3(1);
 
     bool useShader = true;
-
     xyzChangedHdl posEvent = NULL;
     xyzChangedHdl rotEvent = NULL;
     xyzChangedHdl sclEvent = NULL;
 
-    Matrix4 modelmat;
-    Matrix4 modelmatInv;
+    glm::mat4 modelmat;
+    glm::mat4 modelmatInv;
     Shader pshader;
    
     virtual void updateModel();

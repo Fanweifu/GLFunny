@@ -78,8 +78,8 @@ void OpenglTest::initWidget()
     testlayer.add(&cammodel);
     testlayer.add(&testShape);
 
-    camera.scene = &testlayer;
-    cammodel.scene = &testShape;
+    camera.Scene = &testlayer;
+    cammodel.Scene = &testShape;
 
     camera.setPosition(0,10,100);
     Light& main = camera.getLight();
