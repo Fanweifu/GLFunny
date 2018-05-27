@@ -5,9 +5,8 @@ Camera::Camera()
 }
 
 void Camera::drawView() {
-
     if (windowsChanged) {
-        updateViewPort();  
+        updateViewPort();
         windowsChanged = false;
     }
 
@@ -22,10 +21,10 @@ void Camera::drawView() {
         projectionChanged = false;
         glMatrixMode(GL_MODELVIEW);
     }
-   
+
     glLoadMatrixf(&modelmatInv[0][0]);
 
-    glClearColor (backColor.r, backColor.g, backColor.b, backColor.a);
+    glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     mainlight.setPostion();
@@ -37,7 +36,7 @@ void Camera::dragMouse(int x, int y, float speed)
     float Rz = rvec.z + (mouseX - x)*speed;
     float Rx = rvec.x + (mouseY - y)*speed;
     setRotation(Rx, rvec.y, Rz);
-    
+
     moveMouse(x, y);
 }
 
@@ -49,27 +48,27 @@ void Camera::moveMouse(int x, int y)
 
 void Camera::Move(int keyCmd, float step)
 {
-    double Px = pvec.x, Py = pvec.y, Pz = pvec.z;
+    auto nposv = pvec;
 
     switch (keyCmd)
     {
     case CAM_FORWARD:
-        Py += step; break;
+        nposv += step*forward; break;
     case CAM_BACK:
-        Py -= step; break;
+        nposv -= step*forward; break;
     case CAM_LEFT:
-        Px -= step; break;
+        nposv -= step*right; break;
     case CAM_RIGHT:
-        Px += step; break;
+        nposv += step*right; break;
     case CAM_UP:
-        Pz += step; break;
+        nposv += step*up; break;
     case CAM_DOWN:
-        Pz -= step; break;
+        nposv -= step*up; break;
     default:
         break;
     }
 
-    setPosition(Px, Py, Pz);
+    setPosition(nposv.x, nposv.y, nposv.z);
 }
 
 void drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
@@ -99,9 +98,9 @@ void drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
     // far bottom right
     vertices[7][0] = farWidth;      vertices[7][1] = -farHeight;    vertices[7][2] = -farPlane;
 
-    float colorLine1[4] = { 0.7f, 0.2f, 0.7f, 1};
-    float colorLine2[4] = { 0.2f, 0.7f, 0.2f, 1};
-    
+    float colorLine1[4] = { 0.7f, 0.2f, 0.7f, 1 };
+    float colorLine2[4] = { 0.2f, 0.7f, 0.2f, 1 };
+
     glDisable(GL_LIGHTING);
 
     glBegin(GL_LINES);
@@ -149,15 +148,34 @@ void Camera::ondraw() {
     drawFrustum(Fov, Ratio, Near, Far);
 }
 
-void Camera::lookAt(float tx, float ty, float tz, bool isup) {
-  
+void Camera::lookAt(float ex, float ey, float ez, float tx, float ty, float tz) {
+    setPosition(ex, ey, ez);
+    auto dir = glm::vec3(tx - ex, ty - ey, tz - ez);
+    rvec.x = asinf(dir.z / dir.length()) / DEG2RAD;
+    rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
+    updateModel();
+}
 
+glm::vec3 getDIR(float rx, float ry, float rz) {
+    return glm::vec3(cos(rz)*cos(rx), sin(rz)*cos(rx), sin(rx));
+}
+
+void Camera::updateModel()
+{
+    forward = getDIR(rvec.x*DEG2RAD, rvec.y*DEG2RAD, rvec.z*DEG2RAD);
+    right = glm::vec3(sin(rvec.z*DEG2RAD), -cos(rvec.z*DEG2RAD), 0);
+    up = glm::cross(right, forward);
+
+    auto centre = pvec + forward;
+    
+    modelmatInv = glm::lookAt(pvec, centre, up);
+    modelmat = glm::inverse(modelmatInv);
 }
 
 void Camera::setViewPort(int x, int y, int w, int h) {
     if (w == 0 || h == 0) return;
 
-    owidth  *= (float(w) / width);
+    owidth *= (float(w) / width);
     oheight *= (float(h) / height);
 
     left = x;
@@ -189,7 +207,6 @@ void Camera::updateViewPort() {
     glViewport((GLsizei)left, (GLsizei)buttom, (GLsizei)width, (GLsizei)height);
     glScissor(left, buttom, width, height);
     updateProjection();
-
 }
 
 void Camera::init() {
@@ -224,17 +241,16 @@ void Camera::initGl() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
-   
+
     glEnable(GL_SCISSOR_TEST);
 
     //// track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
     //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     //glEnable(GL_COLOR_MATERIAL);
 
-    glClearColor(0, 0, 0, 1);   
-    glClearStencil(0);                              
-    glClearDepth(1.0f);                        
+    glClearColor(0, 0, 0, 1);
+    glClearStencil(0);
+    glClearDepth(1.0f);
 
     glMatrixMode(GL_MODELVIEW);
-
 }

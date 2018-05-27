@@ -67,7 +67,8 @@ public:
     Light& getLight() { return mainlight; }
 
     void init();
-    void lookAt(float tx, float ty, float tz, bool isup = true);
+    void lookAt(float ex,float ey,float ez, float tx, float ty, float tz);
+    void updateModel();
     void setOrtho(int w, int h) { owidth = w; oheight = h; updateProjection(); }
     void drawView();
     void dragMouse(int x, int y, float speed = 0.1f);
@@ -93,7 +94,10 @@ protected:
     int mouseY = 0;
 
     glm::vec4 backColor = glm::vec4(0.5, 0.5, 1, 1);
-
+    glm::vec3 uplook = glm::vec3(0, 0, 1);
+    glm::vec3 forward = glm::vec3(0, 1, 0);
+    glm::vec3 right = glm::vec3(1, 0, 0);
+    glm::vec3 up = glm::vec3(0, 0, 1);
     glm::mat4 matrixProjection;
     Light mainlight;
 
