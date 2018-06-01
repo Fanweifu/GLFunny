@@ -8,15 +8,6 @@
 #include"shape.h"
 #include"light.h"
 
-
-
-#define CAM_FORWARD 0
-#define CAM_BACK 1
-#define CAM_LEFT 2
-#define CAM_RIGHT 3
-#define CAM_UP 4
-#define CAM_DOWN 5
-
 class Camera : public Shape
 {
 public:
@@ -64,16 +55,22 @@ public:
         backColor.b = b;
         backColor.a = a;
     }
+    void getDirection(float& vx, float& vy, float &vz) {
+        vx = forwardV.x;
+        vy = forwardV.y;
+        vz = forwardV.z;
+    }
+    void setDirection(float vx, float vy, float vz);
     Light& getLight() { return mainlight; }
 
     void init();
     void lookAt(float ex,float ey,float ez, float tx, float ty, float tz);
     void updateModel();
-    void setOrtho(int w, int h) { owidth = w; oheight = h; updateProjection(); }
+    void setOrthoH(int h) { owidth = Ratio*h; oheight = h; updateProjection(); }
     void drawView();
     void dragMouse(int x, int y, float speed = 0.1f);
     void moveMouse(int x, int y);
-    void Move(int cmd, float step = 0.1f);
+    void localMove(float right, float forward , float up);
 protected:
     bool inited = false;
     bool windowsChanged = true;
@@ -95,9 +92,9 @@ protected:
 
     glm::vec4 backColor = glm::vec4(0.5, 0.5, 1, 1);
     glm::vec3 uplook = glm::vec3(0, 0, 1);
-    glm::vec3 forward = glm::vec3(0, 1, 0);
-    glm::vec3 right = glm::vec3(1, 0, 0);
-    glm::vec3 up = glm::vec3(0, 0, 1);
+    glm::vec3 forwardV = glm::vec3(0, 1, 0);
+    glm::vec3 rightV = glm::vec3(1, 0, 0);
+    glm::vec3 upV = glm::vec3(0, 0, 1);
     glm::mat4 matrixProjection;
     Light mainlight;
 
@@ -106,6 +103,7 @@ protected:
 
     void updateProjection();
     void updateViewPort();
+    void setDirectionVec3(glm::vec3 v);
 };
 
 #endif // CAMERA_H

@@ -13,7 +13,7 @@ public:
 
    
 
-    void setAnimation(cv::Mat& dst);
+    void setDstImage(cv::Mat& dst);
 
     void active(bool change) { actived = change; }
     void recover() { t = 0; }
@@ -27,6 +27,8 @@ protected:
     string tstr = "t";
 
     uchar* dstData = NULL;
+    uint dstchns = 0;
+    uint dststep = 0;
 
     void calcHeight();
     void getColor(uint x, uint y, float* outputVec);

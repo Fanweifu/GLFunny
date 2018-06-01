@@ -9,11 +9,11 @@ Image3D::~Image3D() {
     if (heights) delete heights;
     if (colors) delete colors;
     if (vertexs) delete vertexs;
-    if (normal) delete normal;
-    if (vertexIdx) delete vertexIdx;
+    if (normals) delete normals;
+    if (vertexIdxs) delete vertexIdxs;
 }
 
-void Image3D::setSrcData(cv::Mat& img) {
+void Image3D::setSrcImage(cv::Mat& img) {
     assert(img.depth() == CV_8U&&img.channels() == 3);
 
     reShape(img.rows, img.cols);
@@ -60,15 +60,15 @@ void Image3D::generateData() {
                 { 0,1,0 },{ 0,1,0 },{ 0,1,0 },{ 0,1,0 },
             };
 
-            memcpy(normal + 36 * curpxl, ver, 36 * sizeof(float));
+            memcpy(normals + 36 * curpxl, ver, 36 * sizeof(float));
 
             for (int i = 0; i < 4; i++) {
-                vertexIdx[idci++] = idx++;
+                vertexIdxs[idci++] = idx++;
             }
 
             if (x < cols - 1) {
                 for (int i = 0; i < 4; i++) {
-                    vertexIdx[idci++] = idx++;
+                    vertexIdxs[idci++] = idx++;
                 }
             }
             else {
@@ -76,7 +76,7 @@ void Image3D::generateData() {
             }
             if (y < rows - 1) {
                 for (int i = 0; i < 4; i++) {
-                    vertexIdx[idci++] = idx++;
+                    vertexIdxs[idci++] = idx++;
                 }
             }
             else {
@@ -87,9 +87,10 @@ void Image3D::generateData() {
 
     assert(idci == pointNum - (cols + rows) * 4);
 
-    vao.setVertex(vertexs, pointNum, vertexIdx, idci);
+    vao.setIndex(vertexIdxs,idci);
+    vao.setVertex(vertexs, pointNum);
+    vao.setNormal(normals, pointNum);
     vao.setColor(colors, 4, pointNum);
-    vao.setNormal(normal, pointNum);
 }
 
 void Image3D::initShader()
@@ -156,11 +157,11 @@ bool Image3D::reShape(int rowc, int colc) {
         vertexs = new float[pointsNum * 3];
         if (colors) delete colors;
         colors = new float[pointsNum * 4];
-        if (normal) delete colors;
-        normal = new float[pointsNum * 3];
+        if (normals) delete colors;
+        normals = new float[pointsNum * 3];
 
-        if (vertexIdx) delete vertexIdx;
-        vertexIdx = new uint[pointsNum - rowc * 4 - colc * 4];
+        if (vertexIdxs) delete vertexIdxs;
+        vertexIdxs = new uint[pointsNum - rowc * 4 - colc * 4];
 
         rows = rowc; cols = colc;
     }

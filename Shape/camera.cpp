@@ -15,7 +15,7 @@ void Camera::drawView() {
         glScissor(left, buttom, width, height);
     }
 
-    if (projectionChanged) {
+    if (projectionChanged||isMultiScreen) {
         glMatrixMode(GL_PROJECTION);
         glLoadMatrixf(&matrixProjection[0][0]);
         projectionChanged = false;
@@ -46,30 +46,37 @@ void Camera::moveMouse(int x, int y)
     mouseY = y;
 }
 
-void Camera::Move(int keyCmd, float step)
+void Camera::localMove( float right, float forward, float up)
 {
-    auto nposv = pvec;
-
-    switch (keyCmd)
-    {
-    case CAM_FORWARD:
-        nposv += step*forward; break;
-    case CAM_BACK:
-        nposv -= step*forward; break;
-    case CAM_LEFT:
-        nposv -= step*right; break;
-    case CAM_RIGHT:
-        nposv += step*right; break;
-    case CAM_UP:
-        nposv += step*up; break;
-    case CAM_DOWN:
-        nposv -= step*up; break;
-    default:
-        break;
-    }
-
-    setPosition(nposv.x, nposv.y, nposv.z);
+    auto npvec = pvec;
+    npvec += (right*rightV + forward*forwardV + up*upV);
+    setPosition(npvec.x, npvec.y, npvec.z);
 }
+
+//void Camera::Move(int keyCmd, float step)
+//{
+//    auto nposv = pvec;
+//
+//    switch (keyCmd)
+//    {
+//    case CAM_FORWARD:
+//        nposv += step*forward; break;
+//    case CAM_BACK:
+//        nposv -= step*forward; break;
+//    case CAM_LEFT:
+//        nposv -= step*right; break;
+//    case CAM_RIGHT:
+//        nposv += step*right; break;
+//    case CAM_UP:
+//        nposv += step*up; break;
+//    case CAM_DOWN:
+//        nposv -= step*up; break;
+//    default:
+//        break;
+//    }
+//
+//    setPosition(nposv.x, nposv.y, nposv.z);
+//}
 
 void drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
 {
@@ -151,9 +158,7 @@ void Camera::ondraw() {
 void Camera::lookAt(float ex, float ey, float ez, float tx, float ty, float tz) {
     setPosition(ex, ey, ez);
     auto dir = glm::vec3(tx - ex, ty - ey, tz - ez);
-    rvec.x = asinf(dir.z / dir.length()) / DEG2RAD;
-    rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
-    updateModel();
+    setDirectionVec3(dir);
 }
 
 glm::vec3 getDIR(float rx, float ry, float rz) {
@@ -162,13 +167,13 @@ glm::vec3 getDIR(float rx, float ry, float rz) {
 
 void Camera::updateModel()
 {
-    forward = getDIR(rvec.x*DEG2RAD, rvec.y*DEG2RAD, rvec.z*DEG2RAD);
-    right = glm::vec3(sin(rvec.z*DEG2RAD), -cos(rvec.z*DEG2RAD), 0);
-    up = glm::cross(right, forward);
+    forwardV = getDIR(rvec.x*DEG2RAD, rvec.y*DEG2RAD, rvec.z*DEG2RAD);
+    rightV = glm::vec3(sin(rvec.z*DEG2RAD), -cos(rvec.z*DEG2RAD), 0);
+    upV = glm::cross(rightV, forwardV);
 
-    auto centre = pvec + forward;
+    auto centre = pvec + forwardV;
     
-    modelmatInv = glm::lookAt(pvec, centre, up);
+    modelmatInv = glm::lookAt(pvec, centre, upV);
     modelmat = glm::inverse(modelmatInv);
 }
 
@@ -207,6 +212,18 @@ void Camera::updateViewPort() {
     glViewport((GLsizei)left, (GLsizei)buttom, (GLsizei)width, (GLsizei)height);
     glScissor(left, buttom, width, height);
     updateProjection();
+}
+
+void Camera::setDirectionVec3(glm::vec3 dir)
+{
+    rvec.x = asinf(dir.z / dir.length()) / DEG2RAD;
+    rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
+    updateModel();
+}
+
+void Camera::setDirection(float vx, float vy, float vz)
+{
+    setDirectionVec3(glm::vec3(vx, vy, vz));
 }
 
 void Camera::init() {

@@ -2,17 +2,17 @@
 #include "stdio.h"
 
 bool VertexArray::inited = false;
-GLuint VertexArray::VBOS[VBONUM];
+GLuint VertexArray::VBOS[VBOCNT];
 
 void VertexArray::init() {
     if (!inited) {
         glewInit();
-        glGenBuffers(VBONUM, VBOS);
+        glGenBuffers(VBOCNT, VBOS);
         inited = true;
     }
 }
 
-void VertexArray::setVertex(GLuint vaoId, GLfloat *arr, int num) {
+void VertexArray::setVertex(GLuint vaoId, GLfloat *arr, int num, bool isStatic) {
     if (!inited) init();
 
     glBindVertexArray(vaoId);
@@ -24,24 +24,28 @@ void VertexArray::setVertex(GLuint vaoId, GLfloat *arr, int num) {
     glVertexPointer(3, GL_FLOAT, 0, NULL);
 }
 
-void VertexArray::setVertexArrayIdx(GLuint vaoId, GLfloat * valarr, int cnt, GLuint * indices, int idxNum)
+void VertexArray::setVertexElem(GLuint vaoId, GLfloat * valarr, int cnt, bool isStatic)
 {
     if (!inited) init();
 
     glBindVertexArray(vaoId);
     glBindBuffer(GL_ARRAY_BUFFER, VBOS[0]);
     glBufferData(GL_ARRAY_BUFFER, cnt * 3 * sizeof(float), valarr, GL_STATIC_DRAW);
-    /*glEnableClientState(GL_VERTEX_ARRAY);
-    glColorPointer(3 , GL_FLOAT, 0, NULL);*/
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOS[4]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxNum * sizeof(GLuint), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(0);
 }
 
-void  VertexArray::setColor(GLuint vaoId, GLfloat *arr, int cnt, int vecSize) {
+void VertexArray::setIndice(GLuint vaoIdx, GLuint * idxarr, int idxNum,bool isStatic)
+{
+    if (!inited) init();
+
+    glBindVertexArray(vaoIdx);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOS[4]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxNum * sizeof(GLuint), idxarr , GL_STATIC_DRAW);
+}
+
+void  VertexArray::setColor(GLuint vaoId, GLfloat *arr, int cnt, int vecSize,bool isStatic) {
     if (!inited) init();
 
     glBindVertexArray(vaoId);
@@ -53,7 +57,7 @@ void  VertexArray::setColor(GLuint vaoId, GLfloat *arr, int cnt, int vecSize) {
     glColorPointer(vecSize, GL_FLOAT, 0, NULL);
 }
 
-void VertexArray::setColorArray(GLuint vaoId, GLfloat * valarr, int vecNum, int vecSize)
+void VertexArray::setColorElem(GLuint vaoId, GLfloat * valarr, int vecNum, int vecSize, bool isStatic)
 {
     if (!inited) init();
 
@@ -65,7 +69,7 @@ void VertexArray::setColorArray(GLuint vaoId, GLfloat * valarr, int vecNum, int 
     glEnableVertexAttribArray(1);
 }
 
-void VertexArray::setNormalArray(GLuint vaoId, GLfloat * valarr, int vecNum)
+void VertexArray::setNormalElem(GLuint vaoId, GLfloat * valarr, int vecNum, bool isStatic)
 {
     if (!inited) init();
 
@@ -77,7 +81,12 @@ void VertexArray::setNormalArray(GLuint vaoId, GLfloat * valarr, int vecNum)
     glEnableVertexAttribArray(2);
 }
 
-void  VertexArray::setNormal(GLuint vaoId, GLfloat *arr, int num) {
+void VertexArray::setTexCoordElem(GLuint vaoIdx, GLfloat * valarr, int vecNum, bool isStatic)
+{
+
+}
+
+void  VertexArray::setNormal(GLuint vaoId, GLfloat *arr, int num, bool isStatic) {
     if (!inited) init();
 
     glBindVertexArray(vaoId);
@@ -88,7 +97,7 @@ void  VertexArray::setNormal(GLuint vaoId, GLfloat *arr, int num) {
     glNormalPointer(GL_FLOAT, 0, NULL);
 }
 
-void  VertexArray::setTexCoord(GLuint vaoId, GLfloat *arr, int num) {
+void  VertexArray::setTexCoord(GLuint vaoId, GLfloat *arr, int num, bool isStatic) {
     if (!inited) init();
 
     glBindVertexArray(vaoId);
@@ -122,20 +131,29 @@ void BufferData::renderData(GLenum mode)
     //glDrawArrays(mode, 0, vertexNums);
 }
 
-void ElementData::setVertex(GLfloat * arr, int ptNum, GLuint * indeice, int idxCnt)
+void ElementData::setIndex(GLuint * indeice, int idxNum)
 {
-    vertexNum = idxCnt;
-    VertexArray::setVertexArrayIdx(getVAOID(), arr, ptNum, indeice, idxCnt);
+    vertexNum = idxNum;
+    VertexArray::setIndice(getVAOID(), indeice, idxNum);
+}
+
+void ElementData::setVertex(GLfloat * arr, int ptNum)
+{
+    VertexArray::setVertexElem(getVAOID(), arr, ptNum);
 }
 
 void ElementData::setColor(GLfloat * arr, int vecSize, int ptNum)
 {
-    VertexArray::setColorArray(getVAOID(), arr, ptNum, vecSize);
+    VertexArray::setColorElem(getVAOID(), arr, ptNum, vecSize);
 }
 
 void ElementData::setNormal(GLfloat * arr, int ptNum)
 {
-    VertexArray::setNormalArray(vao, arr, ptNum);
+    VertexArray::setNormalElem(vao, arr, ptNum);
+}
+
+void ElementData::setTexCoord(GLfloat * arr)
+{
 }
 
 void ElementData::renderData(GLenum mode)

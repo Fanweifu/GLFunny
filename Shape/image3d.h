@@ -24,7 +24,7 @@ public:
     ~Image3D();
 
     bool isEmpty() { return isempty; }
-    void setSrcData(cv::Mat& img);
+    void setSrcImage(cv::Mat& img);
     void generateData();
     bool reShape(int rows, int cols);
 protected:
@@ -48,8 +48,8 @@ protected:
     float* heights = NULL;
     float* vertexs = NULL;
     float* colors = NULL;
-    float* normal = NULL;
-    uint* vertexIdx = NULL;
+    float* normals = NULL;
+    uint* vertexIdxs = NULL;
 
     ElementData vao;
 

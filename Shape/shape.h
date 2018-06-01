@@ -69,8 +69,9 @@ public:
 
     void toLocalPos(float&x, float &y, float &z);
     void toWorldPos(float&x, float &y, float &z);
+    void toLocalDir(float&x, float &y, float &z);
+    void toWorldDir(float&x, float &y, float &z);
     void draw();
-    virtual void initShader() {}
     voidHdl testDrawFunc = NULL;
 
 protected:

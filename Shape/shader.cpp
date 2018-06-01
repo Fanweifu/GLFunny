@@ -109,12 +109,12 @@ bool Shader::link() {
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(program, 512, NULL, info);
-        cout << "ERROR::SHADER::PROGRAM 2::LINKING_FAILED\n" << info;
+        cout << "LINKING FAILED\n" << info;
         return (isVaild = false);
     }
     else
     {
-        cout << "Link Program2 success!";
+        cout << "Link Success\n";
         return (isVaild=true);
     }
 }

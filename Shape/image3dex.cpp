@@ -4,20 +4,19 @@ Image3DEx::Image3DEx()
 {
 }
 
-void Image3DEx::setAnimation(cv::Mat & dst)
+void Image3DEx::setDstImage(cv::Mat & dst)
 {
     dstData = dst.data;
+    dstchns = dst.channels();
+    dststep = dst.step;
 }
-
-
 
 void Image3DEx::calT() {
     if (!actived) return;
-    
+
     t += speed;
 
     float val = (sin(t) + 1) / 2;
-    
 
     pshader.setUniform1f(tstr, val);
 }
@@ -35,9 +34,9 @@ void Image3DEx::calcHeight()
             }
             float dstsum = 0;
             for (int c = 0; c < chns; c++) {
-                dstsum += dstData[ y *step + x*chns + c];
+                dstsum += dstData[y *dststep + x*dstchns + c];
             }
-            heights[y*cols + x] = floor(sum / chns) + floor(dstsum/chns) / 1000;
+            heights[y*cols + x] = floor(sum / chns) + floor(dstsum / dstchns) / 1000;
         }
     }
 }
@@ -54,7 +53,7 @@ void Image3DEx::initShader()
 {
     if (shaderinited) return;
 
-    bool res =pshader.loadVertexCode("#version 330 compatibility\n"
+    bool res = pshader.loadVertexCode("#version 330 compatibility\n"
         "layout(location = 0) in vec3 pos;\n"
         "layout(location = 1) in vec4 clr;\n"
         "layout(location = 2) in vec3 nor;\n"

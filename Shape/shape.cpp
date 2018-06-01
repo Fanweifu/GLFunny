@@ -26,15 +26,8 @@ void Shape::updateModel() {
     modelmat = glm::rotate(modelmat, rvec.y*DEG2RAD, glm::vec3(0, 1, 0));
     modelmat = glm::rotate(modelmat, rvec.x*DEG2RAD, glm::vec3(1, 0, 0));
 
-    /*modelmatInv = glm::rotate(glm::mat4(1.0), -rx*DEG2RAD, glm::vec3(1, 0, 0));
-    modelmatInv = glm::rotate(modelmatInv, -ry*DEG2RAD, glm::vec3(0, 1, 0));
-    modelmatInv = glm::rotate(modelmatInv, -rz*DEG2RAD, glm::vec3(0, 0, 1));
-    modelmatInv = glm::scale(modelmatInv, glm::vec3(1 / sx, 1 / sy, 1 / sz));
-    modelmatInv = glm::translate(modelmatInv, glm::vec3(-px, -py, -pz));*/
-
     modelmatInv = glm::inverse(modelmat);
 }
-
 
 void Shape::toLocalPos(float &x, float &y, float &z) {
     glm::vec4 vl(x, y, z, 1);
@@ -52,6 +45,24 @@ void Shape::toWorldPos(float &x, float &y, float &z) {
     x = wv[0];
     y = wv[1];
     z = wv[2];
+}
+
+void Shape::toLocalDir(float & x, float & y, float & z)
+{
+    toLocalPos(x, y, z);
+    float ox, oy, oz;
+    toLocalPos(ox, oy, oz);
+
+    x -= ox; y -= oy; z -= oz;
+}
+
+void Shape::toWorldDir(float & x, float & y, float & z)
+{
+    toWorldPos(x, y, z);
+    float ox, oy, oz;
+    toWorldPos(ox, oy, oz);
+
+    x -= ox; y -= oy; z -= oz;
 }
 
 void Shape::drawAsix(float size) {

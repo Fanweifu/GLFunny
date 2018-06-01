@@ -16,22 +16,23 @@ string iMouse = "iMouse";
 string cameraRotationMat = "cameraRotationMat";
 string cameraPosition = "cameraPosition";
 
-Camera cam;
+Camera cam1;
 Camera cam2;
 
-Layer ly;
-
+Layer ly1;
+Layer ly2;
+int w, h;
 Image3DEx img3d;
 ElementData edata;
 float timeVal = 0;
 
 void reshape(int width, int height) {
-    cam.setViewPort(0, 0, width/2, height);
+    cam1.setViewPort(0, 0, width/2, height);
     cam2.setViewPort(width / 2, 0, width / 2, height);
 }
 void moveMouse(int x, int y) {
     if(x<cam2.getViewX())
-        cam.moveMouse(x, y);
+        cam1.moveMouse(x, y);
     else {
         cam2.moveMouse(x, y);
     }
@@ -39,7 +40,7 @@ void moveMouse(int x, int y) {
 
 void dragMouse(int x, int y) {
     if (x<cam2.getViewX())
-        cam.dragMouse(x, y);
+        cam1.dragMouse(x, y);
     else {
         cam2.dragMouse(x, y);
     }
@@ -49,16 +50,20 @@ void keyFunc(uchar key, int x, int y) {
     switch (key)
     {
     case 'w':
-        cam.Move(CAM_FORWARD, 3);
+        cam1.localMove(0, 1, 0);
         break;
     case 's':
-        cam.Move(CAM_BACK, 3);
+        cam1.localMove(0, -1, 0);
         break;
     case 'a':
-        cam.Move(CAM_LEFT, 3);
+        cam1.localMove(-1, 0, 0);
         break;
     case 'd':
-        cam.Move(CAM_RIGHT, 3);
+        cam1.localMove(1, 0, 0);
+        break;
+    case ' ':
+        cam1.setOrthoH(h);
+        cam1.isOrtho = !cam1.isOrtho;
         break;
     }
 }
@@ -66,25 +71,25 @@ void spkeyFunc(int key, int x, int y) {
     switch (key)
     {
     case GLUT_KEY_UP:
-        cam.Move(CAM_UP, 3);
+        cam1.localMove(0, 0, 1);
         break;
     case GLUT_KEY_DOWN:
-        cam.Move(CAM_DOWN, 3);
+        cam1.localMove(0, 0, -1);
     }
 }
 
 void render() {
-    cam.drawView();
+    cam1.drawView();
     cam2.drawView();
     glutSwapBuffers();
 }
 
 void initCamera() {
-    cam.init();
-    cam.setFar(1000);
-    cam.isdrawAxis = true;
-    cam.setPosition(0, -10, 300);
-    cam.setViewPort(0, 0, 250, 500);
+    cam1.init();
+    cam1.setFar(1000);
+    cam1.isdrawAxis = true;
+    cam1.setPosition(0, -10, 300);
+    cam1.setViewPort(0, 0, 250, 500);
 
     cam2.init();
     cam2.setFar(1000);
@@ -106,7 +111,16 @@ void ImageTest(string imgpath, int size) {
     }
 
     cv::Mat aim;
-    cv::medianBlur(img, aim, size * 2 + 1);
+    cv::medianBlur(img, aim, 2 * size + 1);
+    
+    cv::Mat sp[3];
+    cv::split(img, sp);
+    for(int i=0;i<3;i++)
+    {
+        cv::equalizeHist(sp[i], sp[i]);
+    }
+    cv::merge(sp,3,aim);
+
 
     double t2 = GetTickCount();
 
@@ -116,23 +130,25 @@ void ImageTest(string imgpath, int size) {
     img3d.reShape(img.rows, img.cols);
 
     double t3 = GetTickCount();
-    img3d.setSrcData(img);
-    img3d.setAnimation(aim);
+    img3d.setSrcImage(img);
+    img3d.setDstImage(aim);
     img3d.generateData();
 
     double t4 = GetTickCount();
     cout << "generate 3d data cost " << t4 - t3 << " ms" << endl;
 
     img3d.active(true);
-    
-    
-    ly.add(&img3d);
-    ly.add(&cam2);
-    ly.add(&cam);
+    img3d.speed = 0.05;
+    w = img.cols;
+    h = img.rows;
+    ly1.add(&img3d);
+    ly1.add(&cam2);
+    ly2.add(&img3d);
+    ly2.add(&cam1);
     
 
-    cam.Scene = &ly;
-    cam2.Scene = &ly;
+    cam1.Scene = &ly1;
+    cam2.Scene = &ly2;
 }
 
 void initWindows() {
