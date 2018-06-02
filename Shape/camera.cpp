@@ -21,14 +21,23 @@ void Camera::drawView() {
         projectionChanged = false;
         glMatrixMode(GL_MODELVIEW);
     }
-
-    glLoadMatrixf(&modelmatInv[0][0]);
-
+    
     glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+    glLoadIdentity();
+    drawBack();
+
+    glLoadMatrixf(&modelmatInv[0][0]);
+
+    
+
+    
+
     mainlight.updatePostion();
     if (Scene) Scene->draw();
+
+    
 }
 
 void Camera::dragMouse(int x, int y, float speed)
@@ -230,6 +239,7 @@ void Camera::setDirection(float vx, float vy, float vz)
 
 void Camera::init() {
     initGl();
+    initBack();
     mainlight.init();
 
     inited = true;
@@ -272,4 +282,55 @@ void Camera::initGl() {
     glClearDepth(1.0f);
 
     glMatrixMode(GL_MODELVIEW);
+}
+
+void Camera::drawBack() {
+
+    backshd.use();
+
+    static string prjinv = "prjMatInv";
+    static string modelinv = "modelMat";
+    static string ires = "iResolution";
+
+    backshd.setUniformMat4(prjinv, Camera::getProjectionMatInvPtr());
+    backshd.setUniformMat4(modelinv, Camera::getModelViewPtr());
+    backshd.setUniform2f(ires, width, height);
+
+   
+    glBegin(GL_QUADS);
+    glVertex3f(-10000, -10000, -Far);
+    glVertex3f(10000, -10000, -Far);
+    glVertex3f(10000, 10000, -Far);
+    glVertex3f(-10000, 10000, -Far);
+    glEnd();
+  
+
+    backshd.unuse();
+}
+
+void Camera::initBack()
+{
+    backshd.loadFragCode("uniform mat4 modelMat;\n"
+        "uniform mat4 prjMatInv;\n"
+        "uniform vec2 iResolution;\n"
+        "vec3 getSkyColor(vec3 e) {\n"
+        "e.z = max(e.z, 0.0);\n"
+        "return vec3(pow(1.0 - e.z, 2.0), 1.0 - e.z, 0.6 + (1.0 - e.z)*0.4);\n"
+        "}\n"
+        "void main() {\n"
+        "vec2 uv = gl_FragCoord.xy / iResolution.xy;\n"
+        "uv = uv * 2.0 - 1.0;\n"
+
+        "vec4 dir = vec4(uv.x,uv.y, 1 ,1)*prjMatInv;\n"
+        "dir = dir/dir.w;\n"
+        "vec4 rdir = dir*modelMat-vec4(0,0,0,1)*modelMat;\n"
+        "vec3 inc = normalize(rdir.xyz);\n"
+        "gl_FragColor = vec4(getSkyColor(inc), 1);\n"
+        "}\n"
+    );
+
+    backshd.link();
+
+
+    
 }

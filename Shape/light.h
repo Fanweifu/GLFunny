@@ -4,7 +4,6 @@
 #include<GL/gl.h>
 #include<assert.h>
 
-//#define GL_LIGHT0 0x4000
 class Light
 {
 public:
@@ -12,7 +11,7 @@ public:
     Light(int lightid) {
         assert(lightid >= 0 && lightid < 8);
         id = lightid;
-        enumval = id + 0x4000;
+        enumval = id + GL_LIGHT0;
     }
 
     int getLightID() { return id; }

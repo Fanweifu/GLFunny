@@ -14,6 +14,7 @@ public:
     Camera();
     bool isOrtho = false;
     bool isMultiScreen = true;
+    bool isShaderBack = true;
     Shape* Scene = NULL;
 
     float getNear() { return Near; }
@@ -64,6 +65,7 @@ public:
     Light& getLight() { return mainlight; }
 
     void init();
+    
     void lookAt(float ex, float ey, float ez, float tx, float ty, float tz);
     
     void setOrthoH(int h) { owidth = Ratio*h; oheight = h; updateProjection(); }
@@ -100,9 +102,12 @@ protected:
     glm::mat4 matrixProjection;
     glm::mat4 matrixProjectionInv;
     Light mainlight;
+    Shader backshd;
 
     void initGl();
+    void initBack();
     void ondraw();
+    void drawBack();
     void updateModel();
     void updateProjection();
     void updateViewPort();

@@ -192,8 +192,8 @@ void waterPanelRend() {
     water.setUniform3f(iResolution, w, h, 0);
     water.setUniform1f(iTime, time);
     water.setUniformMat4(modematInv, cam1.getModelViewPtr());
-    //water.setUniformMat4(prjmatInv, cam1.getProjectionMatInvPtr());
-    time += 0.001;
+    water.setUniformMat4(prjmatInv, cam1.getProjectionMatInvPtr());
+    time += 0.01;
 
     glBegin(GL_QUADS);
     glVertex3f(-100, -100, 0);
