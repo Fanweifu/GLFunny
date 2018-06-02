@@ -5,8 +5,7 @@ Layer::Layer()
 }
 void Layer::ondraw() {
     for (auto item : items) {
-        Shape *shppt = dynamic_cast<Shape *>(item);
-        shppt->draw();
+        item->draw();
     }
 }
 
@@ -15,9 +14,9 @@ void Layer::addUnique(Shape *shp) {
 }
 
 Shape* Layer::removeAt(int idx) {
-    return NULL;
+    return items.at(idx);
 }
 
-bool Layer::remove(Shape *shp) {
+bool Layer::remove(Shape* shp) {
     return true;
 }

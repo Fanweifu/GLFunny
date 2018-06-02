@@ -10,13 +10,18 @@ void Shape::draw() {
 
     glMultMatrixf(&modelmat[0][0]);
 
-    if (useShader) pshader.use();
+    if (pshader) pshader->use();
     ondraw();
-    if (useShader) pshader.unuse();
+    if (pshader) pshader->unuse();
 
     if (isdrawAxis) Shape::drawAsix(axisLength);
 
     glPopMatrix();
+}
+
+void Shape::setShader(Shader & shd)
+{
+    pshader = &shd;
 }
 
 void Shape::updateModel() {

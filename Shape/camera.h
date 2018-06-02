@@ -64,13 +64,15 @@ public:
     Light& getLight() { return mainlight; }
 
     void init();
-    void lookAt(float ex,float ey,float ez, float tx, float ty, float tz);
-    void updateModel();
+    void lookAt(float ex, float ey, float ez, float tx, float ty, float tz);
+    
     void setOrthoH(int h) { owidth = Ratio*h; oheight = h; updateProjection(); }
     void drawView();
     void dragMouse(int x, int y, float speed = 0.1f);
     void moveMouse(int x, int y);
-    void localMove(float right, float forward , float up);
+    void localMove(float right, float forward, float up);
+    const float* getProjectionMatPtr() { return &matrixProjection[0][0]; }
+    const float* getProjectionMatInvPtr() { return &matrixProjectionInv[0][0]; }
 protected:
     bool inited = false;
     bool windowsChanged = true;
@@ -96,11 +98,12 @@ protected:
     glm::vec3 rightV = glm::vec3(1, 0, 0);
     glm::vec3 upV = glm::vec3(0, 0, 1);
     glm::mat4 matrixProjection;
+    glm::mat4 matrixProjectionInv;
     Light mainlight;
 
     void initGl();
     void ondraw();
-
+    void updateModel();
     void updateProjection();
     void updateViewPort();
     void setDirectionVec3(glm::vec3 v);

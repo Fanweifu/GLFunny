@@ -95,7 +95,8 @@ void Image3D::generateData() {
 
 void Image3D::initShader()
 {
-    pshader.loadVertexCode("#version 330 compatibility\n"
+    Shader* ins = new Shader();
+    ins->loadVertexCode("#version 330 compatibility\n"
         "layout(location = 0) in vec3 pos;\n"
         "layout(location = 1) in vec4 clr;\n"
         "layout(location = 2) in vec3 nor;\n"
@@ -115,36 +116,9 @@ void Image3D::initShader()
         "}\n"
     );
 
-    //void main()
-    //{
-    //    vec3 normal, lightDir;
-    //    vec4 diffuse, ambient, globalAmbient, specular;
-    //    float NdotL; float NdotHV;
-
-    //    normal = normalize(gl_NormalMatrix * gl_Normal);
-    //    lightDir = normalize(vec3(gl_LightSource[0].position));
-    //    NdotL = max(dot(normal, lightDir), 0.0);
-    //    diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
-    //    /* Compute the ambient and globalAmbient terms */
-
-    //    ambient = gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
-    //    globalAmbient = gl_LightModel.ambient * gl_FrontMaterial.ambient;
-
-    //    /* compute the specular term if NdotL is  larger than zero */
-    //    if (NdotL > 0.0) {
-    //        // normalize the half-vector, and then compute the
-    //        // cosine (dot product) with the normal
-    //        NdotHV = max(dot(normal, gl_LightSource[0].halfVector.xyz), 0.0);
-    //        specular = gl_FrontMaterial.specular * gl_LightSource[0].specular *
-    //            pow(NdotHV, gl_FrontMaterial.shininess);
-    //    }
-
-    //    gl_FrontColor = NdotL * diffuse + globalAmbient + ambient + specular;
-
-    //    gl_Position = ftransform();
-    //}
-
-    pshader.link();
+    ins->link();
+    setShader(*ins);
+    
 }
 
 bool Image3D::reShape(int rowc, int colc) {

@@ -126,11 +126,16 @@ void Shader::use() {
 void Shader::unuse()
 {
     glUseProgram(0);
+
 }
 
 void Shader::setUniform1f(string&pNm, float val) {
     GLint idx = getParamID(pNm);
     glUniform1f(idx, val);
+}
+
+void Shader::setUniform1f(GLuint layout, float val)
+{
 }
 
 
@@ -140,10 +145,18 @@ void Shader::setUniform1fv(string & pNm, int size, float * ptr)
     glUniform1fv(idx, size, ptr);
 }
 
+void Shader::setUniform1fv(GLuint layout, int size, float * ptr)
+{
+}
+
 void Shader::setUniform2f(string & pNm, float val0, float val1)
 {
     GLint idx = getParamID(pNm);
     glUniform2f(idx, val0, val1);
+}
+
+void Shader::setUniform2f(GLuint layout, int size, float * ptr)
+{
 }
 
 void Shader::setUniform3f(string & pNm, float val0, float val1, float val2)
@@ -152,16 +165,28 @@ void Shader::setUniform3f(string & pNm, float val0, float val1, float val2)
     glUniform3f(idx, val0, val1, val2);
 }
 
+void Shader::setUniform3f(GLuint layout, int size, float * ptr)
+{
+}
+
 void Shader::setUniform4f(string & pNm, float val0, float val1, float val2, float val3)
 {
     GLint idx = getParamID(pNm);
     glUniform4f(idx, val0, val1, val2, val3);
 }
 
-void Shader::setUniformMat4(string & pNm, float*matPtr)
+void Shader::setUniform4f(GLuint layout, int size, float * ptr)
+{
+}
+
+void Shader::setUniformMat4(string & pNm, const float*matPtr)
 {
     GLint idx = getParamID(pNm);
-    glUniformMatrix4fv(idx, 1, false, matPtr);
+    glUniformMatrix4fv(idx, 1, true , matPtr);
+}
+
+void Shader::setUniformMat4(GLuint layout, int size, const float * ptr)
+{
 }
 
 Shader * Shader::createDefaultShader()

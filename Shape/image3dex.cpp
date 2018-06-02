@@ -18,7 +18,7 @@ void Image3DEx::calT() {
 
     float val = (sin(t) + 1) / 2;
 
-    pshader.setUniform1f(tstr, val);
+    pshader->setUniform1f(tstr, val);
 }
 
 void Image3DEx::calcHeight()
@@ -52,8 +52,8 @@ void Image3DEx::getColor(uint x, uint y, float * outputVec)
 void Image3DEx::initShader()
 {
     if (shaderinited) return;
-
-    bool res = pshader.loadVertexCode("#version 330 compatibility\n"
+    Shader* ins = new Shader();
+    bool res = ins->loadVertexCode("#version 330 compatibility\n"
         "layout(location = 0) in vec3 pos;\n"
         "layout(location = 1) in vec4 clr;\n"
         "layout(location = 2) in vec3 nor;\n"
@@ -77,7 +77,8 @@ void Image3DEx::initShader()
     );
 
     if (res) {
-        if (pshader.link()) {
+        if (ins->link()) {
+            setShader(*ins);
             shaderinited = true;
         }
     }

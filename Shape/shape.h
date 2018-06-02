@@ -72,6 +72,10 @@ public:
     void toLocalDir(float&x, float &y, float &z);
     void toWorldDir(float&x, float &y, float &z);
     void draw();
+    void setShader(Shader &shd);
+    const float* getModelViewPtr() { return &modelmat[0][0]; }
+    const float* getModelViewInvPtr() { return &modelmatInv[0][0]; }
+
     voidHdl testDrawFunc = NULL;
 
 protected:
@@ -87,7 +91,7 @@ protected:
 
     glm::mat4 modelmat;
     glm::mat4 modelmatInv;
-    Shader pshader;
+    Shader* pshader = NULL;
    
     virtual void updateModel();
     virtual void ondraw();

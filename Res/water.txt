@@ -1,7 +1,8 @@
-uniform vec3      iResolution;        
-uniform float     iTime;     
+uniform float     iTime;
+uniform vec3      iResolution;             
 uniform vec4      iMouse;
-
+uniform mat4      prjMatInv;
+uniform mat4      modelMatInv;
 /*
  * "Seascape" by Alexander Alekseev aka TDM - 2014
  * License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
@@ -24,6 +25,7 @@ const vec3 SEA_BASE = vec3(0.1,0.19,0.22);
 const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6);
 #define SEA_TIME (1.0 + iTime * SEA_SPEED)
 const mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
+const vec3 coordTran = vec3(1,0,0);
 
 // math
 mat3 fromEuler(vec3 ang) {
@@ -36,6 +38,22 @@ mat3 fromEuler(vec3 ang) {
 	m[2] = vec3(a3.y*a1.x*a2.x+a1.y*a3.x,a1.x*a3.x-a1.y*a3.y*a2.x,a2.y*a3.y);
 	return m;
 }
+
+vec3 calcPos(){
+    vec4 p = vec4(0,0,0,1);
+    p = p*modelMatInv;
+    return vec3(p.x,p.z,p.y);
+}
+
+
+vec3 rotateDir(vec3 indir,vec3 pos){
+    vec4 p = vec4(indir,1)*modelMatInv;
+    vec3 realv = vec3(p.x,p.z,p.y);
+    realv = normalize(realv-pos);
+    return realv;
+}
+
+
 float hash( vec2 p ) {
 	float h = dot(p,vec2(127.1,311.7));	
     return fract(sin(h)*43758.5453123);
@@ -162,13 +180,13 @@ void main() {
 	vec2 uv = gl_FragCoord.xy / iResolution.xy;
     uv = uv * 2.0 - 1.0;
     uv.x *= iResolution.x / iResolution.y;    
-    float time = iTime * 0.3 + iMouse.x*0.01;
+    float time = iTime; 
         
     // ray
-    vec3 ang = vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);    
-    vec3 ori = vec3(0.0,3.5,time*5.0);
-    vec3 dir = normalize(vec3(uv.xy,-2.0)); dir.z += length(uv) * 0.15;
-    dir = normalize(dir) * fromEuler(ang);
+    
+    vec3 ori = calcPos();
+    vec3 dir = normalize(vec3(uv.xy,-2.0));
+    dir = rotateDir(dir,ori);
     
     // tracing
     vec3 p;
@@ -185,4 +203,5 @@ void main() {
         
     // post
 	gl_FragColor = vec4(pow(color,vec3(0.75)), 1.0);
+    gl_FragColor  = vec4(gl_LightSource[0].position.xyz,1);
 }

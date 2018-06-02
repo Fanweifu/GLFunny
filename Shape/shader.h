@@ -28,15 +28,27 @@ public:
 
     void setUniform1f(string & pNm, float val);
 
+    void setUniform1f(GLuint layout, float val);
+
     void setUniform1fv(string & pNm, int size, float * ptr);
+
+    void setUniform1fv(GLuint layout, int size, float * ptr);
 
     void setUniform2f(string & pNm, float val0, float val1);
 
+    void setUniform2f(GLuint layout, int size, float * ptr);
+
     void setUniform3f(string & pNm, float val0, float val1, float val2);
+
+    void setUniform3f(GLuint layout, int size, float * ptr);
 
     void setUniform4f(string & pNm, float val0, float val1, float val2, float val3);
 
-    void setUniformMat4(string & pNm, float* matPtr);
+    void setUniform4f(GLuint layout, int size, float * ptr);
+
+    void setUniformMat4(string & pNm, const float* matPtr);
+
+    void setUniformMat4(GLuint layout, int size, const float * ptr);
 
     static Shader* createDefaultShader();
 

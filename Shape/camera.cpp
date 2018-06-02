@@ -27,7 +27,7 @@ void Camera::drawView() {
     glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    mainlight.setPostion();
+    mainlight.updatePostion();
     if (Scene) Scene->draw();
 }
 
@@ -204,6 +204,8 @@ void Camera::updateProjection()
     else {
         matrixProjection = glm::perspective(Fov*DEG2RAD, Ratio, Near, Far);
     }
+
+    matrixProjectionInv = glm::inverse(matrixProjection);
 
     projectionChanged = true;
 }

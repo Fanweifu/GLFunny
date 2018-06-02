@@ -32,7 +32,7 @@ public:
         lightPos[3] = w;
         glLightfv(enumval, GL_POSITION, lightPos);
     }
-    void setPostion() { glLightfv(enumval, GL_POSITION, lightPos); }
+    void updatePostion() { glLightfv(enumval, GL_POSITION, lightPos); }
     void getPositon(float &px, float &py, float &pz, float &w) {
         px = lightPos[0];
         py = lightPos[1];
@@ -95,7 +95,7 @@ protected:
     GLenum enumval = GL_LIGHT0;
 
     bool enable = false;
-    float lightPos[4] = { 0,1,0,0 };
+    float lightPos[4] = { 0,0,1,0 };
     float lightKa[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
     float lightKd[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
     float lightKs[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
