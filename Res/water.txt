@@ -1,8 +1,8 @@
 uniform float     iTime;
 uniform vec3      iResolution;             
 uniform vec4      iMouse;
-uniform mat4      prjMatInv;
-uniform mat4      modelMatInv;
+uniform mat4      prjInvMat;
+uniform mat4      camShpMat;
 /*
  * "Seascape" by Alexander Alekseev aka TDM - 2014
  * License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
@@ -41,18 +41,18 @@ mat3 fromEuler(vec3 ang) {
 
 vec3 calcPos(){
     vec4 p = vec4(0,0,0,1);
-    p = p*modelMatInv;
+    p = p*camShpMat;
     return vec3(p.x,p.z,p.y);
 }
 
-vec4 invPrj(vec4 uv){
-    vec4 p = uv*prjMatInv;
+vec4 invPrj(vec2 uv){
+    vec4 p = vec4(uv,1,1)*prjInvMat;
     p = p/p.w;
     return p;
 }
 
 vec3 rotateDir(vec3 indir,vec3 pos){
-    vec4 p = vec4(indir,1)*modelMatInv;
+    vec4 p = vec4(indir,1)*camShpMat;
     vec3 realv = vec3(p.x,p.z,p.y);
     realv = normalize(realv-pos);
     return realv;
@@ -189,8 +189,7 @@ void main() {
     // ray
     
     vec3 ori = calcPos();
-    vec4 noruv = vec4(uv.xy,1,1);
-    vec4 dirCam = invPrj(noruv);
+    vec4 dirCam = invPrj(uv);
     vec3 dirWorld = rotateDir(dirCam.xyz,ori);
     
     // tracing

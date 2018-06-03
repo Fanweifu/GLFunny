@@ -73,7 +73,7 @@ public:
     void dragMouse(int x, int y, float speed = 0.1f);
     void moveMouse(int x, int y);
     void localMove(float right, float forward, float up);
-    const float* getProjectionMatPtr() { return &matrixProjection[0][0]; }
+    const float* getProjectionMatPtr() { return  &matrixProjection[0][0]; }
     const float* getProjectionMatInvPtr() { return &matrixProjectionInv[0][0]; }
 protected:
     bool inited = false;

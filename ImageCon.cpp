@@ -14,8 +14,8 @@ int w, h;
 string iResolution = "iResolution";
 string iTime = "iTime";
 string iMouse = "iMouse";
-string modematInv = "modelMatInv";
-string prjmatInv = "prjMatInv";
+string camShpMat = "camShpMat";
+string prjInvMat = "prjInvMat";
 
 Camera cam1;
 Camera cam2;
@@ -28,6 +28,7 @@ Shader water;
 ElementData edata;
 float timeVal = 0;
 bool mutiScreen = true;
+float step = 0.1;
 void reshape(int width, int height) {
     if (mutiScreen) {
         cam1.setViewPort(0, 0, width / 2, height);
@@ -76,16 +77,16 @@ void keyFunc(uchar key, int x, int y) {
     switch (key)
     {
     case 'w':
-        cam1.localMove(0, 1, 0);
+        cam1.localMove(0, 1 * step, 0);
         break;
     case 's':
-        cam1.localMove(0, -1, 0);
+        cam1.localMove(0, -1* step, 0);
         break;
     case 'a':
-        cam1.localMove(-1, 0, 0);
+        cam1.localMove(-1 * step, 0, 0);
         break;
     case 'd':
-        cam1.localMove(1, 0, 0);
+        cam1.localMove(1 * step, 0, 0);
         break;
     case ' ':
         cam1.setOrthoH(500);
@@ -191,8 +192,8 @@ void waterPanelRend() {
     static float time = 0;
     water.setUniform3f(iResolution, w, h, 0);
     water.setUniform1f(iTime, time);
-    water.setUniformMat4(modematInv, cam1.getModelViewPtr());
-    water.setUniformMat4(prjmatInv, cam1.getProjectionMatInvPtr());
+    water.setUniformMat4(camShpMat, cam1.getModelViewPtr());
+    water.setUniformMat4(prjInvMat, cam1.getProjectionMatInvPtr());
     time += 0.01;
 
     glBegin(GL_QUADS);
@@ -207,7 +208,7 @@ void waterPanelRend() {
 
 void waterTest() {
     testshp.testDrawFunc = &waterPanelRend;
-    water.loadFragFile("res/water.txt");
+    water.loadFragFile("res/raym.txt");
     water.link();
     
     testshp.setShader(water);

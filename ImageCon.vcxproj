@@ -164,6 +164,7 @@
     <ClCompile Include="ImageCon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Res\raym.txt" />
     <Text Include="Res\water.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
