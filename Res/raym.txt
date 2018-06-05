@@ -2,7 +2,7 @@ uniform float     iTime;
 uniform vec3      iResolution;             
 uniform vec4      iMouse;
 uniform mat4      prjInvMat;
-uniform mat4      camShpMat;
+uniform mat4      mdlInvMat;
 
 // The MIT License
 // Copyright ? 2013 Inigo Quilez
@@ -15,26 +15,23 @@ uniform mat4      camShpMat;
 // More info here: http://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 
 
-#define AA 1   // make this 1 is your machine is too slow
+#define AA 2   // make this 1 is your machine is too slow
 //camera
 
-vec3 calcPos(){
-    vec4 p = vec4(0,0,0,1);
-    p = p*camShpMat;
+vec3 yztozy(vec3 p){
     return vec3(p.x,p.z,p.y);
 }
 
-vec4 invPrj(vec2 uv){
-    vec4 p = vec4(uv,1,1)*prjInvMat;
-    p = p/p.w;
-    return p;
-}
+void setupCamera(vec2 uv,out vec3 campos, out vec3 dir){
+     vec4 camdir = vec4(uv,1,1)*prjInvMat;
+     camdir = camdir/camdir.w;
 
-vec3 rotateDir(vec3 indir,vec3 pos){
-    vec4 p = vec4(indir,1)*camShpMat;
-    vec3 realv = vec3(p.x,p.z,p.y);
-    realv = normalize(realv-pos);
-    return realv;
+     vec4 camv = vec4(0,0,0,1);
+     camv = camv*mdlInvMat;
+     campos = camv.xyz;
+
+     vec4 dirp = camdir*mdlInvMat;
+     dir = normalize((dirp-camv).xyz);
 }
 
 //------------------------------------------------------------------
@@ -405,17 +402,13 @@ void main()
         vec2 p = (-iResolution.xy + 2.0*gl_FragCoord.xy)/iResolution.xy;
 #endif
 
-		// camera	
-        //vec3 ro = vec3( -0.5+3.5*cos(0.1*time + 6.0*mo.x), 1.0 + 2.0*mo.y, 0.5 + 4.0*sin(0.1*time + 6.0*mo.x) );
-        //vec3 ta = vec3( -0.5, -0.4, 0.5 );
-        // camera-to-world transformation
-        //mat3 ca = setCamera( ro, ta, 0.0 );
-        // ray direction
-        //vec3 rd = ca * normalize( vec3(p.xy,2.0) );
 
-        vec3 ro = calcPos();
-        vec4 rdcam = invPrj(p);
-        vec3 rd =  rotateDir(rdcam.xyz,ro);
+
+        vec3 ro,rd;
+
+        setupCamera(p,ro,rd);
+        ro = yztozy(ro);
+        rd = yztozy(rd);
 
         // render	
         vec3 col = render( ro, rd );

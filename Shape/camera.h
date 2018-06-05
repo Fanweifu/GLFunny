@@ -7,7 +7,6 @@
 #include"vaoarray.h"
 #include"shape.h"
 #include"light.h"
-
 class Camera : public Shape
 {
 public:
@@ -94,6 +93,8 @@ protected:
     int mouseX = 0;
     int mouseY = 0;
 
+    float renderTime = 0;
+
     glm::vec4 backColor = glm::vec4(0.5, 0.5, 1, 1);
     glm::vec3 uplook = glm::vec3(0, 0, 1);
     glm::vec3 forwardV = glm::vec3(0, 1, 0);
@@ -103,7 +104,7 @@ protected:
     glm::mat4 matrixProjectionInv;
     Light mainlight;
     Shader backshd;
-
+    
     void initGl();
     void initBack();
     void ondraw();

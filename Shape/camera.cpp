@@ -1,5 +1,5 @@
 #include "camera.h"
-
+#include<direct.h>
 Camera::Camera()
 {
 }
@@ -37,7 +37,7 @@ void Camera::drawView() {
     mainlight.updatePostion();
     if (Scene) Scene->draw();
 
-    
+    renderTime += 0.01f;
 }
 
 void Camera::dragMouse(int x, int y, float speed)
@@ -238,6 +238,8 @@ void Camera::setDirection(float vx, float vy, float vz)
 }
 
 void Camera::init() {
+    if (inited) return;
+
     initGl();
     initBack();
     mainlight.init();
@@ -287,16 +289,18 @@ void Camera::initGl() {
 void Camera::drawBack() {
 
     backshd.use();
-
-    static string prjinv = "prjMatInv";
-    static string modelinv = "modelMat";
+    
+    static string prjinv = "prjInvMat";
+    static string mdlinv = "mdlInvMat";
     static string ires = "iResolution";
+    static string ichn0 = "iChannel0";
+    static string time = "iTime";
 
     backshd.setUniformMat4(prjinv, Camera::getProjectionMatInvPtr());
-    backshd.setUniformMat4(modelinv, Camera::getModelViewPtr());
-    backshd.setUniform2f(ires, width, height);
-
-   
+    backshd.setUniformMat4(mdlinv, Camera::getModelViewPtr());
+    backshd.setUniform3f(ires, width, height, 1);
+    
+    backshd.setUniform1f(time, renderTime);
     glBegin(GL_QUADS);
     glVertex3f(-10000, -10000, -Far);
     glVertex3f(10000, -10000, -Far);
@@ -304,33 +308,15 @@ void Camera::drawBack() {
     glVertex3f(-10000, 10000, -Far);
     glEnd();
   
-
     backshd.unuse();
+    
 }
 
 void Camera::initBack()
 {
-    backshd.loadFragCode("uniform mat4 modelMat;\n"
-        "uniform mat4 prjMatInv;\n"
-        "uniform vec2 iResolution;\n"
-        "vec3 getSkyColor(vec3 e) {\n"
-        "e.z = max(e.z, 0.0);\n"
-        "return vec3(pow(1.0 - e.z, 2.0), 1.0 - e.z, 0.6 + (1.0 - e.z)*0.4);\n"
-        "}\n"
-        "void main() {\n"
-        "vec2 uv = gl_FragCoord.xy / iResolution.xy;\n"
-        "uv = uv * 2.0 - 1.0;\n"
-
-        "vec4 dir = vec4(uv.x,uv.y, 1 ,1)*prjMatInv;\n"
-        "dir = dir/dir.w;\n"
-        "vec4 rdir = dir*modelMat-vec4(0,0,0,1)*modelMat;\n"
-        "vec3 inc = normalize(rdir.xyz);\n"
-        "gl_FragColor = vec4(getSkyColor(inc), 1);\n"
-        "}\n"
-    );
-
+    backshd.loadFragFile("Res/clouds.txt");
     backshd.link();
 
-
     
+
 }

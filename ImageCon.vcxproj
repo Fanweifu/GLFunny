@@ -151,6 +151,7 @@
     <ClInclude Include="Shape\shader.h" />
     <ClInclude Include="Shape\shape.h" />
     <ClInclude Include="Shape\vaoarray.h" />
+    <ClInclude Include="Shape\texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\camera.cpp" />
@@ -162,10 +163,21 @@
     <ClCompile Include="Shape\shape.cpp" />
     <ClCompile Include="Shape\vaoarray.cpp" />
     <ClCompile Include="ImageCon.cpp" />
+    <ClCompile Include="Shape\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Res\raym.txt" />
-    <Text Include="Res\water.txt" />
+    <Text Include="Res\raym.txt">
+      <DeploymentContent>false</DeploymentContent>
+    </Text>
+    <Text Include="Res\clouds.txt">
+      <DeploymentContent>false</DeploymentContent>
+    </Text>
+    <Text Include="Res\water.txt">
+      <DeploymentContent>false</DeploymentContent>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Res\noise.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

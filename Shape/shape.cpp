@@ -111,5 +111,5 @@ void Shape::drawAsix(float size) {
 }
 
 void Shape::ondraw() {
-    if (testDrawFunc) (*testDrawFunc)();
+    if (drawFunc) (*drawFunc)();
 }

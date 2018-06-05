@@ -31,7 +31,7 @@ GLuint createShader(GLenum type, const char*source, GLint& success) {
     }
     else
     {
-        cout << "compile success!";
+        cout << "compile success!\n";
     }
 
     return shader;
@@ -93,7 +93,7 @@ GLint Shader::getParamID(string &pNm) {
     else {
         GLint idx = glGetUniformLocation(program, pNm.data());
         if (idx == -1) {
-            cout << pNm << " not find params!";
+            cout << pNm << " can not find params!\n";
             return -1;
         }
         paramsMap.insert(pair<string, GLint>(pNm, idx));
@@ -109,7 +109,7 @@ bool Shader::link() {
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(program, 512, NULL, info);
-        cout << "LINKING FAILED\n" << info;
+        cout << "Link Failed\n" << info;
         return (isVaild = false);
     }
     else
@@ -134,9 +134,13 @@ void Shader::setUniform1f(string&pNm, float val) {
     glUniform1f(idx, val);
 }
 
-void Shader::setUniform1f(GLuint layout, float val)
+void Shader::setUniform1i(string & pNm, int val)
 {
+    GLint idx = getParamID(pNm);
+    glUniform1i(idx, val);
 }
+
+
 
 
 void Shader::setUniform1fv(string & pNm, int size, float * ptr)
@@ -145,9 +149,7 @@ void Shader::setUniform1fv(string & pNm, int size, float * ptr)
     glUniform1fv(idx, size, ptr);
 }
 
-void Shader::setUniform1fv(GLuint layout, int size, float * ptr)
-{
-}
+
 
 void Shader::setUniform2f(string & pNm, float val0, float val1)
 {
@@ -155,9 +157,7 @@ void Shader::setUniform2f(string & pNm, float val0, float val1)
     glUniform2f(idx, val0, val1);
 }
 
-void Shader::setUniform2f(GLuint layout, int size, float * ptr)
-{
-}
+
 
 void Shader::setUniform3f(string & pNm, float val0, float val1, float val2)
 {
@@ -165,9 +165,7 @@ void Shader::setUniform3f(string & pNm, float val0, float val1, float val2)
     glUniform3f(idx, val0, val1, val2);
 }
 
-void Shader::setUniform3f(GLuint layout, int size, float * ptr)
-{
-}
+
 
 void Shader::setUniform4f(string & pNm, float val0, float val1, float val2, float val3)
 {
@@ -175,9 +173,7 @@ void Shader::setUniform4f(string & pNm, float val0, float val1, float val2, floa
     glUniform4f(idx, val0, val1, val2, val3);
 }
 
-void Shader::setUniform4f(GLuint layout, int size, float * ptr)
-{
-}
+
 
 void Shader::setUniformMat4(string & pNm, const float*matPtr)
 {
@@ -185,9 +181,7 @@ void Shader::setUniformMat4(string & pNm, const float*matPtr)
     glUniformMatrix4fv(idx, 1, true , matPtr);
 }
 
-void Shader::setUniformMat4(GLuint layout, int size, const float * ptr)
-{
-}
+
 
 Shader * Shader::createDefaultShader()
 {

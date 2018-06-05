@@ -6,6 +6,7 @@
 #include<time.h>
 #include"Shape\camera.h"
 #include"Shape\shader.h"
+#include"Shape\texture.h"
 #include"Shape\image3dex.h"
 #include"Shape\layer.h"
 using namespace std;
@@ -14,7 +15,7 @@ int w, h;
 string iResolution = "iResolution";
 string iTime = "iTime";
 string iMouse = "iMouse";
-string camShpMat = "camShpMat";
+string mdlInvMat = "mdlInvMat";
 string prjInvMat = "prjInvMat";
 
 Camera cam1;
@@ -24,6 +25,7 @@ Layer ly1;
 Layer ly2;
 Image3DEx img3d;
 Shape testshp;
+Texture texture;
 Shader water;
 ElementData edata;
 float timeVal = 0;
@@ -69,8 +71,6 @@ void dragMouse(int x, int y) {
     else {
         cam1.dragMouse(x, y);
     }
-
-    //water.setUniform4f(iMouse, x, y, 0, 0);
 }
 
 void keyFunc(uchar key, int x, int y) {
@@ -192,9 +192,11 @@ void waterPanelRend() {
     static float time = 0;
     water.setUniform3f(iResolution, w, h, 0);
     water.setUniform1f(iTime, time);
-    water.setUniformMat4(camShpMat, cam1.getModelViewPtr());
+    water.setUniformMat4(mdlInvMat, cam1.getModelViewPtr());
     water.setUniformMat4(prjInvMat, cam1.getProjectionMatInvPtr());
     time += 0.01;
+
+    //texture.bind();
 
     glBegin(GL_QUADS);
     glVertex3f(-100, -100, 0);
@@ -203,17 +205,18 @@ void waterPanelRend() {
     glVertex3f(100, -100, 0);
     glEnd();
 
-    
+    //texture.unbind();
 }
 
 void waterTest() {
-    testshp.testDrawFunc = &waterPanelRend;
-    water.loadFragFile("res/raym.txt");
+    testshp.drawFunc = &waterPanelRend;
+    water.loadFragFile("res/water.txt");
     water.link();
     
     testshp.setShader(water);
+    //texture.createImg(0, 1, 0);
     ly1.add(&testshp);
-    //ly2.add(&testshp);
+    ly2.add(&testshp);
 
     cam1.setPosition(0, 0.5, 1);
     cam2.setPosition(0, -0.5, 1);

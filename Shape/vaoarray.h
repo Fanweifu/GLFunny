@@ -51,9 +51,9 @@ public:
     //~ElementData() { BindBufferClass::~BindBufferClass(); }
     void setIndex(GLuint *indeice, int idxNum);
     void setVertex(GLfloat* arr, int ptNum);
-    void setColor(GLfloat* arr, int vecSize, int ptNum);
+    void setColor(GLfloat* arr, int chns, int ptNum);
     void setNormal(GLfloat* arr, int ptNum);
-    void setTexCoord(GLfloat* arr);
+    void setTexCoord(GLfloat* arr,int ptNum);
     void renderData(GLenum mode);
 protected:
     GLuint vertexNum = 0;
@@ -68,17 +68,21 @@ public:
 
 protected:
     static void  init();
-    static void  setVertex(GLuint vaoIdx, GLfloat* arr, int vecNum,bool isStatic = true);
-    static void  setColor(GLuint vaoIdx, GLfloat* arr, int vecNum, int vecSize = 3, bool isStatic = true);
-    static void  setNormal(GLuint vaoIdx, GLfloat* arr, int vecNum, bool isStatic = true);
-    static void  setTexCoord(GLuint vaoIdx, GLfloat* arr, int vecNum, bool isStatic = true);
+    static void  setVertex(GLuint vaObj, GLfloat* arr, int vecNum,bool _static = true);
+    static void  setColor(GLuint vaObj, GLfloat* arr, int vecNum, int chns = 3, bool _static = true);
+    static void  setNormal(GLuint vaObj, GLfloat* arr, int vecNum, bool _static = true);
+    static void  setTexCoord(GLuint vaObj, GLfloat* arr, int vecNum, bool _static = true);
 
-    static void  setIndice(GLuint vaoIdx, GLuint *idxarr, int idxNum, bool isStatic = true);
-    static void  setVertexElem(GLuint vaoIdx, GLfloat*valarr, int vecNum, bool isStatic = true);
-    static void  setColorElem(GLuint vaoIdx, GLfloat*valarr, int vecNum, int vecSize, bool isStatic = true);
-    static void  setNormalElem(GLuint vaoIdx, GLfloat*valarr, int vecNum, bool isStatic = true);
-    static void  setTexCoordElem(GLuint vaoIdx, GLfloat*valarr, int vecNum, bool isStatic = true);
+    static void  setIndice(GLuint vaObj, GLuint *idxarr, int idxNum, bool _static = true);
+    static void  setVertexElem(GLuint vaObj, GLfloat*valarr, int vecNum, bool _static = true);
+    static void  setColorElem(GLuint vaObj, GLfloat*valarr, int vecNum, int chns, bool _static = true);
+    static void  setNormalElem(GLuint vaObj, GLfloat*valarr, int vecNum, bool _static = true);
+    static void  setTexCoord2DElem(GLuint vaObj, GLfloat*valarr, int vecNum, bool _static = true);
+
+    
+
 private:
+    static GLenum getEnum(bool _static);
     static bool inited;
     static GLuint VBOS[];
 };

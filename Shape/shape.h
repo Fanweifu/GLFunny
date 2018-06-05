@@ -76,7 +76,7 @@ public:
     const float* getModelViewPtr() { return &modelmat[0][0]; }
     const float* getModelViewInvPtr() { return &modelmatInv[0][0]; }
 
-    voidHdl testDrawFunc = NULL;
+    voidHdl drawFunc = NULL;
 
 protected:
 

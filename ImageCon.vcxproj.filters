@@ -48,6 +48,9 @@
     <ClInclude Include="Shape\shader.h">
       <Filter>头文件\Shape</Filter>
     </ClInclude>
+    <ClInclude Include="Shape\texture.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\image3dex.cpp">
@@ -77,6 +80,9 @@
     <ClCompile Include="Shape\shader.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
+    <ClCompile Include="Shape\texture.cpp">
+      <Filter>源文件\Shape</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Res\water.txt">
@@ -85,5 +91,13 @@
     <Text Include="Res\raym.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="Res\clouds.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Res\noise.png">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
