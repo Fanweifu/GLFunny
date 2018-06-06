@@ -12,7 +12,7 @@
 using namespace std;
 
 int w, h;
-string iResolution = "iResolution";
+string iResolution = "viewport";
 string iTime = "iTime";
 string iMouse = "iMouse";
 string mdlInvMat = "mdlInvMat";
@@ -190,7 +190,7 @@ void waterPanelRend() {
     
 
     static float time = 0;
-    water.setUniform3f(iResolution, w, h, 0);
+    water.setUniform4f(iResolution, 0,0,w, h);
     water.setUniform1f(iTime, time);
     water.setUniformMat4(mdlInvMat, cam1.getModelViewPtr());
     water.setUniformMat4(prjInvMat, cam1.getProjectionMatInvPtr());
@@ -224,15 +224,18 @@ void waterTest() {
     mutiScreen = false;
 }
 
+void printVersion() {
+    const GLubyte* renderer = glGetString(GL_RENDERER);    const GLubyte* vendor = glGetString(GL_VENDOR);    const GLubyte* version = glGetString(GL_VERSION);    const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);    GLint major, minor;    glGetIntegerv(GL_MAJOR_VERSION, &major);    glGetIntegerv(GL_MINOR_VERSION, &minor);    printf("GL Vendor : %s\n", vendor);    printf("GL Renderer : %s\n", renderer);    printf("GL Version(string) : %s\n", version);    printf("GL Version(integer) : %d.%d\n", major, minor);    printf("GLSL Version : %s\n", glslVersion);
 
+}
 
 void initWindows() {
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
-
+    
     glutCreateWindow("Func:blur;height=floor(r+g+b/3)");
-
+    printVersion();
     glutPassiveMotionFunc(moveMouse);
     glutMotionFunc(dragMouse);
     glutKeyboardFunc(keyFunc);
@@ -244,7 +247,7 @@ void initWindows() {
 
 int main(int arg, char**argv) {
     glutInit(&arg, argv);
-
+    glewInit();
     initWindows();
 
     initCamera();
