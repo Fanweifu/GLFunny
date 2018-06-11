@@ -1,7 +1,6 @@
 #include<gl/glew.h>
 #include<gl/GL.h>
 
-#include<gl/glut.h>
 #include<string>
 #include<time.h>
 #include"Shape\camera.h"
@@ -12,11 +11,6 @@
 using namespace std;
 
 int w, h;
-string iResolution = "viewport";
-string iTime = "iTime";
-string iMouse = "iMouse";
-string mdlInvMat = "mdlInvMat";
-string prjInvMat = "prjInvMat";
 
 Camera cam1;
 Camera cam2;
@@ -190,10 +184,10 @@ void waterPanelRend() {
     
 
     static float time = 0;
-    water.setUniform4f(iResolution, 0,0,w, h);
-    water.setUniform1f(iTime, time);
-    water.setUniformMat4(mdlInvMat, cam1.getModelViewPtr());
-    water.setUniformMat4(prjInvMat, cam1.getProjectionMatInvPtr());
+    water.setUniform2f(Shader::pView, w, h);
+    water.setUniform1f(Shader::pTime, time);
+    water.setUniformMat4(Shader::pMdlInvMat, cam1.getModelViewPtr());
+    water.setUniformMat4(Shader::pPrjInvMat, cam1.getProjectionMatInvPtr());
     time += 0.01;
 
     //texture.bind();
@@ -210,7 +204,7 @@ void waterPanelRend() {
 
 void waterTest() {
     testshp.drawFunc = &waterPanelRend;
-    water.loadFragFile("res/water.txt");
+    water.loadFragFile("res/raym.txt");
     water.link();
     
     testshp.setShader(water);
@@ -225,7 +219,20 @@ void waterTest() {
 }
 
 void printVersion() {
-    const GLubyte* renderer = glGetString(GL_RENDERER);    const GLubyte* vendor = glGetString(GL_VENDOR);    const GLubyte* version = glGetString(GL_VERSION);    const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);    GLint major, minor;    glGetIntegerv(GL_MAJOR_VERSION, &major);    glGetIntegerv(GL_MINOR_VERSION, &minor);    printf("GL Vendor : %s\n", vendor);    printf("GL Renderer : %s\n", renderer);    printf("GL Version(string) : %s\n", version);    printf("GL Version(integer) : %d.%d\n", major, minor);    printf("GLSL Version : %s\n", glslVersion);
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    const GLubyte* vendor = glGetString(GL_VENDOR);
+    const GLubyte* version = glGetString(GL_VERSION);
+    const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+    GLint major, minor;
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+    printf("GL Vendor : %s\n", vendor);
+    printf("GL Renderer : %s\n", renderer);
+    printf("GL Version(string) : %s\n", version);
+    printf("GL Version(integer) : %d.%d\n", major, minor);
+    printf("GLSL Version : %s\n", glslVersion);
 
 }
 
@@ -234,7 +241,7 @@ void initWindows() {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
     
-    glutCreateWindow("Func:blur;height=floor(r+g+b/3)");
+    glutCreateWindow("GLSL");
     printVersion();
     glutPassiveMotionFunc(moveMouse);
     glutMotionFunc(dragMouse);

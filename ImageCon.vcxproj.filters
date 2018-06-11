@@ -94,6 +94,9 @@
     <Text Include="Res\clouds.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="Res\template.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\noise.png">

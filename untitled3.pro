@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 QT       += core gui
-QT += opengl
+#QT += opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = untitled3
+TARGET = shaderfun
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -23,50 +23,50 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-SOURCES += main.cpp\        
-    ui\openglwidget.cpp \
-    ui\opengltest.cpp \
-    mainwindow.cpp \
-    math\matrices.cpp \
-    shape\modelgl.cpp \
-    shape\image3d.cpp \
-    shape\camera.cpp \
-    shape\shape.cpp \
-    shape\layer.cpp \
-    shape\image3dex.cpp \
-    shape\vaoarray.cpp \
-    shape\shader.cpp
+HEADERS += ./ui/ShaderPlay.h \
+    ./ui/openglwidget.h \
+    ./mainwindow.h \
+    ./shape/camera.h \
+    ./shape/image3d.h \
+    ./shape/image3dex.h \
+    ./shape/layer.h \
+    ./shape/light.h \
+    ./shape/modelgl.h \
+    ./shape/shader.h \
+    ./shape/shape.h \
+    ./shape/vaoarray.h \
+    ./Shape/Shader/SeaShader.h \
+    ./seaShaderWidget.h
 
-HEADERS  += ui\openglwidget.h \
-    math\matrices.h \
-    math\vector.h \
-    shape\modelgl.h \
-    shape\image3d.h \
-    shape\camera.h \
-    shape\shape.h \
-    shape\layer.h \
-    shape\light.h \
-    ui\opengltest.h \
-    shape\image3dex.h \
-    mainwindow.h \
-    shape\vaoarray.h \
-    shape\shader.h
+SOURCES += ./shape/camera.cpp \
+    ./shape/image3d.cpp \
+    ./shape/image3dex.cpp \
+    ./shape/layer.cpp \
+    ./shape/modelgl.cpp \
+    ./shape/shader.cpp \
+    ./shape/shape.cpp \
+    ./shape/vaoarray.cpp \
+    ./main.cpp \
+    ./mainwindow.cpp \
+    ./ui/ShaderPlay.cpp \
+    ./ui/openglwidget.cpp \
+    ./Shape/Shader/SeaShader.cpp \
+    ./seaShaderWidget.cpp
 
-INCLUDEPATH +=C:\opencv\mingw32\include\opencv\
-              C:\opencv\mingw32\include\opencv2\
-              C:\opencv\mingw32\include\
-              C:\ProgramData\glewMinGW\include\
+FORMS += ./mainwindow.ui \
+    ./seaShaderWidget.ui
+
+INCLUDEPATH +=C:\opencv3.2\include\
+              C:\glew\include\
+              C:\glm\
 
 
+LIBS += C:\opencv3.2\x86\vc14\lib\opencv_world320.lib
+LIBS += C:\glew\lib\Release\Win32\glew32.lib
+#    LIBS += -lopengl32 \
+#    -lglu32 \
+#    -lglut \
 
-LIBS += C:\opencv\mingw32\lib\libopencv_*.a
-LIBS += C:\ProgramData\glewMinGW\lib\libglew32.dll.a
-LIBS += -lopengl32 \
-    -lglu32 \
-    -lglut \
-
-FORMS += \
-    mainwindow.ui
 
 DISTFILES += \
     default.fsh

@@ -1,5 +1,5 @@
 uniform float     iTime;
-uniform vec3      iResolution;             
+uniform vec2      viewport;             
 uniform vec4      iMouse;
 uniform mat4      prjInvMat;
 uniform mat4      mdlInvMat;
@@ -386,7 +386,7 @@ mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
 
 void main()
 {
-    vec2 mo = iMouse.xy/iResolution.xy;
+    vec2 mo = iMouse.xy/viewport.xy;
 	float time = 15.0 + iTime;
 
     
@@ -397,9 +397,9 @@ void main()
     {
         // pixel coordinates
         vec2 o = vec2(float(m),float(n)) / float(AA) - 0.5;
-        vec2 p = (-iResolution.xy + 2.0*(gl_FragCoord.xy+o))/iResolution.xy;
+        vec2 p = (-viewport.xy + 2.0*(gl_FragCoord.xy+o))/viewport.xy;
 #else    
-        vec2 p = (-iResolution.xy + 2.0*gl_FragCoord.xy)/iResolution.xy;
+        vec2 p = (-viewport.xy + 2.0*gl_FragCoord.xy)/viewport.xy;
 #endif
 
 

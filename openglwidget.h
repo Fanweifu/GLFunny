@@ -1,7 +1,7 @@
 #ifndef OPENGLWIDGET_H
 #define OPENGLWIDGET_H
 
-#include <opencv.hpp>
+#include <opencv2/opencv.hpp>
 #include"shape\image3dex.h"
 #include"shape\camera.h"
 #include"shape\layer.h"
@@ -29,9 +29,10 @@ public:
 protected:
 
     bool fullScreen;
-
+    string imgPath;
 
     void initWidget();
+    void uninitWidget();
     void initializeGL();
     void paintGL();
     void resizeGL(int width, int height);
@@ -43,27 +44,13 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private :
-    bool isTrans = true;
-
+    
     bool onDrag = false;
-    float dragX =0;
-    float dragY =0;
-    int lastX = 0;
-    int lastY = 0;
-
-    //move
-    double cameraPosZ = 100;
-    double cameraPosX = 0;
-    double cameraPosY = 0;
-    //timer
-    void initTimer();
-    void uninitTimer();
-    void updateCamera();
     Image3DEx inputImg;
-
-    Mat iImg;
-    Mat rImg;
-
+    cv::Mat srcimg;
+    cv::Mat dstimg;
+    
+    QTimer  timer;
 };
 
 #endif // OPENGLWIDGET_H
