@@ -37,7 +37,7 @@ void Camera::drawView() {
     mainlight.updatePostion();
     if (Scene) Scene->draw();
 
-    renderTime += 0.01f;
+    renderTime += 1;
 }
 
 void Camera::dragMouse(int x, int y, float speed)
@@ -244,6 +244,9 @@ void Camera::init() {
     initBack();
     mainlight.init();
 
+    updateProjection();
+    updateModel();
+
     inited = true;
 }
 
@@ -254,20 +257,18 @@ void Camera::initGl() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glEnable(GL_POLYGON_SMOOTH);
-    //glEnable(GL_LINE_SMOOTH);
 
     glEnable(GL_MULTISAMPLE);
 
-    //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    glEnable(GL_POLYGON_SMOOTH);
-    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+   
+    //glEnable(GL_POLYGON_SMOOTH);
+    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
-    glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    //glEnable(GL_LINE_SMOOTH);
+    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-    glEnable(GL_POINT_SMOOTH);
-    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    //glEnable(GL_POINT_SMOOTH);
+    //glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
@@ -292,7 +293,7 @@ void Camera::drawBack() {
     
     static string prjinv = "prjInvMat";
     static string mdlinv = "mdlInvMat";
-    static string ires = "iResolution";
+    static string ires = "viewport";
     static string ichn0 = "iChannel0";
     static string time = "iTime";
 

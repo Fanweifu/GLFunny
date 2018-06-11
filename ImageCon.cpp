@@ -1,7 +1,6 @@
 #include<gl/glew.h>
 #include<gl/GL.h>
 
-#include<gl/glut.h>
 #include<string>
 #include<time.h>
 #include"Shape\camera.h"
@@ -12,11 +11,6 @@
 using namespace std;
 
 int w, h;
-string iResolution = "viewport";
-string iTime = "iTime";
-string iMouse = "iMouse";
-string mdlInvMat = "mdlInvMat";
-string prjInvMat = "prjInvMat";
 
 Camera cam1;
 Camera cam2;
@@ -190,10 +184,10 @@ void waterPanelRend() {
     
 
     static float time = 0;
-    water.setUniform4f(iResolution, 0,0,w, h);
-    water.setUniform1f(iTime, time);
-    water.setUniformMat4(mdlInvMat, cam1.getModelViewPtr());
-    water.setUniformMat4(prjInvMat, cam1.getProjectionMatInvPtr());
+    water.setUniform2f(Shader::pView, w, h);
+    water.setUniform1f(Shader::pTime, time);
+    water.setUniformMat4(Shader::pMdlInvMat, cam1.getModelViewPtr());
+    water.setUniformMat4(Shader::pPrjInvMat, cam1.getProjectionMatInvPtr());
     time += 0.01;
 
     //texture.bind();
@@ -210,7 +204,7 @@ void waterPanelRend() {
 
 void waterTest() {
     testshp.drawFunc = &waterPanelRend;
-    water.loadFragFile("res/water.txt");
+    water.loadFragFile("res/raym.txt");
     water.link();
     
     testshp.setShader(water);
@@ -247,7 +241,7 @@ void initWindows() {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
     
-    glutCreateWindow("Func:blur;height=floor(r+g+b/3)");
+    glutCreateWindow("GLSL");
     printVersion();
     glutPassiveMotionFunc(moveMouse);
     glutMotionFunc(dragMouse);

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "ui/openglwidget.h"
+#include "openglwidget.h"
+#include "seaShaderWidget.h"
 
 #include<QFileDialog>
 #include<QDockWidget>
@@ -52,4 +53,19 @@ void MainWindow::on_actionImage_triggered()
 
     m_docks.append(dock);
 
+}
+
+void MainWindow::on_actionSea_s_triggered()
+{
+    seaShaderWidget *wg = new seaShaderWidget();
+
+    QDockWidget *dock = new QDockWidget(this);
+    dock->setFeatures( QDockWidget::AllDockWidgetFeatures);
+    dock->setWidget( wg );
+
+    int cnt = m_docks.count();
+    if(cnt==0) addDockWidget(LeftDockWidgetArea, dock);
+    else tabifyDockWidget(m_docks[cnt-1],dock);
+
+    m_docks.append(dock);
 }

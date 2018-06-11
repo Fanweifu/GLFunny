@@ -39,7 +39,9 @@ public:
     int getViewY() { return buttom; }
     int getViewWidth() { return width; }
     int getViewHeight() { return height; }
-
+    long getRenderTimes() {
+        return renderTime;
+    }
     void setViewPort(int x, int y, int width, int height);
     void setWindowSize(int width, int height);
 
@@ -93,7 +95,7 @@ protected:
     int mouseX = 0;
     int mouseY = 0;
 
-    float renderTime = 0;
+    long renderTime = 0;
 
     glm::vec4 backColor = glm::vec4(0.5, 0.5, 1, 1);
     glm::vec3 uplook = glm::vec3(0, 0, 1);

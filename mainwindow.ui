@@ -35,6 +35,7 @@
      <string>文件(&amp;F)</string>
     </property>
     <addaction name="actionImage"/>
+    <addaction name="actionSea_s"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -45,6 +46,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionSea_s">
+   <property name="text">
+    <string>Sea(&amp;s)</string>
    </property>
   </action>
  </widget>

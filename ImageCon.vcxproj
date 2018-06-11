@@ -167,12 +167,14 @@
     <ClCompile Include="Shape\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="castrayTest.txt" />
     <Text Include="Res\raym.txt">
       <DeploymentContent>false</DeploymentContent>
     </Text>
     <Text Include="Res\clouds.txt">
       <DeploymentContent>false</DeploymentContent>
     </Text>
+    <Text Include="Res\template.txt" />
     <Text Include="Res\water.txt">
       <DeploymentContent>false</DeploymentContent>
     </Text>

@@ -25,13 +25,14 @@ GLuint createShader(GLenum type, const char*source, GLint& success) {
 
     if (!success)
     {
-        char info[500];
+        char info[1000];
         glGetShaderInfoLog(shader, 512, NULL, info);
-        cout << "compile failed\n" << info;
+        sprintf(info, "Compile Failed!\n%s", info);
+        OutputDebugString((LPCTSTR)info);
     }
     else
     {
-        cout << "compile success!\n";
+        OutputDebugString(L"compile success!\n");
     }
 
     return shader;
@@ -85,7 +86,7 @@ bool Shader::loadVertexFile(const char *filename) {
     return loadVertexCode(code.c_str());
 }
 
-GLint Shader::getParamID(string &pNm) {
+GLint Shader::getParamID(const string &pNm) {
     map<string, GLint>::iterator it = paramsMap.find(pNm);
     if (it != paramsMap.end()) {
         return (*it).second;
@@ -114,7 +115,7 @@ bool Shader::link() {
     else
     {
         cout << "Link Success\n";
-        return (isVaild=true);
+        return (isVaild = true);
     }
 }
 
@@ -125,62 +126,48 @@ void Shader::use() {
 void Shader::unuse()
 {
     glUseProgram(0);
-
 }
 
-void Shader::setUniform1f(string&pNm, float val) {
-    GLint idx = getParamID(pNm);
-    if(idx>=0) glUniform1f(idx, val);
+void Shader::setUniform1f(const string & pNm, float val) {
+    GLint idx = glGetUniformLocation(program, pNm.data());
+    if (idx >= 0) glUniform1f(idx, val);
 }
 
-void Shader::setUniform1i(string & pNm, int val)
+void Shader::setUniform1i(const string & pNm, int val)
 {
     GLint idx = getParamID(pNm);
     if (idx >= 0)glUniform1i(idx, val);
 }
 
-
-
-
-void Shader::setUniform1fv(string & pNm, int size, float * ptr)
+void Shader::setUniform1fv(const string & pNm, int size, float * ptr)
 {
     GLint idx = getParamID(pNm);
     if (idx >= 0)glUniform1fv(idx, size, ptr);
 }
 
-
-
-void Shader::setUniform2f(string & pNm, float val0, float val1)
+void Shader::setUniform2f(const string & pNm, float val0, float val1)
 {
     GLint idx = getParamID(pNm);
     if (idx >= 0)glUniform2f(idx, val0, val1);
 }
 
-
-
-void Shader::setUniform3f(string & pNm, float val0, float val1, float val2)
+void Shader::setUniform3f(const string & pNm, float val0, float val1, float val2)
 {
     GLint idx = getParamID(pNm);
     if (idx >= 0)glUniform3f(idx, val0, val1, val2);
 }
 
-
-
-void Shader::setUniform4f(string & pNm, float val0, float val1, float val2, float val3)
+void Shader::setUniform4f(const string & pNm, float val0, float val1, float val2, float val3)
 {
     GLint idx = getParamID(pNm);
     if (idx >= 0)glUniform4f(idx, val0, val1, val2, val3);
 }
 
-
-
-void Shader::setUniformMat4(string & pNm, const float*matPtr)
+void Shader::setUniformMat4(const string & pNm, const float*matPtr)
 {
     GLint idx = getParamID(pNm);
-    if (idx >= 0)glUniformMatrix4fv(idx, 1, true , matPtr);
+    if (idx >= 0)glUniformMatrix4fv(idx, 1, true, matPtr);
 }
-
-
 
 Shader * Shader::createDefaultShader()
 {
@@ -192,7 +179,12 @@ Shader * Shader::createDefaultShader()
         "gl_Position= gl_ModelViewProjectionMatrix*vec4(pos,1.);\n"
         "gl_FrontColor = vec4(clr);\n"
         "}\n"
-        );
+    );
 
     return shd;
 }
+
+const string Shader::pView = "viewport";
+const string Shader::pTime = "iTime";
+const string Shader::pPrjInvMat = "prjInvMat";
+const string Shader::pMdlInvMat = "mdlInvMat";

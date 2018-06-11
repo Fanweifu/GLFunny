@@ -18,7 +18,7 @@ void Image3DEx::calT() {
 
     float val = (sin(t) + 1) / 2;
 
-    pshader->setUniform1f(tstr, val);
+    pshader->setUniform1f("t", val);
 }
 
 void Image3DEx::calcHeight()

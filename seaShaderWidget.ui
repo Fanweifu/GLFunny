@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>seaShaderWidget</class>
+ <widget class="QWidget" name="seaShaderWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>599</width>
+    <height>377</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>黑体</family>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>seaShaderWidget</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="ShaderPlay" name="openGLWidget">
+     <property name="minimumSize">
+      <size>
+       <width>253</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>359</height>
+      </size>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="title">
+      <string>ShaderParam</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="7" column="1">
+       <widget class="QPushButton" name="btnBaseColor">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lb1">
+        <property name="font">
+         <font>
+          <family>黑体</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>iter_geometry</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lb2">
+        <property name="text">
+         <string>frequency</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lb5">
+        <property name="text">
+         <string>iter_fragment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lb4">
+        <property name="text">
+         <string>height</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lb3">
+        <property name="text">
+         <string>baseColor</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="IntIter_Geo">
+        <property name="maximum">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QDoubleSpinBox" name="dblSpeed">
+        <property name="maximum">
+         <double>10.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="intIter_Frag">
+        <property name="maximum">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QDoubleSpinBox" name="dblHeight">
+        <property name="maximum">
+         <double>10.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QDoubleSpinBox" name="dblchoppy">
+        <property name="maximum">
+         <double>10.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="lb6">
+        <property name="text">
+         <string>speed</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QDoubleSpinBox" name="dblFrequency">
+        <property name="maximum">
+         <double>10.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="lb7">
+        <property name="text">
+         <string>waterColor</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QPushButton" name="btnWaterColor">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="lb8">
+        <property name="text">
+         <string>choppy</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="btnLoad">
+        <property name="text">
+         <string>Load</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ShaderPlay</class>
+   <extends>QOpenGLWidget</extends>
+   <header location="global">shaderplay.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>dblHeight</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>seaShaderWidget</receiver>
+   <slot>heightVal(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>131</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dblchoppy</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>seaShaderWidget</receiver>
+   <slot>choopyVal(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>170</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dblSpeed</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>seaShaderWidget</receiver>
+   <slot>speedVal(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dblFrequency</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>seaShaderWidget</receiver>
+   <slot>frequecyVal(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IntIter_Geo</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>seaShaderWidget</receiver>
+   <slot>intIter_GeoVal(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>53</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>intIter_Frag</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>seaShaderWidget</receiver>
+   <slot>intIter_FragVal(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnBaseColor</sender>
+   <signal>clicked()</signal>
+   <receiver>seaShaderWidget</receiver>
+   <slot>baseColorClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>289</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnWaterColor</sender>
+   <signal>clicked()</signal>
+   <receiver>seaShaderWidget</receiver>
+   <slot>waterColorClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>331</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>intIter_GeoVal(int)</slot>
+  <slot>intIter_FragVal(int)</slot>
+  <slot>heightVal(double)</slot>
+  <slot>choopyVal(double)</slot>
+  <slot>speedVal(double)</slot>
+  <slot>frequecyVal(double)</slot>
+  <slot>baseColorClick()</slot>
+  <slot>waterColorClick()</slot>
+ </slots>
+</ui>
