@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 QT       += core gui
-#QT += opengl
+QT += opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,8 +23,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-HEADERS += ./ui/ShaderPlay.h \
-    ./ui/openglwidget.h \
+HEADERS += ./ShaderPlay.h \
+    ./openglwidget.h \
     ./mainwindow.h \
     ./shape/camera.h \
     ./shape/image3d.h \
@@ -48,8 +48,8 @@ SOURCES += ./shape/camera.cpp \
     ./shape/vaoarray.cpp \
     ./main.cpp \
     ./mainwindow.cpp \
-    ./ui/ShaderPlay.cpp \
-    ./ui/openglwidget.cpp \
+    ./ShaderPlay.cpp \
+    ./openglwidget.cpp \
     ./Shape/Shader/SeaShader.cpp \
     ./seaShaderWidget.cpp
 
@@ -57,16 +57,11 @@ FORMS += ./mainwindow.ui \
     ./seaShaderWidget.ui
 
 INCLUDEPATH +=C:\opencv3.2\include\
-              C:\glew\include\
               C:\glm\
+ #           C:\glew\include\
+
 
 
 LIBS += C:\opencv3.2\x86\vc14\lib\opencv_world320.lib
-LIBS += C:\glew\lib\Release\Win32\glew32.lib
-#    LIBS += -lopengl32 \
-#    -lglu32 \
-#    -lglut \
+#LIBS += C:\glew\lib\Release\Win32\glew32.lib
 
-
-DISTFILES += \
-    default.fsh

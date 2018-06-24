@@ -1,5 +1,4 @@
 #include "camera.h"
-#include<direct.h>
 Camera::Camera()
 {
 }
@@ -36,6 +35,8 @@ void Camera::drawView() {
 
     mainlight.updatePostion();
     if (Scene) Scene->draw();
+
+   
 
     renderTime += 1;
 }
@@ -289,6 +290,7 @@ void Camera::initGl() {
 
 void Camera::drawBack() {
 
+
     backshd.use();
     
     static string prjinv = "prjInvMat";
@@ -302,14 +304,20 @@ void Camera::drawBack() {
     backshd.setUniform3f(ires, width, height, 1);
     
     backshd.setUniform1f(time, renderTime);
+
     glBegin(GL_QUADS);
-    glVertex3f(-10000, -10000, -Far);
-    glVertex3f(10000, -10000, -Far);
-    glVertex3f(10000, 10000, -Far);
-    glVertex3f(-10000, 10000, -Far);
+    
+    float h = 2 * tan(Fov/2*DEG2RAD)*Far;
+    float w = Ratio*h;
+    glVertex3f(-w, -h, -Far);
+    glVertex3f(w, -h, -Far);
+    glVertex3f(w, h, -Far);
+    glVertex3f(-w, h, -Far);
     glEnd();
   
     backshd.unuse();
+
+    
     
 }
 

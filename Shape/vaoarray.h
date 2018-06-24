@@ -1,7 +1,7 @@
 #ifndef VAOARRAY_H
 #define VAOARRAY_H
 
-#include<gl/glew.h>
+#include<glHead.h>
 #include<assert.h>
 #define VBOCNT 5
 
