@@ -8,7 +8,6 @@
 #include"shader.h"
 #include"glm.hpp"
 #include"gtc/matrix_transform.hpp"
-#include<GL/gl.h>
 
 #define DEG2RAD 3.141593f / 180
 

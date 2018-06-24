@@ -1,14 +1,12 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include<Windows.h>
 #include<sstream>
 #include<iostream>
 #include<fstream>
 #include<stdio.h>
-
+#include"glHead.h"
 #include<map>
-#include<GL/glew.h>
 
 using namespace std;
 class Shader

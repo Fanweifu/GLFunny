@@ -1,5 +1,5 @@
 #include "shader.h"
-#include<GL/glew.h>
+
 
 Shader::Shader()
 {
@@ -28,11 +28,11 @@ GLuint createShader(GLenum type, const char*source, GLint& success) {
         char info[1000];
         glGetShaderInfoLog(shader, 512, NULL, info);
         sprintf(info, "Compile Failed!\n%s", info);
-        OutputDebugString((LPCTSTR)info);
+        printf(info);
     }
     else
     {
-        OutputDebugString(L"compile success!\n");
+        printf("compile success!\n");
     }
 
     return shader;
