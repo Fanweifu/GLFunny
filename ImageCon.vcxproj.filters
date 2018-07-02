@@ -51,6 +51,9 @@
     <ClInclude Include="Shape\texture.h">
       <Filter>头文件\Shape</Filter>
     </ClInclude>
+    <ClInclude Include="glHead.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\image3dex.cpp">
@@ -97,6 +100,7 @@
     <Text Include="Res\template.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="castrayTest.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\noise.png">
