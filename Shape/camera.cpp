@@ -227,8 +227,8 @@ void Camera::updateViewPort() {
 
 void Camera::setDirectionVec3(glm::vec3 dir)
 {
-    rvec.x = asinf(dir.z / dir.length()) / DEG2RAD;
-    rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
+    rvec.x = asinf(dir.z / glm::length(dir)) / DEG2RAD;
+    if(dir.y!=0||dir.x!=0) rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
     updateModel();
 }
 
