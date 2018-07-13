@@ -146,11 +146,11 @@
   <ItemGroup>
     <ClInclude Include="glHead.h" />
     <ClInclude Include="Shape\camera.h" />
+    <ClInclude Include="Shape\complexShape.h" />
     <ClInclude Include="Shape\image3d.h" />
     <ClInclude Include="Shape\image3dex.h" />
     <ClInclude Include="Shape\layer.h" />
     <ClInclude Include="Shape\light.h" />
-    <ClInclude Include="Shape\modelgl.h" />
     <ClInclude Include="Shape\shader.h" />
     <ClInclude Include="Shape\shape.h" />
     <ClInclude Include="Shape\vaoarray.h" />
@@ -158,10 +158,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\camera.cpp" />
+    <ClCompile Include="Shape\ComplexShape.cpp" />
     <ClCompile Include="Shape\image3d.cpp" />
     <ClCompile Include="Shape\image3dex.cpp" />
     <ClCompile Include="Shape\layer.cpp" />
-    <ClCompile Include="Shape\modelgl.cpp" />
     <ClCompile Include="Shape\shader.cpp" />
     <ClCompile Include="Shape\shape.cpp" />
     <ClCompile Include="Shape\vaoarray.cpp" />
@@ -176,13 +176,15 @@
     <Text Include="Res\clouds.txt">
       <DeploymentContent>false</DeploymentContent>
     </Text>
-    <Text Include="Res\template.txt" />
-    <Text Include="Res\water.txt">
+    <Text Include="Res\water.glsl">
       <DeploymentContent>false</DeploymentContent>
     </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\noise.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Res\sky.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

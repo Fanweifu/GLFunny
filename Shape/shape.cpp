@@ -6,23 +6,22 @@ Shape::Shape()
 }
 
 void Shape::draw() {
+
+    if (!visible) return;
+
     glPushMatrix();
 
-    glMultMatrixf(&modelmat[0][0]);
+    glMultMatrixf(glm::value_ptr(modelmat));
 
-    if (pshader) pshader->use();
+    pshader.use();
     ondraw();
-    if (pshader) pshader->unuse();
+    pshader.unuse();
 
-    if (isdrawAxis) Shape::drawAsix(axisLength);
+    if (drawAxis) Shape::drawAsix(axisLength);
 
     glPopMatrix();
 }
 
-void Shape::setShader(Shader & shd)
-{
-    pshader = &shd;
-}
 
 void Shape::updateModel() {
     modelmat = glm::translate(glm::mat4(1.0), pvec);

@@ -30,6 +30,7 @@ public:
 protected:
    
     virtual void initShader();
+    virtual void uninitShader();
     virtual void ondraw();
     virtual void getColor(uint x, uint y, float* outputVec);
     void getColor(uchar* pdata, uint x, uint y, float*outColor);

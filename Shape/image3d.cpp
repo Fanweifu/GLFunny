@@ -95,8 +95,7 @@ void Image3D::generateData() {
 
 void Image3D::initShader()
 {
-    Shader* ins = new Shader();
-    ins->loadVertexCode("#version 330 compatibility\n"
+    pshader.loadVertexCode("#version 330 compatibility\n"
         "layout(location = 0) in vec3 pos;\n"
         "layout(location = 1) in vec4 clr;\n"
         "layout(location = 2) in vec3 nor;\n"
@@ -116,9 +115,12 @@ void Image3D::initShader()
         "}\n"
     );
 
-    ins->link();
-    setShader(*ins);
+    pshader.link();
     
+}
+
+void Image3D::uninitShader()
+{
 }
 
 bool Image3D::reShape(int rowc, int colc) {

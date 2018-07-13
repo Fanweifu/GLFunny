@@ -1,9 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include"glm.hpp"
-#include"gtc/matrix_transform.hpp"
-
 #include"vaoarray.h"
 #include"shape.h"
 #include"light.h"
@@ -39,8 +36,8 @@ public:
     int getViewY() { return buttom; }
     int getViewWidth() { return width; }
     int getViewHeight() { return height; }
-    long getRenderTimes() {
-        return renderTime;
+    double getRenderTimes() {
+        return (double)renderTime/1000;
     }
     void setViewPort(int x, int y, int width, int height);
     void setWindowSize(int width, int height);
@@ -73,9 +70,11 @@ public:
     void drawView();
     void dragMouse(int x, int y, float speed = 0.1f);
     void moveMouse(int x, int y);
+    void mouseCoordToUV(int mx, int my, float &u, float &v);
+    void mouseCoordToDir(int mx, int my, float& x, float &y, float &z);
     void localMove(float right, float forward, float up);
-    const float* getProjectionMatPtr() { return  &matrixProjection[0][0]; }
-    const float* getProjectionMatInvPtr() { return &matrixProjectionInv[0][0]; }
+    const float* getProjectionMatPtr() { return  glm::value_ptr(matrixProjection); }
+    const float* getProjectionMatInvPtr() { return glm::value_ptr(matrixProjectionInv); }
 protected:
     bool inited = false;
     bool windowsChanged = true;
@@ -102,6 +101,9 @@ protected:
     glm::vec3 forwardV = glm::vec3(0, 1, 0);
     glm::vec3 rightV = glm::vec3(1, 0, 0);
     glm::vec3 upV = glm::vec3(0, 0, 1);
+    glm::vec3 target = glm::vec3(0, 1, 0);
+    glm::vec3 mouseTarget = glm::vec3(0, 1, 0);
+
     glm::mat4 matrixProjection;
     glm::mat4 matrixProjectionInv;
     Light mainlight;

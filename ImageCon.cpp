@@ -1,13 +1,18 @@
-#include<gl/glew.h>
-#include<gl/GL.h>
+#include<glHead.h>
+
 
 #include<string>
 #include<time.h>
+#include<windows.h>
+
+#include<gl\glut.h>
 #include"Shape\camera.h"
 #include"Shape\shader.h"
 #include"Shape\texture.h"
 #include"Shape\image3dex.h"
+#include"Shape\complexShape.h"
 #include"Shape\layer.h"
+
 using namespace std;
 
 int w, h;
@@ -18,7 +23,7 @@ Camera cam2;
 Layer ly1;
 Layer ly2;
 Image3DEx img3d;
-Shape testshp;
+ComplexShape testshp;
 Texture texture;
 Shader water;
 ElementData edata;
@@ -50,6 +55,12 @@ void moveMouse(int x, int y) {
     else {
         cam1.moveMouse(x, y);
     }
+
+    Light& l = cam1.getLight();
+    float dx, dy, dz;
+    cam1.mouseCoordToDir(x, y, dx, dy, dz);
+    printf("mouse:(%d,%d) dir:(%f,%f,%f)\n", x, y, dx, dy, dz);
+    l.setPostion(dx, dy, dz, 0);
 }
 
 void dragMouse(int x, int y) {
@@ -65,6 +76,9 @@ void dragMouse(int x, int y) {
     else {
         cam1.dragMouse(x, y);
     }
+
+
+    
 }
 
 void keyFunc(uchar key, int x, int y) {
@@ -102,6 +116,14 @@ void spkeyFunc(int key, int x, int y) {
 
 void render() {
 
+    static float time = 0;
+    water.use();
+    water.setUniform2f(Shader::pView, w, h);
+    water.setUniform1f(Shader::pTime, time);
+    water.setUniformMat4(Shader::pMdlInvMat, cam1.getModelViewPtr());
+    water.setUniformMat4(Shader::pPrjInvMat, cam1.getProjectionMatInvPtr());
+    time += 0.01;
+
     cam1.drawView();
     if(mutiScreen) cam2.drawView();
     glutSwapBuffers();
@@ -110,13 +132,13 @@ void render() {
 void initCamera() {
     cam1.init();
     cam1.setFar(1000);
-    cam1.isdrawAxis = true;
+    cam1.drawAxis = true;
     cam1.setPosition(0, -10, 300);
     cam1.setViewPort(0, 0, 250, 500);
 
     cam2.init();
     cam2.setFar(1000);
-    cam2.isdrawAxis = true;
+    cam2.drawAxis = true;
     cam2.setPosition(0, 10, 300);
     cam2.setViewPort(250, 0, 250, 500);
 
@@ -180,35 +202,19 @@ void imgShapeTest() {
 
 }
 
-void waterPanelRend() {
-    
-
-    static float time = 0;
-    water.setUniform2f(Shader::pView, w, h);
-    water.setUniform1f(Shader::pTime, time);
-    water.setUniformMat4(Shader::pMdlInvMat, cam1.getModelViewPtr());
-    water.setUniformMat4(Shader::pPrjInvMat, cam1.getProjectionMatInvPtr());
-    time += 0.01;
-
-    //texture.bind();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-100, -100, 0);
-    glVertex3f(-100, 100, 0);
-    glVertex3f(100, 100, 0);
-    glVertex3f(100, -100, 0);
-    glEnd();
-
-    //texture.unbind();
-}
-
 void waterTest() {
-    testshp.drawFunc = &waterPanelRend;
-    water.loadFragFile("res/raym.txt");
+
+    testshp.addPoint(-100, -100, 0);
+    testshp.addPoint(-100, 100, 0);
+    testshp.addPoint(100, 100, 0);
+    //testshp.addPoint(100, -100, 0);
+    water.loadFragFile("res/water.glsl");
     water.link();
     
-    testshp.setShader(water);
-    //texture.createImg(0, 1, 0);
+    testshp.pshader = water;
+   
+
+
     ly1.add(&testshp);
     ly2.add(&testshp);
 

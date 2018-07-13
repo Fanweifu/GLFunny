@@ -1,4 +1,7 @@
 #include "camera.h"
+
+using namespace glm;
+
 Camera::Camera()
 {
 }
@@ -16,24 +19,29 @@ void Camera::drawView() {
 
     if (projectionChanged||isMultiScreen) {
         glMatrixMode(GL_PROJECTION);
-        glLoadMatrixf(&matrixProjection[0][0]);
+        glLoadMatrixf(value_ptr(matrixProjection));
         projectionChanged = false;
         glMatrixMode(GL_MODELVIEW);
     }
     
+ 
+
     glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glLoadIdentity();
     drawBack();
 
-    glLoadMatrixf(&modelmatInv[0][0]);
+    glLoadMatrixf(value_ptr(modelmatInv));
 
-    
-
-    
+    glPointSize(5);
+    glBegin(GL_POINTS);
+    glVertex3fv(value_ptr(mouseTarget));
+    glEnd();
 
     mainlight.updatePostion();
+
+
     if (Scene) Scene->draw();
 
    
@@ -56,6 +64,39 @@ void Camera::moveMouse(int x, int y)
     mouseY = y;
 }
 
+void Camera::mouseCoordToUV(int mx, int my, float & u, float & v)
+{
+    glm::vec2 uv = glm::vec2(mx, height-my) / glm::vec2(width, height);
+    
+    uv = 2.0f*uv - 1.0f;
+
+    u = uv.x;
+    v = uv.y;
+}
+
+void Camera::mouseCoordToDir(int mx, int my, float & x, float & y, float & z)
+{
+    float u, v;
+    mouseCoordToUV(mx, my, u, v);
+    
+    updateProjection();
+    updateModel();
+
+    glm::vec4 dir = matrixProjectionInv*glm::vec4(u, v, 1, 1);
+    dir = dir / dir.w;
+    auto zero = glm::vec4(0, 0, 0, 1);
+    auto pos = modelmat*zero;
+    auto dirw = modelmat*dir;
+    
+    glm::vec4 rdir = dirw - pos;
+
+    glm::vec3 rdir3  = glm::normalize(glm::vec3(rdir.x,rdir.y,rdir.z));
+    
+    mouseTarget = rdir3 + pvec;
+
+    x = rdir3.x; y = rdir3.y; z = rdir3.z;
+}
+
 void Camera::localMove( float right, float forward, float up)
 {
     auto npvec = pvec;
@@ -63,30 +104,6 @@ void Camera::localMove( float right, float forward, float up)
     setPosition(npvec.x, npvec.y, npvec.z);
 }
 
-//void Camera::Move(int keyCmd, float step)
-//{
-//    auto nposv = pvec;
-//
-//    switch (keyCmd)
-//    {
-//    case CAM_FORWARD:
-//        nposv += step*forward; break;
-//    case CAM_BACK:
-//        nposv -= step*forward; break;
-//    case CAM_LEFT:
-//        nposv -= step*right; break;
-//    case CAM_RIGHT:
-//        nposv += step*right; break;
-//    case CAM_UP:
-//        nposv += step*up; break;
-//    case CAM_DOWN:
-//        nposv -= step*up; break;
-//    default:
-//        break;
-//    }
-//
-//    setPosition(nposv.x, nposv.y, nposv.z);
-//}
 
 void drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
 {
@@ -181,9 +198,9 @@ void Camera::updateModel()
     rightV = glm::vec3(sin(rvec.z*DEG2RAD), -cos(rvec.z*DEG2RAD), 0);
     upV = glm::cross(rightV, forwardV);
 
-    auto centre = pvec + forwardV;
+    target = pvec + forwardV;
     
-    modelmatInv = glm::lookAt(pvec, centre, upV);
+    modelmatInv = glm::lookAt(pvec, target, upV);
     modelmat = glm::inverse(modelmatInv);
 }
 
@@ -293,17 +310,10 @@ void Camera::drawBack() {
 
     backshd.use();
     
-    static string prjinv = "prjInvMat";
-    static string mdlinv = "mdlInvMat";
-    static string ires = "viewport";
-    static string ichn0 = "iChannel0";
-    static string time = "iTime";
-
-    backshd.setUniformMat4(prjinv, Camera::getProjectionMatInvPtr());
-    backshd.setUniformMat4(mdlinv, Camera::getModelViewPtr());
-    backshd.setUniform3f(ires, width, height, 1);
-    
-    backshd.setUniform1f(time, renderTime);
+    backshd.setUniformMat4(Shader::pPrjInvMat, Camera::getProjectionMatInvPtr());
+    backshd.setUniformMat4(Shader::pMdlInvMat, Camera::getModelViewPtr());
+    backshd.setUniform2f(Shader::pView, width, height);
+    backshd.setUniform1f(Shader::pTime, Camera::getRenderTimes());
 
     glBegin(GL_QUADS);
     
@@ -323,7 +333,7 @@ void Camera::drawBack() {
 
 void Camera::initBack()
 {
-    backshd.loadFragFile("Res/clouds.txt");
+    backshd.loadFragFile("Res/sky.glsl");
     backshd.link();
 
     

@@ -120,7 +120,7 @@ bool Shader::link() {
 }
 
 void Shader::use() {
-    glUseProgram(program);
+    if(isVaild) glUseProgram(program);
 }
 
 void Shader::unuse()

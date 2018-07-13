@@ -3,11 +3,18 @@
 
 #include<glHead.h>
 #include<assert.h>
-#define VBOCNT 5
 
-class BindBufferClass {
+
+#define VBOCNT 5
+#define POSVBOI 0
+#define COLVBOI 1
+#define NRMVBOI 2
+#define TXCVBOI 3
+#define IDXVBOI 4
+
+class BindData {
 public:
-    friend class VertexArray;
+    friend class VAOFunctions;
     unsigned int getVAOID() {
         if (vao == 0) {
             glewInit();
@@ -17,37 +24,37 @@ public:
     }
     virtual void renderData(GLenum mode) {}
 
-    BindBufferClass();
-    ~BindBufferClass();
+    BindData();
+    ~BindData();
 
 protected:
 
     GLuint vao = 0;
 };
 
-class BufferData :public BindBufferClass
+class ArrayData :public BindData
 {
 public:
 
     GLuint vertexNums = 0;
     void setVertex(GLfloat* arr);
-    void setColor(GLfloat* arr, int vecNum = 3);
+    void setColor(GLfloat* arr, int cnt = 3);
     void setNormal(GLfloat* arr);
     void setTexCoord(GLfloat* arr);
     void renderData(GLenum mode);
 
-    BufferData() :BindBufferClass() {}
+    ArrayData() :BindData() {}
    
 protected:
 
 private:
 };
 
-class ElementData :public BindBufferClass
+class ElementData :public BindData
 {
 public:
 
-    ElementData() :BindBufferClass() {}
+    ElementData() :BindData() {}
     //~ElementData() { BindBufferClass::~BindBufferClass(); }
     void setIndex(GLuint *indeice, int idxNum);
     void setVertex(GLfloat* arr, int ptNum);
@@ -60,24 +67,24 @@ protected:
 private:
 };
 
-class VertexArray
+class VAOFunctions
 {
 public:
-    friend class BufferData;
+    friend class ArrayData;
     friend class ElementData;
 
 protected:
     static void  init();
-    static void  setVertex(GLuint vaObj, GLfloat* arr, int vecNum,bool _static = true);
-    static void  setColor(GLuint vaObj, GLfloat* arr, int vecNum, int chns = 3, bool _static = true);
-    static void  setNormal(GLuint vaObj, GLfloat* arr, int vecNum, bool _static = true);
-    static void  setTexCoord(GLuint vaObj, GLfloat* arr, int vecNum, bool _static = true);
+    static void  setVertex(GLuint vaObj, GLfloat* arr, int cnt,bool _static = true);
+    static void  setColor(GLuint vaObj, GLfloat* arr, int cnt, int chns = 3, bool _static = true);
+    static void  setNormal(GLuint vaObj, GLfloat* arr, int cnt, bool _static = true);
+    static void  setTexCoord(GLuint vaObj, GLfloat* arr, int cnt, bool _static = true);
 
     static void  setIndice(GLuint vaObj, GLuint *idxarr, int idxNum, bool _static = true);
-    static void  setVertexElem(GLuint vaObj, GLfloat*valarr, int vecNum, bool _static = true);
-    static void  setColorElem(GLuint vaObj, GLfloat*valarr, int vecNum, int chns, bool _static = true);
-    static void  setNormalElem(GLuint vaObj, GLfloat*valarr, int vecNum, bool _static = true);
-    static void  setTexCoord2DElem(GLuint vaObj, GLfloat*valarr, int vecNum, bool _static = true);
+    static void  setVertexElem(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
+    static void  setColorElem(GLuint vaObj, GLfloat*valarr, int cnt, int chns, bool _static = true);
+    static void  setNormalElem(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
+    static void  setTexCoord2DElem(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
 
     
 

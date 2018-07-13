@@ -1,13 +1,12 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 #include"shader.h"
+#include"texture.h"
 #include"glm.hpp"
 #include"gtc/matrix_transform.hpp"
+#include"gtc/type_ptr.hpp"
 
 #define DEG2RAD 3.141593f / 180
 
@@ -20,8 +19,12 @@ class Shape
 public:
     Shape();
 
-    bool isdrawAxis = false;
+    bool drawAxis = false;
+    bool visible = true;
     float axisLength = 1;
+
+    Shader pshader;
+    Texture pTexture;
 
     float posX() { return pvec.x; }
     float posY() { return pvec.y; }
@@ -71,26 +74,30 @@ public:
     void toLocalDir(float&x, float &y, float &z);
     void toWorldDir(float&x, float &y, float &z);
     void draw();
-    void setShader(Shader &shd);
-    const float* getModelViewPtr() { return &modelmat[0][0]; }
-    const float* getModelViewInvPtr() { return &modelmatInv[0][0]; }
+    const float* getModelViewPtr() { return glm::value_ptr(modelmat); }
+    const float* getModelViewInvPtr() { return glm::value_ptr(modelmatInv); }
 
     voidHdl drawFunc = NULL;
 
+   
+
 protected:
+
+    bool useShader = true;
+
+    xyzChangedHdl posEvent = NULL;
+    xyzChangedHdl rotEvent = NULL;
+    xyzChangedHdl sclEvent = NULL;
+
 
     glm::vec3 pvec = glm::vec3(0);
     glm::vec3 rvec = glm::vec3(0);
     glm::vec3 svec = glm::vec3(1);
 
-    bool useShader = true;
-    xyzChangedHdl posEvent = NULL;
-    xyzChangedHdl rotEvent = NULL;
-    xyzChangedHdl sclEvent = NULL;
 
     glm::mat4 modelmat;
     glm::mat4 modelmatInv;
-    Shader* pshader = NULL;
+   
    
     virtual void updateModel();
     virtual void ondraw();

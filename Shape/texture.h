@@ -10,25 +10,22 @@ public:
     Texture() {};
     ~Texture() {
         glDeleteTextures(1, &textImgID);
-
-        if (imgdata) delete[]  imgdata;
     };
 
     bool loadImg(char* path);
     uint texID() { return textImgID; }
-    void createImg(float r, float g, float b);
+    void makeColor(float r, float g, float b);
     
-    void bind();
+    void bind(uint level=0);
     void unbind();
 
 protected:
     bool inited = false;
     uint textImgID = 0;
-    uchar* imgdata = NULL;
     uint cols, rows, chns;
 
     void init();
-    void readImgData(cv::Mat &img);
+    uchar * readImgData(cv::Mat &img);
 };
 
 #endif
