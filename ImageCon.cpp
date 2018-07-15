@@ -60,7 +60,7 @@ void moveMouse(int x, int y) {
     float dx, dy, dz;
     cam1.mouseCoordToDir(x, y, dx, dy, dz);
     printf("mouse:(%d,%d) dir:(%f,%f,%f)\n", x, y, dx, dy, dz);
-    l.setPostion(dx, dy, dz, 0);
+    //l.setPostion(dx, dy, dz, 0);
 }
 
 void dragMouse(int x, int y) {
@@ -207,6 +207,7 @@ void waterTest() {
     testshp.addPoint(-100, -100, 0);
     testshp.addPoint(-100, 100, 0);
     testshp.addPoint(100, 100, 0);
+    testshp.drawAxis = true;
     //testshp.addPoint(100, -100, 0);
     water.loadFragFile("res/water.glsl");
     water.link();
@@ -220,6 +221,7 @@ void waterTest() {
 
     cam1.setPosition(0, 0.5, 1);
     cam2.setPosition(0, -0.5, 1);
+    cam2.visible = false;
 
     mutiScreen = false;
 }

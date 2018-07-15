@@ -68,13 +68,15 @@ void main(){
     setupCamera(uv,pos,dir);
 
 
-    vec3 sunPos =  gl_LightSource[0].position.xyz;
+    vec3 sunPos = normalize(gl_LightSource[0].position.xyz);
     
+    float cos = dot(dir, sunPos);
     
+
 
 	vec3 color = getSky(dir,sunPos);
 	
 	color = color / (2.0 * color + 0.5 - color);
 	
-	gl_FragColor = vec4(dir, 1.0);
+	gl_FragColor = vec4(dir , 1.0);
 }

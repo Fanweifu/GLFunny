@@ -36,7 +36,8 @@ HEADERS += ./ShaderPlay.h \
     ./shape/shape.h \
     ./shape/vaoarray.h \
     ./Shape/Shader/SeaShader.h \
-    ./seaShaderWidget.h
+    ./seaShaderWidget.h \
+    glHead.h
 
 SOURCES += ./shape/camera.cpp \
     ./shape/image3d.cpp \

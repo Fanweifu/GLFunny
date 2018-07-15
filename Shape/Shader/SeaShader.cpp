@@ -45,8 +45,8 @@ void SeaShader::use()
     setUniform1f(SeaShader::pSpeed, speed);
     setUniform1f(SeaShader::pFrequency, frequency);
 
-    setUniform3f(SeaShader::pBaseColor, baseColor.r, baseColor.g, baseColor.b);
-    setUniform3f(SeaShader::pWaterColor,waterColor.r,waterColor.g,waterColor.b);
+    setUniform1fv(SeaShader::pBaseColor, 3 ,glm::value_ptr(baseColor));
+    setUniform1fv(SeaShader::pWaterColor,3, glm::value_ptr(waterColor));
 
     if (camobj) {
 
