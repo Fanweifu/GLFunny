@@ -328,6 +328,6 @@ void Camera::drawBack() {
 
 void Camera::initBack()
 {
-    backshd.loadFragFile("Res/sky.glsl");
+    backshd.loadFragFile("GLSL/sky.glsl");
     backshd.link();
 }

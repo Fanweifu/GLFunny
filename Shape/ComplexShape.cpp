@@ -29,6 +29,13 @@ void ComplexShape::addPoint(float px, float py, float pz, float nx, float ny, fl
     if (inited) init();
 }
 
+void ComplexShape::addIndex(uint idx )
+{
+    indexes.push_back(idx);   
+}
+
+
+
 void ComplexShape::clear()
 {
     position.clear();
@@ -46,11 +53,13 @@ void ComplexShape::init()
     buffdata.setNormal(&normal[0]);
     buffdata.setTexCoord(&texcoord[0]);
 
+    if(!indexes.empty()) buffdata.setIndex(&indexes[0],indexes.size());
     inited = true;
 }
 
 void ComplexShape::ondraw()
 {
     if (!inited) init();
-    buffdata.renderData(GL_TRIANGLES);
+    if(indexes.empty()) buffdata.renderData(GL_TRIANGLES);
+    else buffdata.renderIndex(GL_TRIANGLES);
 }

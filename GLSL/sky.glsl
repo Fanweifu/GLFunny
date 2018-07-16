@@ -65,13 +65,9 @@ void main(){
     vec3 dir = uvToWorldDir(uv);
     vec3 sunPos = normalize(worldLight.xyz);
     
-    float cos = dot(dir, sunPos);
-    
-
-
 	vec3 color = getSky(dir,sunPos);
 	
 	color = color / (2.0 * color + 0.5 - color);
 	
-	gl_FragColor = vec4(color, 1.0); //smoothstep(0.97,0.99,cos)
+	gl_FragColor = vec4(dir, 1.0); //smoothstep(0.97,0.99,cos)
 }

@@ -11,6 +11,7 @@ public:
     virtual ~ComplexShape();
 
     void addPoint(float px, float py, float pz,float nx=0,float ny=0,float nz=1,float tx=0,float ty=0,float r=1,float g=1,float b=1,float a =1);
+    void addIndex(uint idx1);
     void clear();
 
 protected:
@@ -19,6 +20,7 @@ protected:
     std::vector<float> texcoord;
     std::vector<float> color;
     std::vector<float> normal;
+    std::vector<uint> indexes;
     ArrayData buffdata;
 
     void init();

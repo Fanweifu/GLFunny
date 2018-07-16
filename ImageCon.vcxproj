@@ -75,6 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -169,22 +170,15 @@
     <ClCompile Include="Shape\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="castrayTest.txt" />
-    <Text Include="Res\raym.txt">
-      <DeploymentContent>false</DeploymentContent>
-    </Text>
-    <Text Include="Res\clouds.txt">
-      <DeploymentContent>false</DeploymentContent>
-    </Text>
-    <Text Include="Res\water.glsl">
-      <DeploymentContent>false</DeploymentContent>
-    </Text>
+    <Image Include="Img\noise.png" />
+    <Image Include="Img\wood.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Res\noise.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Res\sky.glsl" />
+    <None Include="GLSL\clouds.glsl" />
+    <None Include="GLSL\raym.glsl" />
+    <None Include="GLSL\sky.glsl" />
+    <None Include="GLSL\template.glsl" />
+    <None Include="GLSL\water.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

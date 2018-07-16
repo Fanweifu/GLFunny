@@ -13,9 +13,13 @@ void Shape::draw() {
 
     glMultMatrixf(glm::value_ptr(modelmat));
 
+    pTexture.bind();
     pshader.use();
+
     ondraw();
+
     pshader.unuse();
+    pTexture.unbind();
 
     if (drawAxis) Shape::drawAsix(axisLength);
 

@@ -36,12 +36,14 @@ class ArrayData :public BindData
 public:
 
     GLuint vertexNums = 0;
+    GLuint indexNums = 0;
     void setVertex(GLfloat* arr);
     void setColor(GLfloat* arr, int cnt = 3);
     void setNormal(GLfloat* arr);
     void setTexCoord(GLfloat* arr);
+    void setIndex(GLuint* arr,int idxnum);
     void renderData(GLenum mode);
-
+    void renderIndex(GLenum mode);
     ArrayData() :BindData() {}
    
 protected:
@@ -62,7 +64,8 @@ public:
     void setTexCoord(GLfloat* arr,int ptNum);
     void renderData(GLenum mode);
 protected:
-    GLuint vertexNum = 0;
+    GLuint indexNum = 0;
+
 private:
 };
 
@@ -78,12 +81,14 @@ protected:
     static void  setColor(GLuint vaObj, GLfloat* arr, int cnt, int chns = 3, bool _static = true);
     static void  setNormal(GLuint vaObj, GLfloat* arr, int cnt, bool _static = true);
     static void  setTexCoord(GLuint vaObj, GLfloat* arr, int cnt, bool _static = true);
-
     static void  setIndice(GLuint vaObj, GLuint *idxarr, int idxNum, bool _static = true);
-    static void  setVertexElem(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
-    static void  setColorElem(GLuint vaObj, GLfloat*valarr, int cnt, int chns, bool _static = true);
-    static void  setNormalElem(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
-    static void  setTexCoord2DElem(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
+
+
+    static void  setIndiceShd(GLuint vaObj, GLuint *idxarr, int idxNum, bool _static = true);
+    static void  setVertexShd(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
+    static void  setColorShd(GLuint vaObj, GLfloat*valarr, int cnt, int chns, bool _static = true);
+    static void  setNormalShd(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
+    static void  setTexCoord2DShd(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
 
     
 

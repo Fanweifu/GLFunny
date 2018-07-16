@@ -12,20 +12,30 @@ public:
         glDeleteTextures(1, &textImgID);
     };
 
-    bool loadImg(char* path);
     uint texID() { return textImgID; }
-    void makeColor(float r, float g, float b);
-    
+       
     void bind(uint level=0);
     void unbind();
 
 protected:
     bool inited = false;
+    bool isValid = false;
     uint textImgID = 0;
-    uint cols, rows, chns;
 
     void init();
+    
+};
+
+class ImgTexture :public Texture {
+
+public:
+    bool loadRgbImg(char* path);
+    uint cols, rows, chns;
+    
+    void makeSingleColor(float r, float g, float b);
+protected:
     uchar * readImgData(cv::Mat &img);
 };
+
 
 #endif

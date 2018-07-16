@@ -125,11 +125,11 @@ void Shader::use() {
 
 void Shader::unuse()
 {
-    glUseProgram(0);
+    if(isVaild) glUseProgram(0);
 }
 
 void Shader::setUniform1f(const string & pNm, float val) {
-    GLint idx = glGetUniformLocation(program, pNm.data());
+    GLint idx = getParamID(pNm);
     if (idx >= 0) glUniform1f(idx, val);
 }
 

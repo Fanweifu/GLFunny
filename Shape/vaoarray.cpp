@@ -22,9 +22,10 @@ void VAOFunctions::setVertex(GLuint vaObj, GLfloat *arr, int num, bool _static) 
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, NULL);
+    
 }
 
-void VAOFunctions::setVertexElem(GLuint vaObj, GLfloat * valarr, int cnt, bool _static)
+void VAOFunctions::setVertexShd(GLuint vaObj, GLfloat * valarr, int cnt, bool _static)
 {
     if (!inited) init();
 
@@ -36,7 +37,7 @@ void VAOFunctions::setVertexElem(GLuint vaObj, GLfloat * valarr, int cnt, bool _
     glEnableVertexAttribArray(0);
 }
 
-void VAOFunctions::setIndice(GLuint vaObj, GLuint * idxarr, int idxNum,bool _static)
+void VAOFunctions::setIndiceShd(GLuint vaObj, GLuint * idxarr, int idxNum,bool _static)
 {
     if (!inited) init();
 
@@ -57,7 +58,7 @@ void  VAOFunctions::setColor(GLuint vaObj, GLfloat *arr, int cnt, int chns,bool 
     glColorPointer(chns, GL_FLOAT, 0, NULL);
 }
 
-void VAOFunctions::setColorElem(GLuint vaObj, GLfloat * valarr, int vecNum, int chns, bool _static)
+void VAOFunctions::setColorShd(GLuint vaObj, GLfloat * valarr, int vecNum, int chns, bool _static)
 {
     if (!inited) init();
 
@@ -69,7 +70,7 @@ void VAOFunctions::setColorElem(GLuint vaObj, GLfloat * valarr, int vecNum, int 
     glEnableVertexAttribArray(1);
 }
 
-void VAOFunctions::setNormalElem(GLuint vaObj, GLfloat * valarr, int vecNum, bool _static)
+void VAOFunctions::setNormalShd(GLuint vaObj, GLfloat * valarr, int vecNum, bool _static)
 {
     if (!inited) init();
 
@@ -81,7 +82,7 @@ void VAOFunctions::setNormalElem(GLuint vaObj, GLfloat * valarr, int vecNum, boo
     glEnableVertexAttribArray(2);
 }
 
-void VAOFunctions::setTexCoord2DElem(GLuint vaObj, GLfloat * valarr, int vecNum, bool _static)
+void VAOFunctions::setTexCoord2DShd(GLuint vaObj, GLfloat * valarr, int vecNum, bool _static)
 {
     if (!inited) init();
     glBindVertexArray(vaObj);
@@ -117,6 +118,16 @@ void  VAOFunctions::setTexCoord(GLuint vaObj, GLfloat *arr, int num, bool _stati
     glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 }
 
+void VAOFunctions::setIndice(GLuint vaObj, GLuint * idxarr, int idxNum, bool _static)
+{
+    if (!inited) init();
+
+    glBindVertexArray(vaObj);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOS[4]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxNum * sizeof(GLuint), idxarr, getEnum(_static));
+
+}
+
 GLenum VAOFunctions::getEnum(bool _static)
 {
     return _static ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
@@ -136,47 +147,55 @@ void  ArrayData::setTexCoord(GLfloat *arr) {
     VAOFunctions::setTexCoord(getVAOID(), arr, vertexNums);
 }
 
+void ArrayData::setIndex(GLuint * arr, int idxnum)
+{
+    indexNums = idxnum;
+    VAOFunctions::setIndice(getVAOID() , arr, idxnum);
+}
+
 void ArrayData::renderData(GLenum mode)
 {
     glBindVertexArray(vao);
     glDrawArrays(mode, 0, vertexNums);
+}
 
-    //glDisableVertexAttribArray(0);
-
-    //glDrawArrays(mode, 0, vertexNums);
+void ArrayData::renderIndex(GLenum mode)
+{
+    glBindVertexArray(vao);
+    glDrawElements(mode, indexNums, GL_UNSIGNED_INT, 0);
 }
 
 void ElementData::setIndex(GLuint * indeice, int idxNum)
 {
-    vertexNum = idxNum;
+    indexNum = idxNum;
     VAOFunctions::setIndice(getVAOID(), indeice, idxNum);
 }
 
 void ElementData::setVertex(GLfloat * arr, int ptNum)
 {
-    VAOFunctions::setVertexElem(getVAOID(), arr, ptNum);
+    VAOFunctions::setVertexShd(getVAOID(), arr, ptNum);
 }
 
 void ElementData::setColor(GLfloat * arr, int chns, int ptNum)
 {
-    VAOFunctions::setColorElem(getVAOID(), arr, ptNum, chns);
+    VAOFunctions::setColorShd(getVAOID(), arr, ptNum, chns);
 }
 
 void ElementData::setNormal(GLfloat * arr, int ptNum)
 {
-    VAOFunctions::setNormalElem(getVAOID(), arr, ptNum);
+    VAOFunctions::setNormalShd(getVAOID(), arr, ptNum);
 }
 
 void ElementData::setTexCoord(GLfloat * arr,int ptNum)
 {
-    VAOFunctions::setTexCoord2DElem(getVAOID(), arr, ptNum);
+    VAOFunctions::setTexCoord2DShd(getVAOID(), arr, ptNum);
 }
 
 void ElementData::renderData(GLenum mode)
 {
     glBindVertexArray(vao);
 
-    glDrawElements(mode, vertexNum, GL_UNSIGNED_INT, 0);
+    glDrawElements(mode, indexNum, GL_UNSIGNED_INT, 0);
 }
 
 BindData::BindData()
