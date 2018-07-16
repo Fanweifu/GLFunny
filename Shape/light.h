@@ -29,15 +29,15 @@ public:
         lightPos[1] = py;
         lightPos[2] = pz;
         lightPos[3] = w;
-        glLightfv(enumval, GL_POSITION, lightPos);
     }
-    void updatePostion() { glLightfv(enumval, GL_POSITION, lightPos); }
+    void draw() { glLightfv(enumval, GL_POSITION, lightPos); }
     void getPositon(float &px, float &py, float &pz, float &w) {
         px = lightPos[0];
         py = lightPos[1];
         pz = lightPos[2];
         w = lightPos[3];
     }
+    const float* getPositonf4() { return lightPos; }
 
     void setAmbient(float r, float g, float b, float a) {
         lightKa[0] = r;

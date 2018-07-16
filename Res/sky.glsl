@@ -1,5 +1,7 @@
 uniform float     iTime;
 uniform vec2      viewport;
+uniform vec3      cameraPos;
+uniform vec4      worldLight;
 uniform mat4      prjInvMat;
 uniform mat4      mdlInvMat;
 
@@ -7,21 +9,17 @@ vec3 yztozy(vec3 p){
     return vec3(p.x,p.z,p.y);
 }
 
-vec2 coordToUV(vec2 coord,vec2 size){
-    return 2.0*coord/size-1.0;
+vec2 coordToUV(vec2 coord){
+    return 2.0*coord/viewport-1.0;
 }
 
-void setupCamera(vec2 uv,out vec3 campos, out vec3 dir){
+vec3 uvToWorldDir(vec2 uv){
      vec4 camdir = vec4(uv,1,1)*prjInvMat;
      camdir = camdir/camdir.w;
-
-     vec4 camv = vec4(0,0,0,1);
-     camv = camv*mdlInvMat;
-     campos = camv.xyz;
-
      vec4 dirp = camdir*mdlInvMat;
-     dir = normalize((dirp-camv).xyz);
+     return normalize(dirp.xyz-cameraPos);
 }
+
 
 
 const float coeiff = 0.25;
@@ -63,12 +61,9 @@ vec3 getSky(vec3 dir, vec3 sunPos){
 
 void main(){
     
-    vec2 uv = coordToUV(gl_FragCoord.xy,viewport);
-    vec3 pos,dir;
-    setupCamera(uv,pos,dir);
-
-
-    vec3 sunPos = normalize(gl_LightSource[0].position.xyz);
+    vec2 uv = coordToUV(gl_FragCoord.xy);
+    vec3 dir = uvToWorldDir(uv);
+    vec3 sunPos = normalize(worldLight.xyz);
     
     float cos = dot(dir, sunPos);
     
@@ -78,5 +73,5 @@ void main(){
 	
 	color = color / (2.0 * color + 0.5 - color);
 	
-	gl_FragColor = vec4(dir , 1.0);
+	gl_FragColor = vec4(color, 1.0); //smoothstep(0.97,0.99,cos)
 }

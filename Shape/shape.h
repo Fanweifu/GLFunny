@@ -1,7 +1,6 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
-
 #include"shader.h"
 #include"texture.h"
 #include"glm.hpp"
@@ -9,7 +8,6 @@
 #include"gtc/type_ptr.hpp"
 
 #define DEG2RAD 3.141593f / 180
-
 
 typedef void(*xyzChangedHdl)(float x, float y, float z);
 typedef void(*voidHdl)();
@@ -39,6 +37,7 @@ public:
             onPositionChanged();
         }
     }
+    const float* getPositionf3() { return glm::value_ptr(pvec); }
     virtual void onPositionChanged() {}
 
     float rotX() { return rvec.x; }
@@ -53,6 +52,7 @@ public:
             onRotationChanged();
         }
     }
+    const float* getRotationf3() { return glm::value_ptr(rvec); }
     virtual void onRotationChanged() {}
 
     float sclX() { return svec.x; }
@@ -67,6 +67,7 @@ public:
             onScaleChanged();
         }
     }
+    const float* getScalef3() { return glm::value_ptr(svec); }
     virtual void onScaleChanged() {}
 
     void toLocalPos(float&x, float &y, float &z);
@@ -74,12 +75,10 @@ public:
     void toLocalDir(float&x, float &y, float &z);
     void toWorldDir(float&x, float &y, float &z);
     void draw();
-    const float* getModelViewPtr() { return glm::value_ptr(modelmat); }
-    const float* getModelViewInvPtr() { return glm::value_ptr(modelmatInv); }
+    const float* getModelMatPtr() { return glm::value_ptr(modelmat); }
+    const float* getModelMatInvPtr() { return glm::value_ptr(modelmatInv); }
 
     voidHdl drawFunc = NULL;
-
-   
 
 protected:
 
@@ -89,21 +88,17 @@ protected:
     xyzChangedHdl rotEvent = NULL;
     xyzChangedHdl sclEvent = NULL;
 
-
     glm::vec3 pvec = glm::vec3(0);
     glm::vec3 rvec = glm::vec3(0);
     glm::vec3 svec = glm::vec3(1);
 
-
     glm::mat4 modelmat;
     glm::mat4 modelmatInv;
-   
-   
+
     virtual void updateModel();
     virtual void ondraw();
 
     static void drawAsix(float size);
-    
 };
 
 #endif // SHAPE_H

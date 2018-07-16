@@ -94,8 +94,10 @@
     <Text Include="Res\clouds.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="castrayTest.txt" />
     <Text Include="Res\water.glsl">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="castrayTest.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>

@@ -17,14 +17,12 @@ void Camera::drawView() {
         glScissor(left, buttom, width, height);
     }
 
-    if (projectionChanged||isMultiScreen) {
+    if (projectionChanged || isMultiScreen) {
         glMatrixMode(GL_PROJECTION);
         glLoadMatrixf(value_ptr(matrixProjection));
         projectionChanged = false;
         glMatrixMode(GL_MODELVIEW);
     }
-    
- 
 
     glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -34,17 +32,9 @@ void Camera::drawView() {
 
     glLoadMatrixf(value_ptr(modelmatInv));
 
-    glPointSize(5);
-    glBegin(GL_POINTS);
-    glVertex3fv(value_ptr(mouseTarget));
-    glEnd();
-
-    mainlight.updatePostion();
-
+    mainlight.draw();
 
     if (Scene) Scene->draw();
-
-   
 
     renderTime += 1;
 }
@@ -66,8 +56,8 @@ void Camera::moveMouse(int x, int y)
 
 void Camera::mouseCoordToUV(int mx, int my, float & u, float & v)
 {
-    glm::vec2 uv = glm::vec2(mx, height-my) / glm::vec2(width, height);
-    
+    glm::vec2 uv = glm::vec2(mx, height - my) / glm::vec2(width, height);
+
     uv = 2.0f*uv - 1.0f;
 
     u = uv.x;
@@ -78,7 +68,7 @@ void Camera::mouseCoordToDir(int mx, int my, float & x, float & y, float & z)
 {
     float u, v;
     mouseCoordToUV(mx, my, u, v);
-    
+
     updateProjection();
     updateModel();
 
@@ -87,23 +77,36 @@ void Camera::mouseCoordToDir(int mx, int my, float & x, float & y, float & z)
     auto zero = glm::vec4(0, 0, 0, 1);
     auto pos = modelmat*zero;
     auto dirw = modelmat*dir;
-    
+
     glm::vec4 rdir = dirw - pos;
 
-    glm::vec3 rdir3  = glm::normalize(glm::vec3(rdir.x,rdir.y,rdir.z));
-    
+    glm::vec3 rdir3 = glm::normalize(glm::vec3(rdir.x, rdir.y, rdir.z));
+
     mouseTarget = rdir3 + pvec;
 
     x = rdir3.x; y = rdir3.y; z = rdir3.z;
 }
 
-void Camera::localMove( float right, float forward, float up)
+void Camera::localMove(float right, float forward, float up)
 {
     auto npvec = pvec;
     npvec += (right*rightV + forward*forwardV + up*upV);
     setPosition(npvec.x, npvec.y, npvec.z);
 }
 
+void Camera::setCameraInShader(Shader & shd)
+{
+    shd.use();
+    shd.setUniform2f(Shader::pView, getViewWidth(), getViewHeight());
+    shd.setUniform1f(Shader::pTime,getRenderTimes(0.01f));
+    shd.setUniformMat4(Shader::pMdlInvMat, getModelMatPtr());
+    shd.setUniformMat4(Shader::pPrjInvMat, getProjectionMatInvPtr());
+
+    float x, y, z, w;
+    getLight().getPositon(x, y, z, w);
+    shd.setUniform4f(Shader::pWorldLight, x, y, z, w);
+    shd.setUniform3f(Shader::pCameraPos, posX(), posY(), posZ());
+}
 
 void drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
 {
@@ -199,7 +202,7 @@ void Camera::updateModel()
     upV = glm::cross(rightV, forwardV);
 
     target = pvec + forwardV;
-    
+
     modelmatInv = glm::lookAt(pvec, target, upV);
     modelmat = glm::inverse(modelmatInv);
 }
@@ -246,7 +249,7 @@ void Camera::updateViewPort() {
 void Camera::setDirectionVec3(glm::vec3 dir)
 {
     rvec.x = asinf(dir.z / glm::length(dir)) / DEG2RAD;
-    if(dir.y!=0||dir.x!=0) rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
+    if (dir.y != 0 || dir.x != 0) rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
     updateModel();
 }
 
@@ -278,7 +281,6 @@ void Camera::initGl() {
 
     glEnable(GL_MULTISAMPLE);
 
-   
     //glEnable(GL_POLYGON_SMOOTH);
     //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
@@ -306,36 +308,26 @@ void Camera::initGl() {
 }
 
 void Camera::drawBack() {
-
+   
+    setCameraInShader(backshd);
 
     backshd.use();
-    
-    backshd.setUniformMat4(Shader::pPrjInvMat, Camera::getProjectionMatInvPtr());
-    backshd.setUniformMat4(Shader::pMdlInvMat, Camera::getModelViewPtr());
-    backshd.setUniform2f(Shader::pView, width, height);
-    backshd.setUniform1f(Shader::pTime, Camera::getRenderTimes());
 
     glBegin(GL_QUADS);
-    
-    float h = 2 * tan(Fov/2*DEG2RAD)*Far;
+
+    float h = 2 * tan(Fov / 2 * DEG2RAD)*Far;
     float w = Ratio*h;
     glVertex3f(-w, -h, -Far);
     glVertex3f(w, -h, -Far);
     glVertex3f(w, h, -Far);
     glVertex3f(-w, h, -Far);
     glEnd();
-  
-    backshd.unuse();
 
-    
-    
+    backshd.unuse();
 }
 
 void Camera::initBack()
 {
     backshd.loadFragFile("Res/sky.glsl");
     backshd.link();
-
-    
-
 }

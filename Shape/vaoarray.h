@@ -17,7 +17,6 @@ public:
     friend class VAOFunctions;
     unsigned int getVAOID() {
         if (vao == 0) {
-            glewInit();
             glGenVertexArrays(1, &vao);
         }
         return vao;

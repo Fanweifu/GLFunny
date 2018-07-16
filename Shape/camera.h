@@ -13,59 +13,66 @@ public:
     bool isShaderBack = true;
     Shape* Scene = NULL;
 
-    float getNear() { return Near; }
-    float getFar() { return Far; }
-    float getFov() { return Fov; }
     void setNear(float _near) {
         if (_near<0 || _near>Far) return;
         Near = _near;
         updateProjection();
     }
+    float getNear() { return Near; }
+
     void setFar(float _far) {
         if (_far < Near) return;
         Far = _far;
         updateProjection();
     }
+    float getFar() { return Far; }
+
     void setFov(float _fov) {
         if (!_fov > 0 || _fov > 360) return;
         Fov = _fov;
         updateProjection();
     }
+    float getFov() { return Fov; }
 
-    int getViewX() { return left; }
-    int getViewY() { return buttom; }
+    int getViewLeft() { return left; }
+    int getViewButtom() { return buttom; }
     int getViewWidth() { return width; }
     int getViewHeight() { return height; }
-    double getRenderTimes() {
-        return (double)renderTime/1000;
+
+    double getRenderTimes(float k = 0.0001) {
+        return (double)renderTime*k;
     }
     void setViewPort(int x, int y, int width, int height);
     void setWindowSize(int width, int height);
 
-    void getBackColor(float &r, float &g, float &b, float &a) {
-        r = backColor.r;
-        g = backColor.g;
-        b = backColor.b;
-        a = backColor.a;
-    }
     void setBackColor(float r, float g, float b, float a) {
         backColor.a = r;
         backColor.g = g;
         backColor.b = b;
         backColor.a = a;
     }
+    void getBackColor(float &r, float &g, float &b, float &a) {
+        r = backColor.r;
+        g = backColor.g;
+        b = backColor.b;
+        a = backColor.a;
+    }
+    const float* getBackColor4f() { return glm::value_ptr(backColor); }
+
+    void setDirection(float vx, float vy, float vz);
     void getDirection(float& vx, float& vy, float &vz) {
         vx = forwardV.x;
         vy = forwardV.y;
         vz = forwardV.z;
     }
-    void setDirection(float vx, float vy, float vz);
+    const float* getDirectionf3() { return glm::value_ptr(forwardV); }
+
     Light& getLight() { return mainlight; }
 
     void init();
-    
+
     void lookAt(float ex, float ey, float ez, float tx, float ty, float tz);
-    
+
     void setOrthoH(int h) { owidth = Ratio*h; oheight = h; updateProjection(); }
     void drawView();
     void dragMouse(int x, int y, float speed = 0.1f);
@@ -73,8 +80,11 @@ public:
     void mouseCoordToUV(int mx, int my, float &u, float &v);
     void mouseCoordToDir(int mx, int my, float& x, float &y, float &z);
     void localMove(float right, float forward, float up);
+    void setCameraInShader(Shader& shd);
+
     const float* getProjectionMatPtr() { return  glm::value_ptr(matrixProjection); }
     const float* getProjectionMatInvPtr() { return glm::value_ptr(matrixProjectionInv); }
+    const float* getLightPosf4() { return mainlight.getPositonf4(); }
 protected:
     bool inited = false;
     bool windowsChanged = true;
@@ -108,7 +118,7 @@ protected:
     glm::mat4 matrixProjectionInv;
     Light mainlight;
     Shader backshd;
-    
+
     void initGl();
     void initBack();
     void ondraw();

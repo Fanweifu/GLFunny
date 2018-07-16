@@ -19,6 +19,8 @@ public:
     const static string pTime;
     const static string pPrjInvMat;
     const static string pMdlInvMat;
+    const static string pWorldLight;
+    const static string pCameraPos;
 
     bool available() { return isVaild; }
 
@@ -35,7 +37,7 @@ public:
 
     void setUniform1i(const string &pNm, int val);
 
-    void setUniform1fv(const string & pNm, int size, float * ptr);
+    void setUniform1fv(const string & pNm, int size, const float * ptr);
 
     void setUniform2f(const string & pNm, float val0, float val1);
 
@@ -44,6 +46,7 @@ public:
     void setUniform4f(const string & pNm, float val0, float val1, float val2, float val3);
 
     void setUniformMat4(const string & pNm, const float* matPtr);
+
 
     static Shader* createDefaultShader();
 

@@ -46,7 +46,7 @@ void reshape(int width, int height) {
 void moveMouse(int x, int y) {
     if (mutiScreen) {
 
-        if (x < cam2.getViewX())
+        if (x < cam2.getViewLeft())
             cam1.moveMouse(x, y);
         else {
             cam2.moveMouse(x, y);
@@ -60,12 +60,12 @@ void moveMouse(int x, int y) {
     float dx, dy, dz;
     cam1.mouseCoordToDir(x, y, dx, dy, dz);
     printf("mouse:(%d,%d) dir:(%f,%f,%f)\n", x, y, dx, dy, dz);
-    //l.setPostion(dx, dy, dz, 0);
+    l.setPostion(dx, dy, dz , 0);
 }
 
 void dragMouse(int x, int y) {
     if (mutiScreen) {
-        if (x < cam2.getViewX())
+        if (x < cam2.getViewLeft())
             cam1.dragMouse(x, y);
         else {
             cam2.dragMouse(x, y);
@@ -116,13 +116,9 @@ void spkeyFunc(int key, int x, int y) {
 
 void render() {
 
-    static float time = 0;
-    water.use();
-    water.setUniform2f(Shader::pView, w, h);
-    water.setUniform1f(Shader::pTime, time);
-    water.setUniformMat4(Shader::pMdlInvMat, cam1.getModelViewPtr());
-    water.setUniformMat4(Shader::pPrjInvMat, cam1.getProjectionMatInvPtr());
-    time += 0.01;
+    
+    cam1.setCameraInShader(water);
+
 
     cam1.drawView();
     if(mutiScreen) cam2.drawView();
