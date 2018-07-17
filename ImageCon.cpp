@@ -29,15 +29,15 @@ float timeVal = 0;
 bool mutiScreen = true;
 float step = 0.1;
 void reshape(int width, int height) {
-   /* if (mutiScreen) {
-        cam1.setViewPort(0, 0, width / 2, height);
-        cam2.setViewPort(width / 2, 0, width / 2, height);
-        w = width / 2, h = height;
-    }
-    else {*/
-        cam1.setViewPort(0, 0, width, height);
-        w = width, h = height;
-   /* }*/
+    /* if (mutiScreen) {
+         cam1.setViewPort(0, 0, width / 2, height);
+         cam2.setViewPort(width / 2, 0, width / 2, height);
+         w = width / 2, h = height;
+     }
+     else {*/
+    cam1.setViewPort(0, 0, width, height);
+    w = width, h = height;
+    /* }*/
 }
 
 void moveMouse(int x, int y) {
@@ -49,13 +49,13 @@ void moveMouse(int x, int y) {
     //    }
     //}
     //else {
-        cam1.moveMouse(x, y);
-   /* }*/
+    cam1.moveMouse(x, y);
+    /* }*/
 
     Light& l = cam1.getLight();
     float dx, dy, dz;
     cam1.mouseCoordToDir(x, y, dx, dy, dz);
-   
+
     l.setPostion(dx, dy, dz, 0);
 }
 
@@ -68,8 +68,8 @@ void dragMouse(int x, int y) {
     //    }
     //}
     //else {
-        cam1.dragMouse(x, y);
-   /* }*/
+    cam1.dragMouse(x, y);
+    /* }*/
 }
 
 void keyFunc(uchar key, int x, int y) {
@@ -109,7 +109,7 @@ void render() {
     //cam1.setCameraInShader(water);
 
     cam1.drawView();
-   /* if (mutiScreen) cam2.drawView();*/
+    /* if (mutiScreen) cam2.drawView();*/
     glutSwapBuffers();
 }
 
@@ -185,37 +185,6 @@ void imgShapeTest() {
 }
 
 void waterTest() {
-    testshp.addPoint(-100, -100, 0);
-    testshp.addPoint(-100, 100, 0);
-    testshp.addPoint(100, 100, 0);
-    testshp.addPoint(100, -100, 0);
-    testshp.addIndex(0);
-    testshp.addIndex(1);
-    testshp.addIndex(2);
-    testshp.addIndex(0);
-    testshp.addIndex(2);
-    testshp.addIndex(3);
-
-    testshp.drawAxis = true;
-    //testshp.addPoint(100, -100, 0);
-    water.loadFragFile("GLSL/water.glsl");
-    water.link();
-
-    testshp.pshader = water;
-
-    ly1.add(&testshp);
-    ly2.add(&testshp);
-
-    cam1.setPosition(0, 0.5, 1);
-    /*cam2.setPosition(0, -0.5, 1);
-    cam2.visible = false;*/
-
-    mutiScreen = false;
-}
-
-void shadowTest() {
-    glFrontFace(GL_CCW);
-
     testshp.addPoint(-1, -1, 0, 0, 0, -1, 0, 0);
     testshp.addPoint(1, -1, 0, 0, 0, -1, 0, 1);
     testshp.addPoint(1, 1, 0, 0, 0, -1, 1, 1);
@@ -227,21 +196,55 @@ void shadowTest() {
     testshp.addIndex(2);
     testshp.addIndex(3);
 
-  /*  Layer *shp1 = new Layer();
-    shp1->setPosition(0, 0, 0);
-    shp1->add(&testshp);
+    testshp.drawAxis = true;
 
-    Layer *shp2 = new Layer();
-    shp2->setRotation(0, 90, 0);
-    shp1->add(&testshp);*/
+    //testshp.addPoint(100, -100, 0);
+    /*water.loadFragFile("GLSL/water.glsl");
+    water.link();
+
+    testshp.pshader = water;*/
+
+    ly1.add(&testshp);
+
+    cam1.setPosition(0, 0.5, 1);
+    /*cam2.setPosition(0, -0.5, 1);
+    cam2.visible = false;*/
+
+    mutiScreen = false;
+}
+
+void shadowTest() {
+
+    testshp.addPoint(-1, -1, 0, 0, 0, 1, 0, 0);
+    testshp.addPoint(1, -1, 0, 0, 0, 1, 0, 1);
+    testshp.addPoint(1, 1, 0, 0, 0, 1, 1, 1);
+    testshp.addPoint(-1, 1, 0, 0, 0, 1, 1, 0);
+    testshp.addIndex(0);
+    testshp.addIndex(1);
+    testshp.addIndex(2);
+    testshp.addIndex(0);
+    testshp.addIndex(2);
+    testshp.addIndex(3);
+
+    testshp.drawAxis = true;
 
     texture.loadRgbImg("Img/wood.jpg");
 
     testshp.pTexture = texture;
-    ly1.add(&testshp);
-  
-    cam1.setPosition(0, 0, 1);
 
+    Layer* test1 = new Layer();
+    test1->setScale(2, 2, 2);
+    test1->add(&testshp);
+
+    Layer* test2 = new Layer();
+    test2->setRotation(0, 90, 0);
+    test2->add(&testshp);
+
+    ly1.add(test1);
+    ly1.add(test2);
+
+    cam1.setPosition(0, 0.5, 1);
+    cam1.isRenderShadow = false;
     mutiScreen = false;
 }
 
@@ -282,7 +285,6 @@ int main(int arg, char**argv) {
     glutInit(&arg, argv);
     glewInit();
     initWindows();
-
     initCamera();
 
     shadowTest();

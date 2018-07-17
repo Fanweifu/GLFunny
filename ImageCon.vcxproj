@@ -154,6 +154,7 @@
     <ClInclude Include="Shape\light.h" />
     <ClInclude Include="Shape\shader.h" />
     <ClInclude Include="Shape\shape.h" />
+    <ClInclude Include="Shape\ShapeBase.h" />
     <ClInclude Include="Shape\vaoarray.h" />
     <ClInclude Include="Shape\texture.h" />
   </ItemGroup>
@@ -165,6 +166,7 @@
     <ClCompile Include="Shape\layer.cpp" />
     <ClCompile Include="Shape\shader.cpp" />
     <ClCompile Include="Shape\shape.cpp" />
+    <ClCompile Include="Shape\ShapeBase.cpp" />
     <ClCompile Include="Shape\vaoarray.cpp" />
     <ClCompile Include="ImageCon.cpp" />
     <ClCompile Include="Shape\texture.cpp" />
@@ -176,6 +178,8 @@
   <ItemGroup>
     <None Include="GLSL\clouds.glsl" />
     <None Include="GLSL\raym.glsl" />
+    <None Include="GLSL\shadowf.glsl" />
+    <None Include="GLSL\shadowv.glsl" />
     <None Include="GLSL\sky.glsl" />
     <None Include="GLSL\template.glsl" />
     <None Include="GLSL\water.glsl" />

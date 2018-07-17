@@ -1,9 +1,9 @@
-uniform float     iTime;
-uniform vec2      viewport;
-uniform vec3      cameraPos;
-uniform vec4      worldLight;
-uniform mat4      prjInvMat;
-uniform mat4      mdlInvMat;
+uniform float   iTime;
+uniform vec2    viewport;
+uniform vec3    cameraPos;
+uniform vec4    worldLight;
+uniform mat4    prjInvMat;
+uniform mat4    mdlInvMat;
 
 vec3 yztozy(vec3 p){
     return vec3(p.x,p.z,p.y);
@@ -64,10 +64,7 @@ void main(){
     vec2 uv = coordToUV(gl_FragCoord.xy);
     vec3 dir = uvToWorldDir(uv);
     vec3 sunPos = normalize(worldLight.xyz);
-    
 	vec3 color = getSky(dir,sunPos);
-	
 	color = color / (2.0 * color + 0.5 - color);
-	
-	gl_FragColor = vec4(dir, 1.0); //smoothstep(0.97,0.99,cos)
+	gl_FragColor = vec4(worldLight.xyz , 1.0); 
 }

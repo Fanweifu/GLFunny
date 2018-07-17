@@ -92,7 +92,7 @@ GLint Shader::getParamID(const string &pNm) {
         return (*it).second;
     }
     else {
-        GLint idx = glGetUniformLocation(program, pNm.data());
+        GLint idx = glGetUniformLocation(program, pNm.c_str());
         if (idx == -1) {
             cout << pNm << " can not find params!\n";
         }

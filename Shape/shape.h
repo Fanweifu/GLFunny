@@ -3,16 +3,12 @@
 
 #include"shader.h"
 #include"texture.h"
-#include"glm.hpp"
-#include"gtc/matrix_transform.hpp"
-#include"gtc/type_ptr.hpp"
-
-#define DEG2RAD 3.141593f / 180
+#include"ShapeBase.h"
 
 typedef void(*xyzChangedHdl)(float x, float y, float z);
 typedef void(*voidHdl)();
 
-class Shape
+ class Shape: public ShapeBase
 {
 public:
     Shape();
@@ -22,7 +18,7 @@ public:
     float axisLength = 1;
 
     Shader pshader;
-    Texture pTexture;
+    ImgTexture pTexture;
 
     float posX() { return pvec.x; }
     float posY() { return pvec.y; }
@@ -98,7 +94,7 @@ protected:
     virtual void updateModel();
     virtual void ondraw();
 
-    static void drawAsix(float size);
+    
 };
 
 #endif // SHAPE_H

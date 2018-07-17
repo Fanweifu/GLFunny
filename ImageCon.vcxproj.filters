@@ -54,6 +54,9 @@
     <ClInclude Include="Shape\complexShape.h">
       <Filter>头文件\Shape</Filter>
     </ClInclude>
+    <ClInclude Include="Shape\ShapeBase.h">
+      <Filter>头文件\Shape</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\image3dex.cpp">
@@ -86,6 +89,9 @@
     <ClCompile Include="Shape\ComplexShape.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
+    <ClCompile Include="Shape\ShapeBase.cpp">
+      <Filter>源文件\Shape</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\wood.jpg">
@@ -109,6 +115,12 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="GLSL\water.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="GLSL\shadowf.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="GLSL\shadowv.glsl">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

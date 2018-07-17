@@ -1,11 +1,11 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include"glHead.h"
 #include<sstream>
 #include<iostream>
 #include<fstream>
 #include<stdio.h>
-#include"glHead.h"
 #include<map>
 
 using namespace std;

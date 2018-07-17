@@ -1,28 +1,28 @@
 #ifndef TEXTRUE_H
 #define TEXTRUE_H
 
-#include<gl/glew.h>
-#include<gl/GL.h>
 #include<opencv2/opencv.hpp>
+#include"shader.h"
+#include"shapebase.h"
 class Texture {
 public:
 
     Texture() {};
     ~Texture() {
-        glDeleteTextures(1, &textImgID);
+        glDeleteTextures(1, &texID);
     };
 
-    uint texID() { return textImgID; }
+    unsigned int TexID() { return texID; }
        
-    void bind(uint level=0);
-    void unbind();
+    virtual void bind(int level=0);
+    virtual void unbind();
 
 protected:
     bool inited = false;
     bool isValid = false;
-    uint textImgID = 0;
+    unsigned int texID = 0;
 
-    void init();
+    virtual void init();
     
 };
 
@@ -35,6 +35,22 @@ public:
     void makeSingleColor(float r, float g, float b);
 protected:
     uchar * readImgData(cv::Mat &img);
+};
+
+class DepthTexture : public Texture {
+
+public:
+    DepthTexture();
+    float n = 0.1, f = 10000, distance = 1000;
+    bool loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, float width, float height,ShapeBase& scene);
+    void bind(int levle = 0);
+    void unbind();
+protected:
+    GLuint fboID = 0 ;
+    float widthf, heightf;
+    glm::mat4 lightPrjMat, lightViewMat, lightPrjViewMat;
+    Shader shadowPro;
+    void init();
 };
 
 

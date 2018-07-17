@@ -4,6 +4,10 @@
 #include"vaoarray.h"
 #include"shape.h"
 #include"light.h"
+#include"camera.h"
+
+
+
 class Camera : public Shape
 {
 public:
@@ -11,6 +15,7 @@ public:
     bool isOrtho = false;
     bool isMultiScreen = true;
     bool isShaderBack = true;
+    bool isRenderShadow = true;
     Shape* Scene = NULL;
 
     void setNear(float _near) {
@@ -106,7 +111,7 @@ protected:
 
     long renderTime = 0;
 
-    glm::vec4 backColor = glm::vec4(0.5, 0.5, 1, 1);
+    glm::vec4 backColor = glm::vec4(0, 1, 1, 1);
     glm::vec3 uplook = glm::vec3(0, 0, 1);
     glm::vec3 forwardV = glm::vec3(0, 1, 0);
     glm::vec3 rightV = glm::vec3(1, 0, 0);
@@ -118,7 +123,7 @@ protected:
     glm::mat4 matrixProjectionInv;
     Light mainlight;
     Shader backshd;
-
+    DepthTexture depthMap;
     void initGl();
     void initBack();
     void ondraw();
@@ -128,5 +133,8 @@ protected:
     void updateViewPort();
     void setDirectionVec3(glm::vec3 v);
 };
+
+
+
 
 #endif // CAMERA_H

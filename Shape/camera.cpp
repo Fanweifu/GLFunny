@@ -4,9 +4,11 @@ using namespace glm;
 
 Camera::Camera()
 {
+
 }
 
 void Camera::drawView() {
+
     if (windowsChanged) {
         updateViewPort();
         windowsChanged = false;
@@ -17,12 +19,18 @@ void Camera::drawView() {
         glScissor(left, buttom, width, height);
     }
 
-    if (projectionChanged || isMultiScreen) {
-        glMatrixMode(GL_PROJECTION);
-        glLoadMatrixf(value_ptr(matrixProjection));
-        projectionChanged = false;
-        glMatrixMode(GL_MODELVIEW);
+    
+    if (isRenderShadow) {
+        float lx, ly, lz, lw;
+        mainlight.getPositon(lx, ly, lz, lw);
+        depthMap.loadDepthMap(pvec.x, pvec.y, pvec.z,lx,ly,lz,lw,width,height,*Scene);
     }
+    
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(value_ptr(matrixProjection));
+
+    glMatrixMode(GL_MODELVIEW);
 
     glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -34,7 +42,11 @@ void Camera::drawView() {
 
     mainlight.draw();
 
+    if (isRenderShadow) depthMap.bind();
+
     if (Scene) Scene->draw();
+
+    if (isRenderShadow) depthMap.unbind();
 
     renderTime += 1;
 }
@@ -98,7 +110,7 @@ void Camera::setCameraInShader(Shader & shd)
 {
     shd.use();
     shd.setUniform2f(Shader::pView, getViewWidth(), getViewHeight());
-    shd.setUniform1f(Shader::pTime,getRenderTimes(0.01f));
+    shd.setUniform1f(Shader::pTime, getRenderTimes(0.01f));
     shd.setUniformMat4(Shader::pMdlInvMat, getModelMatPtr());
     shd.setUniformMat4(Shader::pPrjInvMat, getProjectionMatInvPtr());
 
@@ -308,7 +320,6 @@ void Camera::initGl() {
 }
 
 void Camera::drawBack() {
-   
     setCameraInShader(backshd);
 
     backshd.use();
@@ -331,3 +342,6 @@ void Camera::initBack()
     backshd.loadFragFile("GLSL/sky.glsl");
     backshd.link();
 }
+
+
+
