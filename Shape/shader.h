@@ -45,7 +45,7 @@ public:
 
     void setUniform4f(const string & pNm, float val0, float val1, float val2, float val3);
 
-    void setUniformMat4(const string & pNm, const float* matPtr);
+    void setUniformMat4(const string & pNm, const float* matPtr, bool transpose = true);
 
 
     static Shader* createDefaultShader();

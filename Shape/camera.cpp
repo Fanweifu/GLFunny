@@ -4,11 +4,9 @@ using namespace glm;
 
 Camera::Camera()
 {
-
 }
 
 void Camera::drawView() {
-
     if (windowsChanged) {
         updateViewPort();
         windowsChanged = false;
@@ -19,13 +17,11 @@ void Camera::drawView() {
         glScissor(left, buttom, width, height);
     }
 
-    
     if (isRenderShadow) {
         float lx, ly, lz, lw;
         mainlight.getPositon(lx, ly, lz, lw);
-        depthMap.loadDepthMap(pvec.x, pvec.y, pvec.z,lx,ly,lz,lw,width,height,*Scene);
+        depthMap.loadDepthMap(pvec.x, pvec.y, pvec.z, lx, ly, lz, lw, width, height, *Scene);
     }
-    
 
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(value_ptr(matrixProjection));
@@ -316,7 +312,6 @@ void Camera::initGl() {
     glClearStencil(0);
     glClearDepth(1.0f);
 
-    glMatrixMode(GL_MODELVIEW);
 }
 
 void Camera::drawBack() {
@@ -324,15 +319,14 @@ void Camera::drawBack() {
 
     backshd.use();
 
+    glDepthRange(0.999999 , 1);
     glBegin(GL_QUADS);
-
-    float h = 2 * tan(Fov / 2 * DEG2RAD)*Far;
-    float w = Ratio*h;
-    glVertex3f(-w, -h, -Far);
-    glVertex3f(w, -h, -Far);
-    glVertex3f(w, h, -Far);
-    glVertex3f(-w, h, -Far);
+    glVertex3f(-1, -1, -0.1);
+    glVertex3f(1, -1, -0.1);
+    glVertex3f(1, 1, -0.1);
+    glVertex3f(-1, 1, -0.1);
     glEnd();
+    glDepthRange(0, 1);
 
     backshd.unuse();
 }
@@ -342,6 +336,3 @@ void Camera::initBack()
     backshd.loadFragFile("GLSL/sky.glsl");
     backshd.link();
 }
-
-
-

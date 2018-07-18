@@ -100,11 +100,10 @@ bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, flo
     glm::vec4 lightPos(lightx, lighty, lightz, lightw);
 
 
-    if (lightPos.w != 0) lightPos /= lightPos.w;
 
-    lightPrjMat = lightPos.w == 0 ? glm::ortho(-width / 2, width / 2, -height / 2, height / 2, n, f) : glm::perspective(90 * DEG2RAD, height / width, n, f);
-    lightViewMat = glm::lookAt(glm::vec3(lightPos)*(lightPos.w == 0 ? distance : 1)+camPos, camPos, glm::vec3(0, 0, 1));
-    lightPrjViewMat = lightViewMat*lightPrjMat;
+    lightPrjMat = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, n, f);
+    lightViewMat = glm::lookAt((glm::vec3(lightPos)), glm::vec3(0), glm::vec3(0, 0, 1));
+    lightPrjViewMat = lightPrjMat*lightViewMat;
 
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(value_ptr(lightPrjMat));
@@ -115,9 +114,11 @@ bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, flo
     scene.draw();
 
     glBindTexture(GL_TEXTURE_2D, texID);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texID, 0);
+
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, width, height, 0);
+    /*glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texID, 0);
     glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);*/
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);

@@ -66,5 +66,5 @@ void main(){
     vec3 sunPos = normalize(worldLight.xyz);
 	vec3 color = getSky(dir,sunPos);
 	color = color / (2.0 * color + 0.5 - color);
-	gl_FragColor = vec4(worldLight.xyz , 1.0); 
+	gl_FragColor = vec4(color, 1.0);
 }

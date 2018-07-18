@@ -29,47 +29,27 @@ float timeVal = 0;
 bool mutiScreen = true;
 float step = 0.1;
 void reshape(int width, int height) {
-    /* if (mutiScreen) {
-         cam1.setViewPort(0, 0, width / 2, height);
-         cam2.setViewPort(width / 2, 0, width / 2, height);
-         w = width / 2, h = height;
-     }
-     else {*/
+   
     cam1.setViewPort(0, 0, width, height);
     w = width, h = height;
-    /* }*/
+   
 }
 
 void moveMouse(int x, int y) {
-    //if (mutiScreen) {
-    //    if (x < cam2.getViewLeft())
-    //        cam1.moveMouse(x, y);
-    //    else {
-    //        cam2.moveMouse(x, y);
-    //    }
-    //}
-    //else {
+    
     cam1.moveMouse(x, y);
-    /* }*/
+   
 
     Light& l = cam1.getLight();
     float dx, dy, dz;
     cam1.mouseCoordToDir(x, y, dx, dy, dz);
-
-    l.setPostion(dx, dy, dz, 0);
+    l.setPostion(-dx, -dy, -dz, 0);
 }
 
 void dragMouse(int x, int y) {
-    //if (mutiScreen) {
-    //    if (x < cam2.getViewLeft())
-    //        cam1.dragMouse(x, y);
-    //    else {
-    //        cam2.dragMouse(x, y);
-    //    }
-    //}
-    //else {
+  
     cam1.dragMouse(x, y);
-    /* }*/
+    
 }
 
 void keyFunc(uchar key, int x, int y) {
@@ -106,10 +86,9 @@ void spkeyFunc(int key, int x, int y) {
 }
 
 void render() {
-    //cam1.setCameraInShader(water);
+  
 
     cam1.drawView();
-    /* if (mutiScreen) cam2.drawView();*/
     glutSwapBuffers();
 }
 
@@ -119,17 +98,8 @@ void initCamera() {
     cam1.drawAxis = true;
     cam1.setPosition(0, -10, 300);
     cam1.setViewPort(0, 0, 250, 500);
-
-    /*cam2.init();
-    cam2.setFar(1000);
-    cam2.drawAxis = true;
-    cam2.setPosition(0, 10, 300);
-    cam2.setViewPort(250, 0, 250, 500);*/
-
-    /*ly1.add(&cam2);*/
-    ly2.add(&cam1);
     cam1.Scene = &ly1;
-    /*cam2.Scene = &ly2;*/
+   
 }
 
 void imgShapeTest() {
@@ -244,7 +214,7 @@ void shadowTest() {
     ly1.add(test2);
 
     cam1.setPosition(0, 0.5, 1);
-    cam1.isRenderShadow = false;
+    cam1.isRenderShadow = true;
     mutiScreen = false;
 }
 

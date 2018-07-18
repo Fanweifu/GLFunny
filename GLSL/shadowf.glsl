@@ -10,6 +10,7 @@ uniform mat4 lightspace;
 
 void calcDepth(vec3 pos,out float viewdepth,out float mapdepth){
     vec4 viewpos = vec4(pos,1)*lightspace;
+    //viewpos /= viewpos.w;
     viewdepth = viewpos.z;
     mapdepth = texture2D(depthTex,(viewpos.xy+1)/2).r;    
 }
@@ -32,11 +33,20 @@ void main(){
     vec4 specular = gl_LightSource[0].specular* gl_FrontMaterial.specular* pow( max(dot(normalz,halfv),0), gl_FrontMaterial.shininess);
 
 
-    float viewdepth,mapdepth;
-    calcDepth(worldpos,viewdepth,mapdepth);
+    
+    
+    vec4 viewpos = vec4(worldpos, 1)*lightspace;
+    //viewpos /= viewpos.w;
+    float viewdepth = viewpos.z;
+    float mapdepth = texture2D(depthTex, (viewpos.xy + 1) / 2).r;
+
+
+    //viewdepth = smoothstep(-1, 1, viewdepth);
+    mapdepth = smoothstep(-1, 1, mapdepth);
+
     float shadowK = smoothstep(-0.02,-0.01, mapdepth-viewdepth);
-    matcolor+= shadowK*(diffuse+specular);
+    matcolor += shadowK*vec4(0.5, 0.5, 0.5, 1);
 
-    gl_FragColor = texture2D(baseTex,texcoord)*matcolor;
-
+    gl_FragColor = vec4(0,0,viewpos.z,1);      /*texture2D(baseTex, texcoord)*matcolor;*/
+    
 }

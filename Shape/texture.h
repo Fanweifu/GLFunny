@@ -41,7 +41,7 @@ class DepthTexture : public Texture {
 
 public:
     DepthTexture();
-    float n = 0.1, f = 10000, distance = 1000;
+    float n = 0.1, f = 10000, distance = 10;
     bool loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, float width, float height,ShapeBase& scene);
     void bind(int levle = 0);
     void unbind();

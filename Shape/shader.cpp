@@ -163,10 +163,10 @@ void Shader::setUniform4f(const string & pNm, float val0, float val1, float val2
     if (idx >= 0)glUniform4f(idx, val0, val1, val2, val3);
 }
 
-void Shader::setUniformMat4(const string & pNm, const float*matPtr)
+void Shader::setUniformMat4(const string & pNm, const float*matPtr ,bool transpose)
 {
     GLint idx = getParamID(pNm);
-    if (idx >= 0)glUniformMatrix4fv(idx, 1, true, matPtr);
+    if (idx >= 0)glUniformMatrix4fv(idx, 1, transpose , matPtr);
 }
 
 Shader * Shader::createDefaultShader()
