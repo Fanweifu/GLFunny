@@ -2,10 +2,9 @@
 #define CAMERA_H
 
 #include"vaoarray.h"
-#include"shape.h"
 #include"light.h"
 #include"camera.h"
-
+#include"complexShape.h"
 
 
 class Camera : public Shape
@@ -16,6 +15,7 @@ public:
     bool isMultiScreen = true;
     bool isShaderBack = true;
     bool isRenderShadow = true;
+    bool isUsePbr = true;
     Shape* Scene = NULL;
 
     void setNear(float _near) {
@@ -124,6 +124,7 @@ protected:
     Light mainlight;
     Shader backshd;
     DepthTexture depthMap;
+    ComplexShape backBlock;
     void initGl();
     void initBack();
     void ondraw();

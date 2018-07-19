@@ -12,15 +12,18 @@ void Camera::drawView() {
         windowsChanged = false;
     }
 
-    if (isMultiScreen) {
-        glViewport(left, buttom, width, height);
-        glScissor(left, buttom, width, height);
-    }
+  
 
     if (isRenderShadow) {
         float lx, ly, lz, lw;
         mainlight.getPositon(lx, ly, lz, lw);
-        depthMap.loadDepthMap(pvec.x, pvec.y, pvec.z, lx, ly, lz, lw, width, height, *Scene);
+        depthMap.enablePbr = isUsePbr;
+        depthMap.loadDepthMap(pvec.x, pvec.y, pvec.z, lx, ly, lz, lw , *Scene);
+    }
+
+    if (isMultiScreen) {
+        glViewport(left, buttom, width, height);
+        glScissor(left, buttom, width, height);
     }
 
     glMatrixMode(GL_PROJECTION);
@@ -38,11 +41,14 @@ void Camera::drawView() {
 
     mainlight.draw();
 
-    if (isRenderShadow) depthMap.bind();
+    if (isRenderShadow) {
+        depthMap.bindShadow();
+        depthMap.updateViewInv(modelmat);
+    }
 
     if (Scene) Scene->draw();
 
-    if (isRenderShadow) depthMap.unbind();
+    if (isRenderShadow) depthMap.unbindShadow();
 
     renderTime += 1;
 }
@@ -107,8 +113,8 @@ void Camera::setCameraInShader(Shader & shd)
     shd.use();
     shd.setUniform2f(Shader::pView, getViewWidth(), getViewHeight());
     shd.setUniform1f(Shader::pTime, getRenderTimes(0.01f));
-    shd.setUniformMat4(Shader::pMdlInvMat, getModelMatPtr());
-    shd.setUniformMat4(Shader::pPrjInvMat, getProjectionMatInvPtr());
+    shd.setUniformMat4(Shader::pCameraViewInv, getModelMatPtr());
+    shd.setUniformMat4(Shader::pProjectionInv, getProjectionMatInvPtr());
 
     float x, y, z, w;
     getLight().getPositon(x, y, z, w);
@@ -304,35 +310,43 @@ void Camera::initGl() {
 
     glEnable(GL_SCISSOR_TEST);
 
-    //// track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
-    //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    //glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_FRAMEBUFFER_SRGB);
 
     glClearColor(0, 0, 0, 1);
     glClearStencil(0);
     glClearDepth(1.0f);
-
 }
 
 void Camera::drawBack() {
+
     setCameraInShader(backshd);
-
     backshd.use();
+    glDepthRange(0.999999, 1);
 
-    glDepthRange(0.999999 , 1);
-    glBegin(GL_QUADS);
-    glVertex3f(-1, -1, -0.1);
-    glVertex3f(1, -1, -0.1);
-    glVertex3f(1, 1, -0.1);
-    glVertex3f(-1, 1, -0.1);
-    glEnd();
+    backBlock.draw();
+
     glDepthRange(0, 1);
-
     backshd.unuse();
+
+    depthMap.bind();
+    glDepthRange(0.999, 1);
+    glTranslatef(0, 0, -2);
+
+    backBlock.draw();
+
+    glTranslatef(0, 0, 2);
+    glDepthRange(0, 1);
+    depthMap.unbind();
 }
 
 void Camera::initBack()
 {
+    backBlock.drawQuads = true;
+    backBlock.addPoint(-1, -1, -0.1,0,0,1,0,0);
+    backBlock.addPoint(1, -1, -0.1, 0, 0, 1, 1, 0);
+    backBlock.addPoint(1, 1, -0.1, 0, 0, 1, 1, 1);
+    backBlock.addPoint(-1, 1, -0.1, 0, 0, 1, 0, 1);
+
     backshd.loadFragFile("GLSL/sky.glsl");
     backshd.link();
 }

@@ -60,6 +60,7 @@ void ComplexShape::init()
 void ComplexShape::ondraw()
 {
     if (!inited) init();
-    if(indexes.empty()) buffdata.renderData(GL_TRIANGLES);
-    else buffdata.renderIndex(GL_TRIANGLES);
+    GLint drawType = drawQuads ? GL_QUADS : GL_TRIANGLES;
+    if(indexes.empty()) buffdata.renderData(drawType);
+    else buffdata.renderIndex(drawType);
 }

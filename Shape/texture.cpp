@@ -13,7 +13,6 @@ void Texture::unbind()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-
 void Texture::init()
 {
     if (!inited) {
@@ -82,27 +81,25 @@ uchar * ImgTexture::readImgData(cv::Mat & img)
 
 DepthTexture::DepthTexture()
 {
-
 }
 
-bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw , float width, float height,ShapeBase& scene)
+bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw , ShapeBase& scene)
 {
-    widthf = width;
-    heightf = height;
     if (!inited) init();
 
     glPushMatrix();
 
-    glBindFramebuffer(GL_FRAMEBUFFER, fboID);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glViewport(0, 0, width, height);
+    glScissor(0, 0, width, height);
 
-    glm::vec3 camPos(camposx,camposy,camposz);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    glm::vec3 camPos(camposx, camposy, camposz);
     glm::vec4 lightPos(lightx, lighty, lightz, lightw);
 
-
-
-    lightPrjMat = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, n, f);
-    lightViewMat = glm::lookAt((glm::vec3(lightPos)), glm::vec3(0), glm::vec3(0, 0, 1));
+    lightPrjMat = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, n, f);
+    lightViewMat = glm::lookAt((glm::vec3(lightPos))*distance + camPos, glm::vec3(0) + camPos, glm::vec3(0, 0, 1));
     lightPrjViewMat = lightPrjMat*lightViewMat;
 
     glMatrixMode(GL_PROJECTION);
@@ -113,60 +110,73 @@ bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, flo
 
     scene.draw();
 
-    glBindTexture(GL_TEXTURE_2D, texID);
-
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, width, height, 0);
-    /*glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texID, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);*/
-
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
     glPopMatrix();
 
     return(isValid = true);
 }
 
-
-void DepthTexture::bind(int levle)
+void DepthTexture::updateViewInv(glm::mat4 & cameraViewInv)
 {
-    Texture::bind(1);
+    shadowPro.setUniformMat4(Shader::pCameraViewInv, glm::value_ptr(cameraViewInv));
+}
+
+void DepthTexture::bindShadow()
+{
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texID);
 
     shadowPro.use();
     shadowPro.setUniform1i("baseTex", 0);
     shadowPro.setUniform1i("depthTex", 1);
-    shadowPro.setUniformMat4("lightspace", value_ptr(lightPrjViewMat));
+    
+    shadowPro.setUniformMat4("lightSpace", value_ptr(lightPrjViewMat));
+
+    if (enablePbr) {
+        shadowPro.setUniform1i("enablePbr", true);
+        shadowPro.setUniform1i("normalTex", 2);
+        shadowPro.setUniform1i("specularTex", 3);
+    }
+    else {
+        shadowPro.setUniform1i("enablePbr", false);
+    }
 }
 
-void DepthTexture::unbind()
+void DepthTexture::unbindShadow()
 {
-    Texture::unbind();
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     shadowPro.unuse();
 }
 
-
 void DepthTexture::init()
 {
-    if (inited) return;
-    glGenFramebuffers(1, &fboID);
+    glGenFramebuffers(1, &depthMapFBO);
     glGenTextures(1, &texID);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, widthf, heightf, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
     shadowPro.loadVertexFile("GLSL/shadowv.glsl");
     shadowPro.loadFragFile("GLSL/shadowf.glsl");
     shadowPro.link();
+
+    glBindTexture(GL_TEXTURE_2D, texID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texID, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     inited = true;
 }

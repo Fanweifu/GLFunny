@@ -13,9 +13,7 @@ typedef void(*voidHdl)();
 public:
     Shape();
 
-    bool drawAxis = false;
     bool visible = true;
-    float axisLength = 1;
 
     Shader pshader;
     ImgTexture pTexture;

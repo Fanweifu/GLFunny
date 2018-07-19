@@ -174,10 +174,14 @@
   <ItemGroup>
     <Image Include="Img\noise.png" />
     <Image Include="Img\wood.jpg" />
+    <Image Include="Img\woodNormal.png" />
+    <Image Include="Img\woodSpec.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GLSL\clouds.glsl" />
-    <None Include="GLSL\raym.glsl" />
+    <None Include="GLSL\raym.glsl">
+      <FileType>Text</FileType>
+    </None>
     <None Include="GLSL\shadowf.glsl" />
     <None Include="GLSL\shadowv.glsl" />
     <None Include="GLSL\sky.glsl" />

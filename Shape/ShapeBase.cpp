@@ -12,7 +12,7 @@ ShapeBase::~ShapeBase()
 
 void ShapeBase::draw()
 {
-    if (drawAxis) ShapeBase::drawAsix();
+    if (drawAxis) ShapeBase::drawAsix(axisLength);
 }
 
 void ShapeBase::drawAsix(float size) {
@@ -21,7 +21,6 @@ void ShapeBase::drawAsix(float size) {
     glPushMatrix();             //NOTE: There is a bug on Mac misbehaviours of
                                 //      the light position when you draw GL_LINES
                                 //      and GL_POINTS. remember the matrix.
-
                                 // draw axis
     glLineWidth(3);
     glBegin(GL_LINES);

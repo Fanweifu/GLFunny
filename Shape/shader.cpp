@@ -139,6 +139,7 @@ void Shader::setUniform1i(const string & pNm, int val)
     if (idx >= 0)glUniform1i(idx, val);
 }
 
+
 void Shader::setUniform1fv(const string & pNm, int size, const float * ptr)
 {
     GLint idx = getParamID(pNm);
@@ -186,7 +187,7 @@ Shader * Shader::createDefaultShader()
 
 const string Shader::pView = "viewport";
 const string Shader::pTime = "iTime";
-const string Shader::pPrjInvMat = "prjInvMat";
-const string Shader::pMdlInvMat = "mdlInvMat";
+const string Shader::pProjectionInv = "projectionInv";
+const string Shader::pCameraViewInv = "cameraViewInv";
 const string Shader::pWorldLight = "worldLight";
 const string Shader::pCameraPos = "cameraPos";

@@ -17,8 +17,8 @@ public:
 
     const static string pView;
     const static string pTime;
-    const static string pPrjInvMat;
-    const static string pMdlInvMat;
+    const static string pProjectionInv;
+    const static string pCameraViewInv;
     const static string pWorldLight;
     const static string pCameraPos;
 
@@ -33,9 +33,12 @@ public:
     virtual void use();
     virtual void unuse();
 
+
+
     void setUniform1f(const string & pNm, float val);
 
     void setUniform1i(const string &pNm, int val);
+
 
     void setUniform1fv(const string & pNm, int size, const float * ptr);
 
@@ -45,7 +48,7 @@ public:
 
     void setUniform4f(const string & pNm, float val0, float val1, float val2, float val3);
 
-    void setUniformMat4(const string & pNm, const float* matPtr, bool transpose = true);
+    void setUniformMat4(const string & pNm, const float* matPtr, bool transpose = false);
 
 
     static Shader* createDefaultShader();

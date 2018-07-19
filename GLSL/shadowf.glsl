@@ -1,19 +1,27 @@
 #version 130
 
-in vec3 worldpos;
+in vec4 fragLight;
 in vec2 texcoord;
 in vec3 normal;
 
+uniform bool enablePbr;
 uniform sampler2D baseTex;
 uniform sampler2D depthTex;
-uniform mat4 lightspace;
+uniform sampler2D normalTex;
+uniform sampler2D specularTex;
 
-void calcDepth(vec3 pos,out float viewdepth,out float mapdepth){
-    vec4 viewpos = vec4(pos,1)*lightspace;
-    //viewpos /= viewpos.w;
-    viewdepth = viewpos.z;
-    mapdepth = texture2D(depthTex,(viewpos.xy+1)/2).r;    
+float calcShadow(vec4 frag){
+	frag/=frag.w;
+    frag = (frag+1.0)/2;
+	float viewdepth = frag.z;
+
+    if(frag.z > 1.0)
+        return 0.0;
+    float bias = 0.001;
+    float diff = viewdepth - (texture2D(depthTex, frag.xy).r + bias);
+    return smoothstep(-bias / 2, bias / 2, diff);
 }
+
 
 void main(){
     
@@ -21,32 +29,26 @@ void main(){
     matcolor += (gl_LightSource[0].ambient+gl_LightModel.ambient)*gl_FrontMaterial.ambient;
     
     vec4 lightPos = gl_LightSource[0].position;
-    vec3 lightori;
-
-    if(lightPos.w==0) lightori = normalize(lightPos.xyz);
-    else lightori = normalize(lightPos.xyz/lightPos.w-worldpos);
+    vec3 lightori =  normalize(lightPos.xyz);
+    
 
     vec3 halfv = normalize(gl_LightSource[0].halfVector.xyz);
-    vec3 normalz = normalize(normal);
+    vec3 normalz = enablePbr?normalize(gl_NormalMatrix*texture2D(normalTex, texcoord).rgb):normalize(normal);
 
-    vec4 diffuse = gl_LightSource[0].diffuse* gl_FrontMaterial.diffuse* max(dot(normalz,lightori),0);
-    vec4 specular = gl_LightSource[0].specular* gl_FrontMaterial.specular* pow( max(dot(normalz,halfv),0), gl_FrontMaterial.shininess);
+    if (!gl_FrontFacing) {
+        normalz = -normalz;
+    }
 
-
-    
-    
-    vec4 viewpos = vec4(worldpos, 1)*lightspace;
-    //viewpos /= viewpos.w;
-    float viewdepth = viewpos.z;
-    float mapdepth = texture2D(depthTex, (viewpos.xy + 1) / 2).r;
+    vec4 diffuse = gl_LightSource[0].diffuse* gl_FrontMaterial.diffuse* max(dot(normalz, lightori),0);
+    vec4 materialSpecular = enablePbr ? texture2D(specularTex, texcoord) : gl_FrontMaterial.specular;
+    vec4 specular = gl_LightSource[0].specular* materialSpecular * pow( max(dot(normalz,halfv),0), gl_FrontMaterial.shininess);
 
 
-    //viewdepth = smoothstep(-1, 1, viewdepth);
-    mapdepth = smoothstep(-1, 1, mapdepth);
+    float shadowK = calcShadow(fragLight);
+    matcolor += (1-shadowK)*vec4(diffuse+ specular);
 
-    float shadowK = smoothstep(-0.02,-0.01, mapdepth-viewdepth);
-    matcolor += shadowK*vec4(0.5, 0.5, 0.5, 1);
 
-    gl_FragColor = vec4(0,0,viewpos.z,1);      /*texture2D(baseTex, texcoord)*matcolor;*/
+
+    gl_FragColor = texture2D(normalTex, texcoord);  // vec4(matcolor.xyz,1);//*texture2D(baseTex, texcoord);
     
 }

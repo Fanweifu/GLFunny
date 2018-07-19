@@ -6,6 +6,7 @@ class ShapeBase
 public:
 
     bool drawAxis = false;
+    float axisLength = 1;
     bool visible = true;
 
 

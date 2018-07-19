@@ -7,6 +7,8 @@ class ComplexShape :
     public Shape
 {
 public:
+
+    bool drawQuads = false;
     ComplexShape();
     virtual ~ComplexShape();
 

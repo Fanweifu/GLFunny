@@ -23,6 +23,8 @@ Layer ly2;
 Image3DEx img3d;
 ComplexShape testshp;
 ImgTexture texture;
+ImgTexture textureNor;
+ImgTexture textureSpe;
 Shader water;
 ElementData edata;
 float timeVal = 0;
@@ -42,8 +44,9 @@ void moveMouse(int x, int y) {
 
     Light& l = cam1.getLight();
     float dx, dy, dz;
+    //cam1.getDirection(dx, dy, dz);
     cam1.mouseCoordToDir(x, y, dx, dy, dz);
-    l.setPostion(-dx, -dy, -dz, 0);
+    l.setPostion(1,1,1,0);
 }
 
 void dragMouse(int x, int y) {
@@ -68,8 +71,7 @@ void keyFunc(uchar key, int x, int y) {
         cam1.localMove(1 * step, 0, 0);
         break;
     case ' ':
-        cam1.setOrthoH(500);
-        cam1.isOrtho = !cam1.isOrtho;
+        cam1.isUsePbr = !cam1.isUsePbr;
         break;
     }
 }
@@ -96,7 +98,7 @@ void initCamera() {
     cam1.init();
     cam1.setFar(1000);
     cam1.drawAxis = true;
-    cam1.setPosition(0, -10, 300);
+    cam1.setPosition(0, 0, 0);
     cam1.setViewPort(0, 0, 250, 500);
     cam1.Scene = &ly1;
    
@@ -176,7 +178,7 @@ void waterTest() {
 
     ly1.add(&testshp);
 
-    cam1.setPosition(0, 0.5, 1);
+    cam1.setPosition(0, 0, 0);
     /*cam2.setPosition(0, -0.5, 1);
     cam2.visible = false;*/
 
@@ -184,7 +186,7 @@ void waterTest() {
 }
 
 void shadowTest() {
-
+    
     testshp.addPoint(-1, -1, 0, 0, 0, 1, 0, 0);
     testshp.addPoint(1, -1, 0, 0, 0, 1, 0, 1);
     testshp.addPoint(1, 1, 0, 0, 0, 1, 1, 1);
@@ -196,10 +198,13 @@ void shadowTest() {
     testshp.addIndex(2);
     testshp.addIndex(3);
 
-    testshp.drawAxis = true;
 
     texture.loadRgbImg("Img/wood.jpg");
+    textureNor.loadRgbImg("Img/woodNormal.png");
+    textureSpe.loadRgbImg("Img/woodSpec.png");
 
+    textureNor.bind(2);
+    textureSpe.bind(3);
     testshp.pTexture = texture;
 
     Layer* test1 = new Layer();
@@ -208,13 +213,22 @@ void shadowTest() {
 
     Layer* test2 = new Layer();
     test2->setRotation(0, 90, 0);
+    test2->setScale(1, 1, 10);
     test2->add(&testshp);
+
+    Layer* test3 = new Layer();
+    
+    test3->setPosition(0, 0, -10);
+    test3->setScale(20, 20, 20);
+    test3->add(&testshp);
+
 
     ly1.add(test1);
     ly1.add(test2);
-
+    ly1.add(test3);
     cam1.setPosition(0, 0.5, 1);
     cam1.isRenderShadow = true;
+    cam1.isUsePbr = true;
     mutiScreen = false;
 }
 

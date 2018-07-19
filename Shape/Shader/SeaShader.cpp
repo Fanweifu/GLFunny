@@ -52,8 +52,8 @@ void SeaShader::use()
 
         setUniform1f(Shader::pTime, (float)camobj->getRenderTimes() / 100);
         setUniform2f(Shader::pView, camobj->getViewWidth(), camobj->getViewHeight());
-        setUniformMat4(Shader::pMdlInvMat, camobj->getModelMatPtr());
-        setUniformMat4(Shader::pPrjInvMat, camobj->getProjectionMatInvPtr());
+        setUniformMat4(Shader::pCameraViewInv, camobj->getModelMatPtr());
+        setUniformMat4(Shader::pProjectionInv, camobj->getProjectionMatInvPtr());
     }
 
 }

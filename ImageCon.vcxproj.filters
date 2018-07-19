@@ -100,6 +100,12 @@
     <Image Include="Img\noise.png">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="Img\woodNormal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Img\woodSpec.png">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="GLSL\clouds.glsl">
