@@ -45,8 +45,8 @@ void moveMouse(int x, int y) {
     Light& l = cam1.getLight();
     float dx, dy, dz;
     //cam1.getDirection(dx, dy, dz);
-    cam1.mouseCoordToDir(x, y, dx, dy, dz);
-    l.setPostion(1,1,1,0);
+    cam1.mouseCoordToDir(x, y, dx, dy, dz); 
+    l.setPostion(dy,-dx,-dz,0);
 }
 
 void dragMouse(int x, int y) {
@@ -202,10 +202,11 @@ void shadowTest() {
     texture.loadRgbImg("Img/wood.jpg");
     textureNor.loadRgbImg("Img/woodNormal.png");
     textureSpe.loadRgbImg("Img/woodSpec.png");
+ 
+    testshp.texture0 = texture;
+    testshp.texture1 = textureNor;
+    testshp.texture2 = textureSpe;
 
-    textureNor.bind(2);
-    textureSpe.bind(3);
-    testshp.pTexture = texture;
 
     Layer* test1 = new Layer();
     test1->setScale(2, 2, 2);

@@ -15,7 +15,7 @@ ShaderPlay::ShaderPlay(QWidget* parent, bool fs)
 void ShaderPlay::BindShader(SeaShader & shd)
 {
     shd.bindCamera(camera);
-    testShape.pshader =shd ;
+    testShape.shader =shd ;
 }
 
 void renderQuads() {

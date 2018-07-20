@@ -1,8 +1,9 @@
 #include"texture.h"
 
-void Texture::bind(int level)
+void Texture::bind(int lev)
 {
     if (!isValid) return;
+    level = lev;
     glActiveTexture(GL_TEXTURE0 + level);
     glBindTexture(GL_TEXTURE_2D, texID);
 }
@@ -10,6 +11,7 @@ void Texture::bind(int level)
 void Texture::unbind()
 {
     if (!isValid) return;
+    glActiveTexture(GL_TEXTURE0 + level);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -27,7 +29,7 @@ bool ImgTexture::loadRgbImg(char * path)
     init();
 
     cv::Mat img = cv::imread(path, cv::IMREAD_UNCHANGED);
-    if (img.empty() || img.depth() != CV_8U || img.channels() == 1) {
+    if (img.empty() || img.depth() != CV_8U || img.channels() != 3) {
         printf("loaded failed!\n");
         return false;
     }
@@ -35,8 +37,8 @@ bool ImgTexture::loadRgbImg(char * path)
     uchar* data = readImgData(img);
 
     glBindTexture(GL_TEXTURE_2D, texID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, cols, rows, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     delete[] data;
@@ -83,7 +85,7 @@ DepthTexture::DepthTexture()
 {
 }
 
-bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw , ShapeBase& scene)
+bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, ShapeBase& scene)
 {
     if (!inited) init();
 
@@ -98,7 +100,7 @@ bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, flo
     glm::vec3 camPos(camposx, camposy, camposz);
     glm::vec4 lightPos(lightx, lighty, lightz, lightw);
 
-    lightPrjMat = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, n, f);
+    lightPrjMat = glm::ortho(-range / 2, range / 2, -range / 2, range / 2, n, f);
     lightViewMat = glm::lookAt((glm::vec3(lightPos))*distance + camPos, glm::vec3(0) + camPos, glm::vec3(0, 0, 1));
     lightPrjViewMat = lightPrjMat*lightViewMat;
 
@@ -124,19 +126,18 @@ void DepthTexture::updateViewInv(glm::mat4 & cameraViewInv)
 
 void DepthTexture::bindShadow()
 {
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texID);
+    Texture::bind(3);
 
     shadowPro.use();
     shadowPro.setUniform1i("baseTex", 0);
-    shadowPro.setUniform1i("depthTex", 1);
-    
+    shadowPro.setUniform1i("depthTex", 3);
+    shadowPro.setUniform1f("biasFactor",calcBias());
     shadowPro.setUniformMat4("lightSpace", value_ptr(lightPrjViewMat));
 
     if (enablePbr) {
         shadowPro.setUniform1i("enablePbr", true);
-        shadowPro.setUniform1i("normalTex", 2);
-        shadowPro.setUniform1i("specularTex", 3);
+        shadowPro.setUniform1i("normalTex", 1);
+        shadowPro.setUniform1i("specularTex", 2);
     }
     else {
         shadowPro.setUniform1i("enablePbr", false);
@@ -145,8 +146,7 @@ void DepthTexture::bindShadow()
 
 void DepthTexture::unbindShadow()
 {
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    Texture::unbind();
 
     shadowPro.unuse();
 }
@@ -179,4 +179,9 @@ void DepthTexture::init()
     glBindTexture(GL_TEXTURE_2D, 0);
 
     inited = true;
+}
+
+float DepthTexture::calcBias()
+{
+    return range / width / (f - n) / 2;
 }

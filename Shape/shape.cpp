@@ -15,13 +15,19 @@ void Shape::draw() {
 
     glMultMatrixf(glm::value_ptr(modelmat));
 
-    pTexture.bind();
-    pshader.use();
+    texture0.bind(0);
+    texture1.bind(1);
+    texture2.bind(2);
+
+    shader.use();
 
     ondraw();
 
-    pshader.unuse();
-    pTexture.unbind();
+    shader.unuse();
+
+    texture2.unbind();
+    texture1.unbind();
+    texture0.unbind();
 
 
     glPopMatrix();

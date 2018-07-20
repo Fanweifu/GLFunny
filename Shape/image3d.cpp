@@ -95,7 +95,7 @@ void Image3D::generateData() {
 
 void Image3D::initShader()
 {
-    pshader.loadVertexCode("#version 330 compatibility\n"
+    shader.loadVertexCode("#version 330 compatibility\n"
         "layout(location = 0) in vec3 pos;\n"
         "layout(location = 1) in vec4 clr;\n"
         "layout(location = 2) in vec3 nor;\n"
@@ -115,7 +115,7 @@ void Image3D::initShader()
         "}\n"
     );
 
-    pshader.link();
+    shader.link();
     
 }
 

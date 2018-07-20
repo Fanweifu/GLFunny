@@ -15,8 +15,10 @@ public:
 
     bool visible = true;
 
-    Shader pshader;
-    ImgTexture pTexture;
+    Shader shader;
+    Texture texture0;
+    Texture texture1;
+    Texture texture2;
 
     float posX() { return pvec.x; }
     float posY() { return pvec.y; }
