@@ -136,6 +136,7 @@ void DepthTexture::bindShadow()
 
     if (enablePbr) {
         shadowPro.setUniform1i("enablePbr", true);
+        shadowPro.setUniform1i("smoothLevel", shadowSmooth);
         shadowPro.setUniform1i("normalTex", 1);
         shadowPro.setUniform1i("specularTex", 2);
     }

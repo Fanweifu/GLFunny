@@ -46,7 +46,7 @@ void moveMouse(int x, int y) {
     float dx, dy, dz;
     //cam1.getDirection(dx, dy, dz);
     cam1.mouseCoordToDir(x, y, dx, dy, dz); 
-    l.setPostion(dy,-dx,-dz,0);
+    l.setPostion(dx, dy, -dz,0);
 }
 
 void dragMouse(int x, int y) {

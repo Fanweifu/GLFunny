@@ -83,13 +83,13 @@
     <ClCompile Include="Shape\shader.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="Shape\texture.cpp">
-      <Filter>源文件\Shape</Filter>
-    </ClCompile>
     <ClCompile Include="Shape\ComplexShape.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
     <ClCompile Include="Shape\ShapeBase.cpp">
+      <Filter>源文件\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape\texture.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
   </ItemGroup>

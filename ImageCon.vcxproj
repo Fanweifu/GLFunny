@@ -167,9 +167,9 @@
     <ClCompile Include="Shape\shader.cpp" />
     <ClCompile Include="Shape\shape.cpp" />
     <ClCompile Include="Shape\ShapeBase.cpp" />
+    <ClCompile Include="Shape\texture.cpp" />
     <ClCompile Include="Shape\vaoarray.cpp" />
     <ClCompile Include="ImageCon.cpp" />
-    <ClCompile Include="Shape\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\noise.png" />

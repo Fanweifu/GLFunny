@@ -5,6 +5,7 @@ in vec2 texcoord;
 in vec3 normal;
 
 uniform bool enablePbr;
+uniform int smoothLevel;
 uniform float biasFactor;
 uniform sampler2D baseTex;
 uniform sampler2D normalTex;
@@ -19,10 +20,23 @@ float calcShadow(vec4 frag,float tanval){
     if(frag.z > 1.0)
         return 0.0;
     float bias = biasFactor*tanval;
-    float diff = viewdepth - (texture2D(depthTex, frag.xy).r + bias);
-    float shd = smoothstep(-bias / 2, bias / 2, diff);
-	float distanceK = min(min(frag.x,1-frag.x),min(frag.y,1-frag.y));
-	return shd*smoothstep(0,0.02,distanceK);
+	
+	float offset =  0;
+
+	int cnt = (2*smoothLevel+1)*(2*smoothLevel+1);
+	vec2 mapSize = textureSize(depthTex,0);
+	
+	for(int i=-smoothLevel;i<=smoothLevel;i++){
+		for(int j=-smoothLevel;j<=smoothLevel;j++){
+			offset+= viewdepth-bias>texture2D(depthTex, frag.xy+ vec2(i,j)/mapSize).r?1:0;
+		}
+	}
+
+    offset/=cnt;
+	
+	if(frag.z>1.0) return 0;
+
+	return offset-bias;
 }
 
 
@@ -53,9 +67,9 @@ void main(){
 
     float shadowK = calcShadow(fragLight,tanval);
 	
-    matcolor += (1-shadowK)*vec4(diffuse +specular);
+    matcolor += (1-shadowK)*(diffuse +specular);
 
 
-    gl_FragColor = vec4(matcolor.xyz/2,1) *texture2D(baseTex, texcoord);
+    gl_FragColor = vec4(matcolor.xyz*(enablePbr?0.4:1),1) *texture2D(baseTex, texcoord);
     
 }
