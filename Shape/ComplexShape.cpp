@@ -29,7 +29,7 @@ void ComplexShape::addPoint(float px, float py, float pz, float nx, float ny, fl
     if (inited) init();
 }
 
-void ComplexShape::addIndex(uint idx )
+void ComplexShape::addIndex(unsigned int idx )
 {
     indexes.push_back(idx);   
 }

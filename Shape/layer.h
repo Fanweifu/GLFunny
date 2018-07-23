@@ -1,11 +1,11 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include"shape.h"
+#include"shapePRS.h"
 #include<assert.h>
 #include<vector>
 
-class Layer : public Shape
+class Layer : public ShapePRS
 {
 public:
     Layer();

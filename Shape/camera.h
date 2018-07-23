@@ -7,7 +7,7 @@
 #include"complexShape.h"
 
 
-class Camera : public Shape
+class Camera : public ShapePRS
 {
 public:
     Camera();

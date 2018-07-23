@@ -1,15 +1,15 @@
-#include "shape.h"
+#include "shapePRS.h"
 #include<cstring>
 
-Shape::Shape()
+ShapePRS::ShapePRS()
 {
 }
 
-void Shape::draw() {
+void ShapePRS::draw() {
 
     if (!visible) return;
 
-    ShapeBase::draw();
+    Shape::draw();
 
     glPushMatrix();
 
@@ -34,7 +34,7 @@ void Shape::draw() {
 }
 
 
-void Shape::updateModel() {
+void ShapePRS::updateModel() {
     modelmat = glm::translate(glm::mat4(1.0), pvec);
     modelmat = glm::scale(modelmat, svec);
     modelmat = glm::rotate(modelmat, rvec.z*DEG2RAD, glm::vec3(0, 0, 1));
@@ -44,7 +44,7 @@ void Shape::updateModel() {
     modelmatInv = glm::inverse(modelmat);
 }
 
-void Shape::toLocalPos(float &x, float &y, float &z) {
+void ShapePRS::toLocalPos(float &x, float &y, float &z) {
     glm::vec4 vl(x, y, z, 1);
     glm::vec4 wv = vl*modelmatInv;
 
@@ -53,7 +53,7 @@ void Shape::toLocalPos(float &x, float &y, float &z) {
     z = wv[2];
 }
 
-void Shape::toWorldPos(float &x, float &y, float &z) {
+void ShapePRS::toWorldPos(float &x, float &y, float &z) {
     glm::vec4 vl(x, y, z, 1);
     glm::vec4 wv = vl*modelmat;
 
@@ -62,7 +62,7 @@ void Shape::toWorldPos(float &x, float &y, float &z) {
     z = wv[2];
 }
 
-void Shape::toLocalDir(float & x, float & y, float & z)
+void ShapePRS::toLocalDir(float & x, float & y, float & z)
 {
     toLocalPos(x, y, z);
     float ox, oy, oz;
@@ -71,7 +71,7 @@ void Shape::toLocalDir(float & x, float & y, float & z)
     x -= ox; y -= oy; z -= oz;
 }
 
-void Shape::toWorldDir(float & x, float & y, float & z)
+void ShapePRS::toWorldDir(float & x, float & y, float & z)
 {
     toWorldPos(x, y, z);
     float ox, oy, oz;
@@ -81,6 +81,6 @@ void Shape::toWorldDir(float & x, float & y, float & z)
 }
 
 
-void Shape::ondraw() {
+void ShapePRS::ondraw() {
     if (drawFunc) (*drawFunc)();
 }

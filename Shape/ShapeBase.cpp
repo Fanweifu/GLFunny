@@ -1,21 +1,21 @@
-#include "ShapeBase.h"
+#include "Shape.h"
 
 
-ShapeBase::ShapeBase()
+Shape::Shape()
 {
 }
 
 
-ShapeBase::~ShapeBase()
+Shape::~Shape()
 {
 }
 
-void ShapeBase::draw()
+void Shape::draw()
 {
-    if (drawAxis) ShapeBase::drawAsix(axisLength);
+    if (drawAxis) Shape::drawAsix(axisLength);
 }
 
-void ShapeBase::drawAsix(float size) {
+void Shape::drawAsix(float size) {
     glDepthFunc(GL_ALWAYS);     // to avoid visual artifacts with grid lines
     glDisable(GL_LIGHTING);
     glPushMatrix();             //NOTE: There is a bug on Mac misbehaviours of

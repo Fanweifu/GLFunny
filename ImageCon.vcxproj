@@ -154,9 +154,10 @@
     <ClInclude Include="Shape\light.h" />
     <ClInclude Include="Shape\shader.h" />
     <ClInclude Include="Shape\shape.h" />
-    <ClInclude Include="Shape\ShapeBase.h" />
+    <ClInclude Include="Shape\shapePRS.h" />
     <ClInclude Include="Shape\vaoarray.h" />
     <ClInclude Include="Shape\texture.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\camera.cpp" />
@@ -165,11 +166,12 @@
     <ClCompile Include="Shape\image3dex.cpp" />
     <ClCompile Include="Shape\layer.cpp" />
     <ClCompile Include="Shape\shader.cpp" />
-    <ClCompile Include="Shape\shape.cpp" />
+    <ClCompile Include="Shape\shapePRS.cpp" />
     <ClCompile Include="Shape\ShapeBase.cpp" />
     <ClCompile Include="Shape\texture.cpp" />
     <ClCompile Include="Shape\vaoarray.cpp" />
     <ClCompile Include="ImageCon.cpp" />
+    <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Img\noise.png" />

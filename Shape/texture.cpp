@@ -28,64 +28,43 @@ bool ImgTexture::loadRgbImg(char * path)
 {
     init();
 
-    cv::Mat img = cv::imread(path, cv::IMREAD_UNCHANGED);
-    if (img.empty() || img.depth() != CV_8U || img.channels() != 3) {
-        printf("loaded failed!\n");
-        return false;
-    }
+   
 
-    uchar* data = readImgData(img);
+    unsigned char* data = stbi_load(path, &cols, &rows, &chns, 4);
 
     glBindTexture(GL_TEXTURE_2D, texID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, cols, rows, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
+
     delete[] data;
 
     return (isValid = true);
 }
 
-void ImgTexture::makeSingleColor(float r, float g, float b)
+void ImgTexture::makeSingleColor(float r, float g, float b, float a)
 {
-    cv::Mat img = cv::Mat(cv::Size(1, 1), CV_8UC3, cv::Scalar(b * 255, g * 255, r * 255));
+    init();
 
-    uchar* data = readImgData(img);
+    unsigned char *data = new unsigned char[4]{ unsigned char(r * 255), unsigned char(g * 255) ,unsigned char(b * 255) ,unsigned char(a * 255) };
+    cols = 1; rows = 1; chns = 4;
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
     glBindTexture(GL_TEXTURE_2D, texID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, cols, rows, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
     delete[] data;
 
     isValid = true;
 }
 
-uchar * ImgTexture::readImgData(cv::Mat & img)
-{
-    cols = img.cols, rows = img.rows, chns = img.channels();
-    uchar* imgdata = new uchar[cols*rows*chns];
-
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
-            for (int k = 0; k < chns; k++)
-            {
-                imgdata[i*cols*chns + j*chns + (chns - k - 1)] = img.data[i*img.step + j*chns + k];
-            }
-        }
-    }
-    return imgdata;
-}
-
 DepthTexture::DepthTexture()
 {
 }
 
-bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, ShapeBase& scene)
+bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene)
 {
     if (!inited) init();
 
@@ -131,7 +110,7 @@ void DepthTexture::bindShadow()
     shadowPro.use();
     shadowPro.setUniform1i("baseTex", 0);
     shadowPro.setUniform1i("depthTex", 3);
-    shadowPro.setUniform1f("biasFactor",calcBias());
+    shadowPro.setUniform1f("biasFactor", calcBias());
     shadowPro.setUniformMat4("lightSpace", value_ptr(lightPrjViewMat));
 
     if (enablePbr) {

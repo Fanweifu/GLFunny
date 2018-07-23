@@ -10,10 +10,10 @@
 
 #include"vaoarray.h"
 #include"shader.h"
-#include"shape.h"
+#include"shapePRS.h"
 using namespace std;
 
-class Image3D : public Shape
+class Image3D : public ShapePRS
 {
 public:
 
