@@ -34,7 +34,7 @@ public:
     int chanels() { return chns; }
 
     bool loadRgbImg(char* path);
-    void makeSingleColor(float r, float g, float b, float a = 1);
+    void makeColor(float r, float g, float b, float a = 1);
 protected:
     int cols, rows, chns;
 };
@@ -52,7 +52,7 @@ protected:
     GLuint depthMapFBO = 0;
     int width = 2048, height = 2048;
     float n = 0.0f, f = 1000.0f, distance = 100.0f;
-    float range = 400;
+    float range = 100;
     glm::mat4 lightPrjMat, lightViewMat, lightPrjViewMat;
     Shader shadowPro;
     void init();

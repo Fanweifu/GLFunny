@@ -86,9 +86,6 @@
     <ClCompile Include="Shape\ComplexShape.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="Shape\ShapeBase.cpp">
-      <Filter>源文件\Shape</Filter>
-    </ClCompile>
     <ClCompile Include="Shape\texture.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
@@ -97,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="stb_image.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="shape\shape.cpp">
+      <Filter>源文件\Shape</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

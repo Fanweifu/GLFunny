@@ -43,7 +43,7 @@ bool ImgTexture::loadRgbImg(char * path)
     return (isValid = true);
 }
 
-void ImgTexture::makeSingleColor(float r, float g, float b, float a)
+void ImgTexture::makeColor(float r, float g, float b, float a)
 {
     init();
 

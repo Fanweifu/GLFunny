@@ -167,7 +167,7 @@
     <ClCompile Include="Shape\layer.cpp" />
     <ClCompile Include="Shape\shader.cpp" />
     <ClCompile Include="Shape\shapePRS.cpp" />
-    <ClCompile Include="Shape\ShapeBase.cpp" />
+    <ClCompile Include="shape\shape.cpp" />
     <ClCompile Include="Shape\texture.cpp" />
     <ClCompile Include="Shape\vaoarray.cpp" />
     <ClCompile Include="ImageCon.cpp" />

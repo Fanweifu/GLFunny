@@ -36,7 +36,9 @@ float calcShadow(vec4 frag,float tanval){
 	
 	if(frag.z>1.0) return 0;
 
-	return offset-bias;
+	float disfactor = smoothstep(-0.5,-0.4,-distance(frag.xy,vec2(0.5,0.5)));
+
+	return offset*disfactor;
 }
 
 
