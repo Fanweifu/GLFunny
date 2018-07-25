@@ -33,8 +33,8 @@ bool ImgTexture::loadRgbImg(char * path)
     unsigned char* data = stbi_load(path, &cols, &rows, &chns, 4);
 
     glBindTexture(GL_TEXTURE_2D, texID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -62,6 +62,12 @@ void ImgTexture::makeColor(float r, float g, float b, float a)
 
 DepthTexture::DepthTexture()
 {
+}
+
+DepthTexture::~DepthTexture()
+{
+    Texture::~Texture();
+    glDeleteFramebuffers(1, &depthMapFBO);
 }
 
 bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene)
@@ -98,9 +104,9 @@ bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, flo
     return(isValid = true);
 }
 
-void DepthTexture::updateViewInv(glm::mat4 & cameraViewInv)
+void DepthTexture::setViewMatInv(const float* matptr)
 {
-    shadowPro.setUniformMat4(Shader::pCameraViewInv, glm::value_ptr(cameraViewInv));
+    shadowPro.setUniformMat4(Shader::pCameraViewInv, matptr);
 }
 
 void DepthTexture::bindShadow()
@@ -112,10 +118,11 @@ void DepthTexture::bindShadow()
     shadowPro.setUniform1i("depthTex", 3);
     shadowPro.setUniform1f("biasFactor", calcBias());
     shadowPro.setUniformMat4("lightSpace", value_ptr(lightPrjViewMat));
+    shadowPro.setUniform1i("smoothLevel", shadowSmooth);
 
     if (enablePbr) {
         shadowPro.setUniform1i("enablePbr", true);
-        shadowPro.setUniform1i("smoothLevel", shadowSmooth);
+        
         shadowPro.setUniform1i("normalTex", 1);
         shadowPro.setUniform1i("specularTex", 2);
     }

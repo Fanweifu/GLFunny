@@ -42,10 +42,11 @@ protected:
 class DepthTexture : public Texture {
 public:
     DepthTexture();
+    ~DepthTexture();
     int shadowSmooth = 2;
     bool enablePbr = false;
     bool loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene);
-    void updateViewInv(glm::mat4& cameraViewInv);
+    void setViewMatInv(const float* matptr);
     void bindShadow();
     void unbindShadow();
 protected:

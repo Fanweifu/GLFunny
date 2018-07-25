@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderFun", "shaderFun.vcxproj", "{0E844740-3560-3DB7-8006-395C75819355}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shader_QT", "shaderFun.vcxproj", "{0E844740-3560-3DB7-8006-395C75819355}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Image3DGlut", "ImageCon.vcxproj", "{CFC7658E-4FE3-4999-A1DB-8745D4B66522}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shader", "ImageCon.vcxproj", "{CFC7658E-4FE3-4999-A1DB-8745D4B66522}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -16,15 +16,15 @@ using namespace std;
 
 int w, h;
 
-Camera cam1;
+Camera camera;
 
-Layer ly1;
-Layer ly2;
+Layer lyr;
 Image3DEx img3d;
 ComplexShape testshp;
 ImgTexture texture;
 ImgTexture textureNor;
 ImgTexture textureSpe;
+DepthTexture depthMap;
 Shader water;
 ElementData edata;
 float timeVal = 0;
@@ -32,26 +32,26 @@ bool mutiScreen = true;
 float step = 0.1;
 void reshape(int width, int height) {
    
-    cam1.setViewPort(0, 0, width, height);
+    camera.setViewPort(0, 0, width, height);
     w = width, h = height;
    
 }
 
 void moveMouse(int x, int y) {
     
-    cam1.moveMouse(x, y);
+    camera.moveMouse(x, y);
    
 
-    Light& l = cam1.getLight();
+    Light& l = camera.getLight();
     float dx, dy, dz;
     //cam1.getDirection(dx, dy, dz);
-    cam1.mouseCoordToDir(x, y, dx, dy, dz); 
+    camera.mouseCoordToDir(x, y, dx, dy, dz); 
     l.setPostion(dx, dy, -dz,0);
 }
 
 void dragMouse(int x, int y) {
   
-    cam1.dragMouse(x, y);
+    camera.dragMouse(x, y);
     
 }
 
@@ -59,19 +59,19 @@ void keyFunc(uchar key, int x, int y) {
     switch (key)
     {
     case 'w':
-        cam1.localMove(0, 1 * step, 0);
+        camera.localMove(0, 1 * step, 0);
         break;
     case 's':
-        cam1.localMove(0, -1 * step, 0);
+        camera.localMove(0, -1 * step, 0);
         break;
     case 'a':
-        cam1.localMove(-1 * step, 0, 0);
+        camera.localMove(-1 * step, 0, 0);
         break;
     case 'd':
-        cam1.localMove(1 * step, 0, 0);
+        camera.localMove(1 * step, 0, 0);
         break;
     case ' ':
-        cam1.isUsePbr = !cam1.isUsePbr;
+        depthMap.enablePbr = !depthMap.enablePbr;
         break;
     }
 }
@@ -80,27 +80,40 @@ void spkeyFunc(int key, int x, int y) {
     switch (key)
     {
     case GLUT_KEY_UP:
-        cam1.localMove(0, 0, 1);
+        camera.localMove(0, 0, 1);
         break;
     case GLUT_KEY_DOWN:
-        cam1.localMove(0, 0, -1);
+        camera.localMove(0, 0, -1);
     }
 }
 
 void render() {
-  
+    float x, y, z, w;
+    camera.getLight().getPositon(x, y, z, w);
+    depthMap.loadDepthMap(camera.posX(), camera.posY(), camera.posZ(), x, y, z, w, lyr);
 
-    cam1.drawView();
+    camera.beginRender();
+
+    depthMap.bindShadow();
+    depthMap.setViewMatInv(camera.getViewMatInvPtr());
+
+    lyr.draw();
+
+    depthMap.unbindShadow();
+    camera.endRender();
+
+    
+
     glutSwapBuffers();
 }
 
 void initCamera() {
-    cam1.init();
-    cam1.setFar(1000);
-    cam1.drawAxis = true;
-    cam1.setPosition(0, 0, 0);
-    cam1.setViewPort(0, 0, 250, 500);
-    cam1.Scene = &ly1;
+    camera.init();
+    camera.setFar(1000);
+    camera.drawAxis = true;
+    camera.setPosition(0, 0, 0);
+    camera.setViewPort(0, 0, 250, 500);
+    
    
 }
 
@@ -151,9 +164,9 @@ void imgShapeTest() {
 
     img3d.active(true);
     img3d.speed = 0.05;
-    ly1.add(&img3d);
+    lyr.add(&img3d);
 
-    ly2.add(&img3d);
+   
 }
 
 void waterTest() {
@@ -176,9 +189,9 @@ void waterTest() {
 
     testshp.pshader = water;*/
 
-    ly1.add(&testshp);
+    lyr.add(&testshp);
 
-    cam1.setPosition(0, 0, 0);
+    camera.setPosition(0, 0, 0);
     /*cam2.setPosition(0, -0.5, 1);
     cam2.visible = false;*/
 
@@ -224,12 +237,10 @@ void shadowTest() {
     test3->add(&testshp);
 
 
-    ly1.add(test1);
-    ly1.add(test2);
-    ly1.add(test3);
-    cam1.setPosition(0, 0.5, 1);
-    cam1.isRenderShadow = true;
-    cam1.isUsePbr = true;
+    lyr.add(test1);
+    lyr.add(test2);
+    lyr.add(test3);
+    camera.setPosition(0, 0.5, 1);
     mutiScreen = false;
 }
 

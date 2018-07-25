@@ -6,19 +6,11 @@ Camera::Camera()
 {
 }
 
-void Camera::drawView() {
+void Camera::beginRender()
+{
     if (windowsChanged) {
         updateViewPort();
         windowsChanged = false;
-    }
-
-  
-
-    if (isRenderShadow) {
-        float lx, ly, lz, lw;
-        mainlight.getPositon(lx, ly, lz, lw);
-        depthMap.enablePbr = isUsePbr;
-        depthMap.loadDepthMap(pvec.x, pvec.y, pvec.z, lx, ly, lz, lw , *Scene);
     }
 
     if (isMultiScreen) {
@@ -39,17 +31,11 @@ void Camera::drawView() {
 
     glLoadMatrixf(value_ptr(modelmatInv));
 
-    mainlight.draw();
+    mainLight.draw();
+}
 
-    if (isRenderShadow) {
-        depthMap.bindShadow();
-        depthMap.updateViewInv(modelmat);
-    }
-
-    if (Scene) Scene->draw();
-
-    if (isRenderShadow) depthMap.unbindShadow();
-
+void Camera::endRender()
+{
     renderTime += 1;
 }
 
@@ -108,7 +94,7 @@ void Camera::localMove(float right, float forward, float up)
     setPosition(npvec.x, npvec.y, npvec.z);
 }
 
-void Camera::setCameraInShader(Shader & shd)
+void Camera::setCamUniform(Shader & shd)
 {
     shd.use();
     shd.setUniform2f(Shader::pView, getViewWidth(), getViewHeight());
@@ -117,7 +103,7 @@ void Camera::setCameraInShader(Shader & shd)
     shd.setUniformMat4(Shader::pProjectionInv, getProjectionMatInvPtr());
 
     float x, y, z, w;
-    getLight().getPositon(x, y, z, w);
+    mainLight.getPositon(x, y, z, w);
     shd.setUniform4f(Shader::pWorldLight, x, y, z, w);
     shd.setUniform3f(Shader::pCameraPos, posX(), posY(), posZ());
 }
@@ -277,7 +263,7 @@ void Camera::init() {
 
     initGl();
     initBack();
-    mainlight.init();
+    mainLight.init();
 
     updateProjection();
     updateModel();
@@ -295,14 +281,6 @@ void Camera::initGl() {
 
     glEnable(GL_MULTISAMPLE);
 
-    //glEnable(GL_POLYGON_SMOOTH);
-    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-    //glEnable(GL_LINE_SMOOTH);
-    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-
-    //glEnable(GL_POINT_SMOOTH);
-    //glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
@@ -319,7 +297,7 @@ void Camera::initGl() {
 
 void Camera::drawBack() {
 
-    setCameraInShader(backshd);
+    setCamUniform(backshd);
     backshd.use();
     glDepthRange(0.999999, 1);
 
@@ -327,16 +305,6 @@ void Camera::drawBack() {
 
     glDepthRange(0, 1);
     backshd.unuse();
-
-    depthMap.bind();
-    glDepthRange(0.999, 1);
-    glTranslatef(0, 0, -2);
-
-    backBlock.draw();
-
-    glTranslatef(0, 0, 2);
-    glDepthRange(0, 1);
-    depthMap.unbind();
 }
 
 void Camera::initBack()

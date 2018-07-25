@@ -53,7 +53,7 @@ void main(){
     
 
     vec3 halfv = normalize(gl_LightSource[0].halfVector.xyz);
-    vec3 normalz = enablePbr?normalize(gl_NormalMatrix*texture2D(normalTex, texcoord).rgb):normalize(normal);
+    vec3 normalz = enablePbr?normalize(gl_NormalMatrix*(2*texture2D(normalTex, texcoord).rgb-1)):normalize(normal);
 
     if (!gl_FrontFacing) {
         normalz = -normalz;

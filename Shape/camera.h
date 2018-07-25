@@ -14,9 +14,9 @@ public:
     bool isOrtho = false;
     bool isMultiScreen = true;
     bool isShaderBack = true;
-    bool isRenderShadow = true;
-    bool isUsePbr = true;
-    Shape* Scene = NULL;
+  
+   
+    
 
     void setNear(float _near) {
         if (_near<0 || _near>Far) return;
@@ -72,24 +72,27 @@ public:
     }
     const float* getDirectionf3() { return glm::value_ptr(forwardV); }
 
-    Light& getLight() { return mainlight; }
+    Light& getLight() { return mainLight; }
 
     void init();
 
     void lookAt(float ex, float ey, float ez, float tx, float ty, float tz);
 
     void setOrthoH(int h) { owidth = Ratio*h; oheight = h; updateProjection(); }
-    void drawView();
+    void beginRender();
+    void endRender();
     void dragMouse(int x, int y, float speed = 0.1f);
     void moveMouse(int x, int y);
     void mouseCoordToUV(int mx, int my, float &u, float &v);
     void mouseCoordToDir(int mx, int my, float& x, float &y, float &z);
     void localMove(float right, float forward, float up);
-    void setCameraInShader(Shader& shd);
+    void setCamUniform(Shader& shd);
 
     const float* getProjectionMatPtr() { return  glm::value_ptr(matrixProjection); }
     const float* getProjectionMatInvPtr() { return glm::value_ptr(matrixProjectionInv); }
-    const float* getLightPosf4() { return mainlight.getPositonf4(); }
+    const float* getViewMatPtr() { return getModelMatInvPtr(); }
+    const float* getViewMatInvPtr() { return getModelMatPtr(); }
+    const float* getLightPosf4() { return mainLight.getPositonf4(); }
 protected:
     bool inited = false;
     bool windowsChanged = true;
@@ -121,9 +124,9 @@ protected:
 
     glm::mat4 matrixProjection;
     glm::mat4 matrixProjectionInv;
-    Light mainlight;
+    Light mainLight;
     Shader backshd;
-    DepthTexture depthMap;
+    
     ComplexShape backBlock;
     void initGl();
     void initBack();
