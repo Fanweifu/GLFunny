@@ -30,6 +30,7 @@ protected:
     uint dstchns = 0;
     uint dststep = 0;
 
+    Shader innerShd;
     void calcHeight();
     void getColor(uint x, uint y, float* outputVec);
     void ondraw();

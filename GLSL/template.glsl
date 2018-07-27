@@ -1,4 +1,4 @@
-uniform float     iTime;
+uniform float     time;
 uniform vec2      viewport;
 uniform vec3      cameraPos;
 uniform vec4      worldLight;

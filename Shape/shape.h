@@ -5,7 +5,7 @@ class Shape
 {
 public:
 
-    bool drawAxis = false;
+    bool isDrawAxis = false;
     float axisLength = 1;
     bool visible = true;
 
@@ -15,6 +15,6 @@ public:
 
     virtual void draw();
 protected:
-    static void drawAsix(float size=1);
+    static void drawAxis(float size=1);
 };
 

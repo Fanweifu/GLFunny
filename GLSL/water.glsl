@@ -1,6 +1,6 @@
 #version 120
 
-uniform float     iTime;
+uniform float     time;
 uniform vec2      viewport;
 uniform vec3      cameraPos;
 uniform vec4      worldLight;
@@ -91,8 +91,8 @@ float map(vec3 p) {
     
     float d, h = 0.0;    
     for(int i = 0; i < ITER_GEOMETRY; i++) {        
-    	d = sea_octave((uv+(1.0 + iTime * SEA_SPEED))*freq,choppy);
-    	d += sea_octave((uv-(1.0 + iTime * SEA_SPEED))*freq,choppy);
+    	d = sea_octave((uv+(1.0 + time * SEA_SPEED))*freq,choppy);
+    	d += sea_octave((uv-(1.0 + time * SEA_SPEED))*freq,choppy);
         h += d * amp;        
     	uv *= octave_m; freq *= 1.9; amp *= 0.22;
         choppy = mix(choppy,1.0,0.2);
@@ -108,8 +108,8 @@ float map_detailed(vec3 p) {
     
     float d, h = 0.0;    
     for(int i = 0; i < ITER_FRAGMENT; i++) {        
-    	d = sea_octave((uv+(1.0 + iTime * SEA_SPEED))*freq,choppy);
-    	d += sea_octave((uv-(1.0 + iTime * SEA_SPEED))*freq,choppy);
+    	d = sea_octave((uv+(1.0 + time * SEA_SPEED))*freq,choppy);
+    	d += sea_octave((uv-(1.0 + time * SEA_SPEED))*freq,choppy);
         h += d * amp;        
     	uv *= octave_m; freq *= 1.9; amp *= 0.22;
         choppy = mix(choppy,1.0,0.2);

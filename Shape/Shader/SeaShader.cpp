@@ -35,7 +35,7 @@ bool SeaShader::load()
 
 void SeaShader::use()
 {
-    Shader::use();
+    Shader::bind();
 
     setUniform1i(SeaShader::pIter_Geometry,iter_geometry);
     setUniform1i(SeaShader::pIter_Fragment, iter_fragment);

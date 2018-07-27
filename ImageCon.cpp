@@ -20,16 +20,16 @@ Camera camera;
 
 Layer lyr;
 Image3DEx img3d;
-ComplexShape testshp;
+Cube testshp;
 ImgTexture texture;
 ImgTexture textureNor;
 ImgTexture textureSpe;
 DepthTexture depthMap;
 Shader water;
-ElementData edata;
+AttribArray edata;
 float timeVal = 0;
-bool mutiScreen = true;
 float step = 0.1;
+
 void reshape(int width, int height) {
    
     camera.setViewPort(0, 0, width, height);
@@ -44,9 +44,9 @@ void moveMouse(int x, int y) {
 
     Light& l = camera.getLight();
     float dx, dy, dz;
-    //cam1.getDirection(dx, dy, dz);
-    camera.mouseCoordToDir(x, y, dx, dy, dz); 
-    l.setPostion(dx, dy, -dz,0);
+    camera.mouseRay(x, y, dx, dy, dz); 
+    //l.setPostion(dx, dy, -dz,0);
+    l.setPostion(1, 1, 1,0);
 }
 
 void dragMouse(int x, int y) {
@@ -87,7 +87,7 @@ void spkeyFunc(int key, int x, int y) {
     }
 }
 
-void render() {
+void renderShadow() {
     float x, y, z, w;
     camera.getLight().getPositon(x, y, z, w);
     depthMap.loadDepthMap(camera.posX(), camera.posY(), camera.posZ(), x, y, z, w, lyr);
@@ -97,7 +97,7 @@ void render() {
     depthMap.bindShadow();
     depthMap.setViewMatInv(camera.getViewMatInvPtr());
 
-    lyr.draw();
+    testshp.draw();
 
     depthMap.unbindShadow();
     camera.endRender();
@@ -107,14 +107,24 @@ void render() {
     glutSwapBuffers();
 }
 
+void renderWater() {
+    camera.beginRender();
+
+    camera.setCamUniform(water);
+
+    lyr.draw();
+
+    camera.endRender();
+
+    glutSwapBuffers();
+}
+
 void initCamera() {
     camera.init();
     camera.setFar(1000);
-    camera.drawAxis = true;
+    camera.isDrawAxis = true;
     camera.setPosition(0, 0, 0);
-    camera.setViewPort(0, 0, 250, 500);
-    
-   
+    camera.setViewPort(0, 0, 500, 500);
 }
 
 void imgShapeTest() {
@@ -169,48 +179,22 @@ void imgShapeTest() {
    
 }
 
+
+
 void waterTest() {
-    testshp.addPoint(-1, -1, 0, 0, 0, -1, 0, 0);
-    testshp.addPoint(1, -1, 0, 0, 0, -1, 0, 1);
-    testshp.addPoint(1, 1, 0, 0, 0, -1, 1, 1);
-    testshp.addPoint(-1, 1, 0, 0, 0, -1, 1, 0);
-    testshp.addIndex(0);
-    testshp.addIndex(1);
-    testshp.addIndex(2);
-    testshp.addIndex(0);
-    testshp.addIndex(2);
-    testshp.addIndex(3);
 
-    testshp.drawAxis = true;
 
-    //testshp.addPoint(100, -100, 0);
-    /*water.loadFragFile("GLSL/water.glsl");
+    testshp.isDrawAxis = true;
+
+
+    water.loadFragFile("GLSL/water.glsl");
     water.link();
 
-    testshp.pshader = water;*/
-
-    lyr.add(&testshp);
-
-    camera.setPosition(0, 0, 0);
-    /*cam2.setPosition(0, -0.5, 1);
-    cam2.visible = false;*/
-
-    mutiScreen = false;
+    camera.setPosition(0, 0, 10);
+   
 }
 
 void shadowTest() {
-    
-    testshp.addPoint(-1, -1, 0, 0, 0, 1, 0, 0);
-    testshp.addPoint(1, -1, 0, 0, 0, 1, 0, 1);
-    testshp.addPoint(1, 1, 0, 0, 0, 1, 1, 1);
-    testshp.addPoint(-1, 1, 0, 0, 0, 1, 1, 0);
-    testshp.addIndex(0);
-    testshp.addIndex(1);
-    testshp.addIndex(2);
-    testshp.addIndex(0);
-    testshp.addIndex(2);
-    testshp.addIndex(3);
-
 
     texture.loadRgbImg("Img/wood.jpg");
     textureNor.loadRgbImg("Img/woodNormal.png");
@@ -221,27 +205,8 @@ void shadowTest() {
     testshp.texture2 = textureSpe;
 
 
-    Layer* test1 = new Layer();
-    test1->setScale(2, 2, 2);
-    test1->add(&testshp);
-
-    Layer* test2 = new Layer();
-    test2->setRotation(0, 90, 0);
-    test2->setScale(1, 1, 10);
-    test2->add(&testshp);
-
-    Layer* test3 = new Layer();
-    
-    test3->setPosition(0, 0, -10);
-    test3->setScale(20, 20, 20);
-    test3->add(&testshp);
-
-
-    lyr.add(test1);
-    lyr.add(test2);
-    lyr.add(test3);
     camera.setPosition(0, 0.5, 1);
-    mutiScreen = false;
+    
 }
 
 void printVersion() {
@@ -272,8 +237,8 @@ void initWindows() {
     glutMotionFunc(dragMouse);
     glutKeyboardFunc(keyFunc);
     glutSpecialFunc(spkeyFunc);
-    glutDisplayFunc(render);
-    glutIdleFunc(render);
+    glutDisplayFunc(renderShadow);
+    glutIdleFunc(renderShadow);
     glutReshapeFunc(reshape);
 }
 
@@ -284,7 +249,6 @@ int main(int arg, char**argv) {
     initCamera();
 
     shadowTest();
-    //imgShapeTest();
     glutMainLoop();
     return 0;
 }

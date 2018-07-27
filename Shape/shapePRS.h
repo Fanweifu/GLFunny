@@ -15,7 +15,6 @@ public:
 
     bool visible = true;
 
-    Shader shader;
     Texture texture0;
     Texture texture1;
     Texture texture2;
@@ -74,7 +73,7 @@ public:
     const float* getModelMatPtr() { return glm::value_ptr(modelmat); }
     const float* getModelMatInvPtr() { return glm::value_ptr(modelmatInv); }
 
-    voidHdl drawFunc = NULL;
+    
 
 protected:
 
@@ -92,7 +91,7 @@ protected:
     glm::mat4 modelmatInv;
 
     virtual void updateModel();
-    virtual void ondraw();
+    virtual void ondraw() { };
 
     
 };

@@ -28,9 +28,9 @@ public:
     void generateData();
     bool reShape(int rows, int cols);
 protected:
-   
+    Shader innerShd;
     virtual void initShader();
-    virtual void uninitShader();
+
     virtual void ondraw();
     virtual void getColor(uint x, uint y, float* outputVec);
     void getColor(uchar* pdata, uint x, uint y, float*outColor);
@@ -52,7 +52,7 @@ protected:
     float* normals = NULL;
     uint* vertexIdxs = NULL;
 
-    ElementData vao;
+    AttribArray vao;
 
     
     

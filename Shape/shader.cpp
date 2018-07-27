@@ -1,5 +1,9 @@
 #include "shader.h"
 
+#include<sstream>
+#include<iostream>
+#include<fstream>
+#include<stdio.h>
 
 Shader::Shader()
 {
@@ -48,6 +52,8 @@ bool Shader::complie_attch(GLenum type, const char *source) {
     else {
         if (!inited) initProgram();
         glAttachShader(program, shader);
+        //shaders.insert(pair<int, GLuint>(type, shader));
+        glDeleteShader(shader);
         return true;
     }
 }
@@ -64,6 +70,13 @@ void Shader::uninitProgram()
 {
     if (inited) {
         glDeleteProgram(program);
+
+        for (auto item : shaders) {
+            glDeleteShader(item.second);
+        }
+
+        shaders.clear();
+
         inited = false;
     }
 }
@@ -119,11 +132,11 @@ bool Shader::link() {
     }
 }
 
-void Shader::use() {
+void Shader::bind() {
     if(isVaild) glUseProgram(program);
 }
 
-void Shader::unuse()
+void Shader::unBind()
 {
     if(isVaild) glUseProgram(0);
 }
@@ -169,25 +182,3 @@ void Shader::setUniformMat4(const string & pNm, const float*matPtr ,bool transpo
     GLint idx = getParamID(pNm);
     if (idx >= 0)glUniformMatrix4fv(idx, 1, transpose , matPtr);
 }
-
-Shader * Shader::createDefaultShader()
-{
-    Shader* shd = new Shader();
-    shd->loadVertexCode("#version 330 compatibility\n"
-        "layout(location = 0) in vec3 pos;\n"
-        "layout(location = 1) in vec4 clr;\n"
-        "void main() {\n"
-        "gl_Position= gl_ModelViewProjectionMatrix*vec4(pos,1.);\n"
-        "gl_FrontColor = vec4(clr);\n"
-        "}\n"
-    );
-
-    return shd;
-}
-
-const string Shader::pView = "viewport";
-const string Shader::pTime = "iTime";
-const string Shader::pProjectionInv = "projectionInv";
-const string Shader::pCameraViewInv = "cameraViewInv";
-const string Shader::pWorldLight = "worldLight";
-const string Shader::pCameraPos = "cameraPos";

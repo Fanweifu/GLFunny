@@ -84,12 +84,12 @@ public:
     void dragMouse(int x, int y, float speed = 0.1f);
     void moveMouse(int x, int y);
     void mouseCoordToUV(int mx, int my, float &u, float &v);
-    void mouseCoordToDir(int mx, int my, float& x, float &y, float &z);
+    void mouseRay(int mx, int my, float& x, float &y, float &z);
     void localMove(float right, float forward, float up);
     void setCamUniform(Shader& shd);
 
-    const float* getProjectionMatPtr() { return  glm::value_ptr(matrixProjection); }
-    const float* getProjectionMatInvPtr() { return glm::value_ptr(matrixProjectionInv); }
+    const float* getProjectionMatPtr() { return  glm::value_ptr(matProjection); }
+    const float* getProjectionMatInvPtr() { return glm::value_ptr(matProjectionInv); }
     const float* getViewMatPtr() { return getModelMatInvPtr(); }
     const float* getViewMatInvPtr() { return getModelMatPtr(); }
     const float* getLightPosf4() { return mainLight.getPositonf4(); }
@@ -122,12 +122,12 @@ protected:
     glm::vec3 target = glm::vec3(0, 1, 0);
     glm::vec3 mouseTarget = glm::vec3(0, 1, 0);
 
-    glm::mat4 matrixProjection;
-    glm::mat4 matrixProjectionInv;
+    glm::mat4 matProjection;
+    glm::mat4 matProjectionInv;
     Light mainLight;
     Shader backshd;
-    
-    ComplexShape backBlock;
+    TrianglesShape backBlock;
+
     void initGl();
     void initBack();
     void ondraw();

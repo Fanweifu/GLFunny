@@ -6,21 +6,21 @@
 
 
 #define VBOCNT 5
-#define POSVBOI 0
-#define COLVBOI 1
-#define NRMVBOI 2
-#define TXCVBOI 3
-#define IDXVBOI 4
+
+#define VERTEX_VBO_INDEX 0
+#define COLOR_VBO_INDEX 1
+#define NORMAL_VBO_INDEX 2
+#define TEXCOORD_VBO_INDEX 3
+#define INDEX_VBO_INDEX 4
+
+#define VERTEX_SIZE 3
+#define COLOR_SIZE 4
+#define NORMAL_SIZE 3
+#define TEXCOORD_SIZE 2
 
 class BindData {
 public:
-    friend class VAOFunctions;
-    unsigned int getVAOID() {
-        if (vao == 0) {
-            glGenVertexArrays(1, &vao);
-        }
-        return vao;
-    }
+   
     virtual void renderData(GLenum mode) {}
 
     BindData();
@@ -29,73 +29,40 @@ public:
 protected:
 
     GLuint vao = 0;
+    GLuint vbo[VBOCNT];
+
+    void init() {
+        if (vao == 0) {
+            glGenVertexArrays(1, &vao);
+            glGenBuffers(VBOCNT, vbo);
+        }
+    }
+    void unInit() {
+        glDeleteVertexArrays(1, &vao);
+        glDeleteBuffers(VBOCNT, vbo);
+    }
 };
 
-class ArrayData :public BindData
+
+class AttribArray :public BindData
 {
 public:
 
-    GLuint vertexNums = 0;
-    GLuint indexNums = 0;
-    void setVertex(GLfloat* arr);
-    void setColor(GLfloat* arr, int cnt = 3);
-    void setNormal(GLfloat* arr);
-    void setTexCoord(GLfloat* arr);
-    void setIndex(GLuint* arr,int idxnum);
-    void renderData(GLenum mode);
-    void renderIndex(GLenum mode);
-    ArrayData() :BindData() {}
-   
+    AttribArray() :BindData() {}
+    void init(int ptsNum);
+    void setIndex1ui(GLuint *indeice, int idxNum);
+    void setVertex3f(GLfloat* arr);
+    void setColor4f(GLfloat* arr);
+    void setNormal3f(GLfloat* arr);
+    void setTexCoord2f(GLfloat* arr);
+    void drawArray(GLenum mode);
+    void drawElements(GLenum mode);
 protected:
-
-private:
-};
-
-class ElementData :public BindData
-{
-public:
-
-    ElementData() :BindData() {}
-    //~ElementData() { BindBufferClass::~BindBufferClass(); }
-    void setIndex(GLuint *indeice, int idxNum);
-    void setVertex(GLfloat* arr, int ptNum);
-    void setColor(GLfloat* arr, int chns, int ptNum);
-    void setNormal(GLfloat* arr, int ptNum);
-    void setTexCoord(GLfloat* arr,int ptNum);
-    void renderData(GLenum mode);
-protected:
+    GLuint vertexNum = 0;
     GLuint indexNum = 0;
-
 private:
 };
 
-class VAOFunctions
-{
-public:
-    friend class ArrayData;
-    friend class ElementData;
 
-protected:
-    static void  init();
-    static void  setVertex(GLuint vaObj, GLfloat* arr, int cnt,bool _static = true);
-    static void  setColor(GLuint vaObj, GLfloat* arr, int cnt, int chns = 3, bool _static = true);
-    static void  setNormal(GLuint vaObj, GLfloat* arr, int cnt, bool _static = true);
-    static void  setTexCoord(GLuint vaObj, GLfloat* arr, int cnt, bool _static = true);
-    static void  setIndice(GLuint vaObj, GLuint *idxarr, int idxNum, bool _static = true);
-
-
-    static void  setIndiceShd(GLuint vaObj, GLuint *idxarr, int idxNum, bool _static = true);
-    static void  setVertexShd(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
-    static void  setColorShd(GLuint vaObj, GLfloat*valarr, int cnt, int chns, bool _static = true);
-    static void  setNormalShd(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
-    static void  setTexCoord2DShd(GLuint vaObj, GLfloat*valarr, int cnt, bool _static = true);
-
-    
-
-private:
-    static GLenum getEnum(bool _static);
-    static bool inited;
-    static GLuint VBOS[];
-};
 
 #endif // VAOARRAY_H

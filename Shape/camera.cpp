@@ -19,7 +19,7 @@ void Camera::beginRender()
     }
 
     glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(value_ptr(matrixProjection));
+    glLoadMatrixf(value_ptr(matProjection));
 
     glMatrixMode(GL_MODELVIEW);
 
@@ -64,7 +64,7 @@ void Camera::mouseCoordToUV(int mx, int my, float & u, float & v)
     v = uv.y;
 }
 
-void Camera::mouseCoordToDir(int mx, int my, float & x, float & y, float & z)
+void Camera::mouseRay(int mx, int my, float & x, float & y, float & z)
 {
     float u, v;
     mouseCoordToUV(mx, my, u, v);
@@ -72,7 +72,7 @@ void Camera::mouseCoordToDir(int mx, int my, float & x, float & y, float & z)
     updateProjection();
     updateModel();
 
-    glm::vec4 dir = matrixProjectionInv*glm::vec4(u, v, 1, 1);
+    glm::vec4 dir = matProjectionInv*glm::vec4(u, v, 1, 1);
     dir = dir / dir.w;
     auto zero = glm::vec4(0, 0, 0, 1);
     auto pos = modelmat*zero;
@@ -96,16 +96,16 @@ void Camera::localMove(float right, float forward, float up)
 
 void Camera::setCamUniform(Shader & shd)
 {
-    shd.use();
-    shd.setUniform2f(Shader::pView, getViewWidth(), getViewHeight());
-    shd.setUniform1f(Shader::pTime, getRenderTimes(0.01f));
-    shd.setUniformMat4(Shader::pCameraViewInv, getModelMatPtr());
-    shd.setUniformMat4(Shader::pProjectionInv, getProjectionMatInvPtr());
+    shd.bind();
+    shd.setUniform2f(UNIFORM_VIEWPORT_VEC2, getViewWidth(), getViewHeight());
+    shd.setUniform1f(UNIFORM_TIME_FLOAT, getRenderTimes(0.01f));
+    shd.setUniformMat4(UNIFORM_CAMERAVIEWINV_MAT4, getViewMatInvPtr());
+    shd.setUniformMat4(UNIFORM_PROJECTIONINV_MAT4, getProjectionMatInvPtr());
 
     float x, y, z, w;
     mainLight.getPositon(x, y, z, w);
-    shd.setUniform4f(Shader::pWorldLight, x, y, z, w);
-    shd.setUniform3f(Shader::pCameraPos, posX(), posY(), posZ());
+    shd.setUniform4f(UNIFORM_WORLDLIGHT_VEC4, x, y, z, w);
+    shd.setUniform3f(UNIFORM_CAMERAPOS_VEC3, posX(), posY(), posZ());
 }
 
 void drawFrustum(float fovY, float aspectRatio, float nearPlane, float farPlane)
@@ -229,13 +229,13 @@ void Camera::setWindowSize(int width, int height) {
 void Camera::updateProjection()
 {
     if (isOrtho) {
-        matrixProjection = glm::ortho(-owidth / 2, owidth / 2, -oheight / 2, oheight / 2, Near, Far);
+        matProjection = glm::ortho(-owidth / 2, owidth / 2, -oheight / 2, oheight / 2, Near, Far);
     }
     else {
-        matrixProjection = glm::perspective(Fov*DEG2RAD, Ratio, Near, Far);
+        matProjection = glm::perspective(Fov*DEG2RAD, Ratio, Near, Far);
     }
 
-    matrixProjectionInv = glm::inverse(matrixProjection);
+    matProjectionInv = glm::inverse(matProjection);
 
     projectionChanged = true;
 }
@@ -281,7 +281,6 @@ void Camera::initGl() {
 
     glEnable(GL_MULTISAMPLE);
 
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
@@ -291,29 +290,28 @@ void Camera::initGl() {
     glEnable(GL_FRAMEBUFFER_SRGB);
 
     glClearColor(0, 0, 0, 1);
-    glClearStencil(0);
     glClearDepth(1.0f);
 }
 
 void Camera::drawBack() {
-
     setCamUniform(backshd);
-    backshd.use();
-    glDepthRange(0.999999, 1);
+    backshd.bind();
+    glDepthRange(0.99999, 1);
 
-    backBlock.draw();
+    //backBlock.draw();
 
     glDepthRange(0, 1);
-    backshd.unuse();
+    backshd.unBind();
 }
 
 void Camera::initBack()
 {
-    backBlock.drawQuads = true;
-    backBlock.addPoint(-1, -1, -0.1,0,0,1,0,0);
+    backBlock.addPoint(-1, -1, -0.1, 0, 0, 1, 0, 0);
     backBlock.addPoint(1, -1, -0.1, 0, 0, 1, 1, 0);
     backBlock.addPoint(1, 1, -0.1, 0, 0, 1, 1, 1);
     backBlock.addPoint(-1, 1, -0.1, 0, 0, 1, 0, 1);
+    backBlock.addIndex(0, 1, 2);
+    backBlock.addIndex(0, 2, 3);
 
     backshd.loadFragFile("GLSL/sky.glsl");
     backshd.link();

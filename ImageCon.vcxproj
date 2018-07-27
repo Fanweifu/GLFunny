@@ -158,7 +158,6 @@
     <ClInclude Include="Shape\vaoarray.h" />
     <ClInclude Include="Shape\texture.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="playDemo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\camera.cpp" />
@@ -182,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GLSL\clouds.glsl" />
+    <None Include="GLSL\frag.glsl" />
     <None Include="GLSL\raym.glsl">
       <FileType>Text</FileType>
     </None>
@@ -189,6 +189,7 @@
     <None Include="GLSL\shadowv.glsl" />
     <None Include="GLSL\sky.glsl" />
     <None Include="GLSL\template.glsl" />
+    <None Include="GLSL\vext.glsl" />
     <None Include="GLSL\water.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

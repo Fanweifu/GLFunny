@@ -106,14 +106,14 @@ bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, flo
 
 void DepthTexture::setViewMatInv(const float* matptr)
 {
-    shadowPro.setUniformMat4(Shader::pCameraViewInv, matptr);
+    shadowPro.setUniformMat4(UNIFORM_CAMERAVIEWINV_MAT4 , matptr);
 }
 
 void DepthTexture::bindShadow()
 {
     Texture::bind(3);
 
-    shadowPro.use();
+    shadowPro.bind();
     shadowPro.setUniform1i("baseTex", 0);
     shadowPro.setUniform1i("depthTex", 3);
     shadowPro.setUniform1f("biasFactor", calcBias());
@@ -135,7 +135,7 @@ void DepthTexture::unbindShadow()
 {
     Texture::unbind();
 
-    shadowPro.unuse();
+    shadowPro.unBind();
 }
 
 void DepthTexture::init()

@@ -19,11 +19,11 @@ void ShapePRS::draw() {
     texture1.bind(1);
     texture2.bind(2);
 
-    shader.use();
+   
 
     ondraw();
 
-    shader.unuse();
+   
 
     texture2.unbind();
     texture1.unbind();
@@ -78,9 +78,4 @@ void ShapePRS::toWorldDir(float & x, float & y, float & z)
     toWorldPos(ox, oy, oz);
 
     x -= ox; y -= oy; z -= oz;
-}
-
-
-void ShapePRS::ondraw() {
-    if (drawFunc) (*drawFunc)();
 }

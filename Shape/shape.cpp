@@ -12,10 +12,10 @@ Shape::~Shape()
 
 void Shape::draw()
 {
-    if (drawAxis) Shape::drawAsix(axisLength);
+    if (isDrawAxis) Shape::drawAxis(axisLength);
 }
 
-void Shape::drawAsix(float size) {
+void Shape::drawAxis(float size) {
     glDepthFunc(GL_ALWAYS);     // to avoid visual artifacts with grid lines
     glDisable(GL_LIGHTING);
     glPushMatrix();             //NOTE: There is a bug on Mac misbehaviours of

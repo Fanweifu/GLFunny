@@ -1,4 +1,4 @@
-uniform float     iTime;
+uniform float     time;
 uniform vec2      viewport;             
 uniform vec4      iMouse;
 uniform mat4      prjInvMat;
@@ -387,7 +387,7 @@ mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
 void main()
 {
     vec2 mo = iMouse.xy/viewport.xy;
-	float time = 15.0 + iTime;
+	float time = 15.0 + time;
 
     
     vec3 tot = vec3(0.0);

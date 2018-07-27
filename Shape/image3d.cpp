@@ -87,15 +87,16 @@ void Image3D::generateData() {
 
     assert(idci == pointNum - (cols + rows) * 4);
 
-    vao.setIndex(vertexIdxs,idci);
-    vao.setVertex(vertexs, pointNum);
-    vao.setNormal(normals, pointNum);
-    vao.setColor(colors, 4, pointNum);
+    vao.init(pointNum);
+    vao.setIndex1ui(vertexIdxs,idci);
+    vao.setVertex3f(vertexs);
+    vao.setNormal3f(normals);
+    vao.setColor4f(colors);
 }
 
 void Image3D::initShader()
 {
-    shader.loadVertexCode("#version 330 compatibility\n"
+    innerShd.loadVertexCode("#version 330 compatibility\n"
         "layout(location = 0) in vec3 pos;\n"
         "layout(location = 1) in vec4 clr;\n"
         "layout(location = 2) in vec3 nor;\n"
@@ -115,13 +116,10 @@ void Image3D::initShader()
         "}\n"
     );
 
-    shader.link();
+    innerShd.link();
     
 }
 
-void Image3D::uninitShader()
-{
-}
 
 bool Image3D::reShape(int rowc, int colc) {
     if (rowc*colc == 0) return false;
@@ -147,7 +145,7 @@ void Image3D::ondraw() {
     glTranslatef(-(float)cols / 2, -(float)rows / 2, 0);
     glScalef(pixelSzie, pixelSzie, heightRate);
 
-    vao.renderData(GL_QUADS);
+    vao.drawArray(GL_QUADS);
 }
 
 void Image3D::getColor(uint x, uint y, float*color4) {

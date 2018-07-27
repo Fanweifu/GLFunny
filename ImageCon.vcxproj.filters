@@ -9,15 +9,14 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="头文件\Shape">
       <UniqueIdentifier>{6e0fdc37-c1fc-4d97-98c0-cd4ec7865f1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\Shape">
       <UniqueIdentifier>{aa75f220-63f3-41f9-b130-cafac86ab67a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{0e72f424-7d07-4a32-9466-78b51e4eb6d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,9 +59,6 @@
     <ClInclude Include="stb_image.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="playDemo.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\image3dex.cpp">
@@ -103,10 +99,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Img\wood.jpg">
+    <Image Include="Img\noise.png">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="Img\noise.png">
+    <Image Include="Img\wood.jpg">
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="Img\woodNormal.png">
@@ -120,7 +116,16 @@
     <None Include="GLSL\clouds.glsl">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="GLSL\frag.glsl">
+      <Filter>资源文件</Filter>
+    </None>
     <None Include="GLSL\raym.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="GLSL\shadowf.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="GLSL\shadowv.glsl">
       <Filter>资源文件</Filter>
     </None>
     <None Include="GLSL\sky.glsl">
@@ -129,13 +134,10 @@
     <None Include="GLSL\template.glsl">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="GLSL\vext.glsl">
+      <Filter>资源文件</Filter>
+    </None>
     <None Include="GLSL\water.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="GLSL\shadowf.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="GLSL\shadowv.glsl">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

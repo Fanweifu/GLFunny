@@ -1,4 +1,4 @@
-uniform float     iTime;
+uniform float     time;
 uniform vec3      viewport;             
 uniform mat4      prjInvMat;
 uniform mat4      mdlInvMat;
@@ -186,7 +186,7 @@ void main(){
 
     //campos = yztozy(campos);
     //dirword = yztozy(dirword);
-    cloudy = (cos(iTime)-1)/2;
+    cloudy = (cos(time)-1)/2;
    
     vec3 col = getSkyColor(ray);
 	gl_FragColor = vec4(col, 1.0);
