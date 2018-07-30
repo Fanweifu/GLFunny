@@ -30,6 +30,59 @@ AttribArray edata;
 float timeVal = 0;
 float step = 0.1;
 
+void printVersion() {
+
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    const GLubyte* vendor = glGetString(GL_VENDOR);
+    const GLubyte* version = glGetString(GL_VERSION);
+    const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+    GLint major, minor;
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+    printf("GL Vendor : %s\n", vendor);
+    printf("GL Renderer : %s\n", renderer);
+    printf("GL Version(string) : %s\n", version);
+    printf("GL Version(integer) : %d.%d\n", major, minor);
+    printf("GLSL Version : %s\n", glslVersion);
+}
+
+void printError() {
+    auto error = glGetError();
+
+    switch (error)
+    {
+    case GL_NO_ERROR:
+        break;
+    case GL_INVALID_ENUM:
+        printf("GL_INVALID_ENUM");
+        break;
+    case GL_INVALID_VALUE:
+        printf("GL_INVALID_VALUE");
+        break;
+    case GL_INVALID_OPERATION:
+        printf("GL_INVALID_OPERATION");
+        break;
+    case GL_STACK_OVERFLOW:
+        printf("GL_STACK_OVERFLOW");
+        break;
+    case GL_STACK_UNDERFLOW:
+        printf("GL_STACK_UNDERFLOW");
+        break;
+    case GL_OUT_OF_MEMORY:
+        printf("GL_OUT_OF_MEMORY");
+        break;
+    case GL_INVALID_FRAMEBUFFER_OPERATION:
+        printf("GL_INVALID_FRAMEBUFFER_OPERATION");
+        break;
+    case GL_CONTEXT_LOST:
+        printf("GL_OUT_OF_MEMORY");
+        break;
+    }
+
+}
+
 void reshape(int width, int height) {
    
     camera.setViewPort(0, 0, width, height);
@@ -97,9 +150,12 @@ void renderShadow() {
     depthMap.bindShadow();
     depthMap.setViewMatInv(camera.getViewMatInvPtr());
 
-    testshp.draw();
+    lyr.draw();
+
+    printError();
 
     depthMap.unbindShadow();
+
     camera.endRender();
 
     
@@ -113,6 +169,7 @@ void renderWater() {
     camera.setCamUniform(water);
 
     lyr.draw();
+    printError();
 
     camera.endRender();
 
@@ -204,27 +261,21 @@ void shadowTest() {
     testshp.texture1 = textureNor;
     testshp.texture2 = textureSpe;
 
+    Layer * comp1 = new Layer();
+    comp1->add(&testshp);
+    Layer * comp2 = new Layer();
+    comp2->setPosition(0, 0, -5);
+    comp2->setScale(10, 10, 1);
+    comp2->add(&testshp);
+
+    lyr.add(comp1);
+    lyr.add(comp2);
 
     camera.setPosition(0, 0.5, 1);
     
 }
 
-void printVersion() {
-    const GLubyte* renderer = glGetString(GL_RENDERER);
-    const GLubyte* vendor = glGetString(GL_VENDOR);
-    const GLubyte* version = glGetString(GL_VERSION);
-    const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-    GLint major, minor;
-    glGetIntegerv(GL_MAJOR_VERSION, &major);
-    glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-    printf("GL Vendor : %s\n", vendor);
-    printf("GL Renderer : %s\n", renderer);
-    printf("GL Version(string) : %s\n", version);
-    printf("GL Version(integer) : %d.%d\n", major, minor);
-    printf("GLSL Version : %s\n", glslVersion);
-}
 
 void initWindows() {
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);

@@ -22,7 +22,7 @@ float calcShadow(vec4 frag,float tanval){
     float bias = biasFactor*tanval;
 	
 	float offset =  0;
-
+	
 	int cnt = (2*smoothLevel+1)*(2*smoothLevel+1);
 	vec2 mapSize = textureSize(depthTex,0);
 	
