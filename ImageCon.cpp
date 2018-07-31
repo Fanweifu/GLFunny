@@ -141,25 +141,22 @@ void spkeyFunc(int key, int x, int y) {
 }
 
 void renderShadow() {
+
     float x, y, z, w;
     camera.getLight().getPositon(x, y, z, w);
-    depthMap.loadDepthMap(camera.posX(), camera.posY(), camera.posZ(), x, y, z, w, lyr);
+
+    depthMap.beginLoad(camera.posX(), camera.posY(), camera.posZ(), x, y, z, w);
+    lyr.draw();
+    depthMap.endLoad();
 
     camera.beginRender();
 
     depthMap.bindShadow();
     depthMap.setViewMatInv(camera.getViewMatInvPtr());
-
     lyr.draw();
-
-    printError();
-
     depthMap.unbindShadow();
 
     camera.endRender();
-
-    
-
     glutSwapBuffers();
 }
 

@@ -76,9 +76,6 @@
     <ClCompile Include="Shape\vaoarray.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
-    <ClCompile Include="ImageCon.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Shape\shader.cpp">
       <Filter>源文件\Shape</Filter>
     </ClCompile>
@@ -96,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="shape\shape.cpp">
       <Filter>源文件\Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCon.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,9 +116,6 @@
     <None Include="GLSL\clouds.glsl">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="GLSL\frag.glsl">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="GLSL\raym.glsl">
       <Filter>资源文件</Filter>
     </None>
@@ -134,10 +131,13 @@
     <None Include="GLSL\template.glsl">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="GLSL\vext.glsl">
+    <None Include="GLSL\water.glsl">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="GLSL\water.glsl">
+    <None Include="GLSL\attr_frag.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="GLSL\attr_vext.glsl">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
