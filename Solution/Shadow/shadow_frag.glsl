@@ -40,7 +40,7 @@ void main(){
     vec3 lightori =  normalize(lightPos.xyz);
     vec3 halfv = normalize(gl_LightSource[0].halfVector.xyz);
     vec3 normalz = normalize(normal);
-
+     
     if (!gl_FrontFacing) {
         normalz = -normalz;
     }
