@@ -306,12 +306,13 @@ void Camera::drawBack() {
 
 void Camera::initBack()
 {
+    backBlock.drawStyle = QUADS;
     backBlock.addPoint(-1, -1, -0.1, 0, 0, 1, 0, 0);
     backBlock.addPoint(1, -1, -0.1, 0, 0, 1, 1, 0);
     backBlock.addPoint(1, 1, -0.1, 0, 0, 1, 1, 1);
     backBlock.addPoint(-1, 1, -0.1, 0, 0, 1, 0, 1);
-    backBlock.addIndex(0, 1, 2);
-    backBlock.addIndex(0, 2, 3);
+    /*backBlock.addIndex(0, 1, 2);
+    backBlock.addIndex(0, 2, 3);*/
 
     backshd.loadFragFile("GLSL/sky.glsl");
     backshd.link();

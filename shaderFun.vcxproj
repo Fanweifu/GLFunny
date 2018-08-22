@@ -190,8 +190,6 @@
     </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_seaShaderWidget.h" />
     <ClInclude Include="shape\camera.h" />
-    <ClInclude Include="shape\image3d.h" />
-    <ClInclude Include="shape\image3dex.h" />
     <ClInclude Include="shape\layer.h" />
     <ClInclude Include="shape\light.h" />
     <CustomBuild Include="mainwindow.h">

@@ -20,3 +20,4 @@ Shape* Layer::removeAt(int idx) {
 bool Layer::remove(Shape* shp) {
     return true;
 }
+

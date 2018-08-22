@@ -20,7 +20,6 @@ public:
     Shader();
     ~Shader();
 
-
     bool available() { return isVaild; }
 
     bool loadFragCode(const char*source);
@@ -36,7 +35,6 @@ public:
 
     void setUniform1i(const string &pNm, int val);
 
-
     void setUniform1fv(const string & pNm, int size, const float * ptr);
 
     void setUniform2f(const string & pNm, float val0, float val1);
@@ -47,12 +45,12 @@ public:
 
     void setUniformMat4(const string & pNm, const float* matPtr, bool transpose = false);
 
-
 protected:
     bool isVaild = false;
     unsigned int program;
     map<const string, int> paramsMap;
     map<int, GLuint> shaders;
+
     int getParamID(const string& pNm);
     string readFile(const char*filename);
     bool complie_attch(GLenum type, const char * source);
@@ -62,7 +60,5 @@ protected:
 private:
     bool inited = false;
 };
-
-   
 
 #endif // SHADER_H

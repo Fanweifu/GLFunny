@@ -41,19 +41,22 @@ protected:
 
 class DepthTexture : public Texture {
 public:
+    int shadowSmooth = 3;
+    int width = 4096, height = 4096;
+    float n = 0.0f, f = 1000.0f, distance = 100.0f;
+    float range = 50;
+
     DepthTexture();
     ~DepthTexture();
-    int shadowSmooth = 2;
     bool enablePbr = false;
-    bool loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene);
+    void loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene);
+    void beginLoad(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw);
+    void endLoad();
     void setViewMatInv(const float* matptr);
     void bindShadow();
     void unbindShadow();
 protected:
     GLuint depthMapFBO = 0;
-    int width = 2048, height = 2048;
-    float n = 0.0f, f = 1000.0f, distance = 100.0f;
-    float range = 100;
     glm::mat4 lightPrjMat, lightViewMat, lightPrjViewMat;
     Shader shadowPro;
     void init();

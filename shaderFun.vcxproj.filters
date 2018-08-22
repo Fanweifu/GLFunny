@@ -132,12 +132,6 @@
     <ClInclude Include="shape\camera.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
-    <ClInclude Include="shape\image3d.h">
-      <Filter>Header Files\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="shape\image3dex.h">
-      <Filter>Header Files\Shape</Filter>
-    </ClInclude>
     <ClInclude Include="shape\layer.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>

@@ -70,7 +70,17 @@ DepthTexture::~DepthTexture()
     glDeleteFramebuffers(1, &depthMapFBO);
 }
 
-bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene)
+void DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene)
+{
+    beginLoad(camposx, camposy, camposz, lightx, lighty, lightz, lightw);
+
+    scene.draw();
+
+    endLoad();
+
+}
+
+void DepthTexture::beginLoad(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw)
 {
     if (!inited) init();
 
@@ -94,14 +104,13 @@ bool DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, flo
 
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(value_ptr(lightViewMat));
+}
 
-    scene.draw();
-
+void DepthTexture::endLoad()
+{
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glPopMatrix();
-
-    return(isValid = true);
 }
 
 void DepthTexture::setViewMatInv(const float* matptr)
@@ -140,9 +149,14 @@ void DepthTexture::unbindShadow()
 
 void DepthTexture::init()
 {
+   
+
     glGenFramebuffers(1, &depthMapFBO);
     glGenTextures(1, &texID);
 
+    shadowPro.loadVertexFile("GLSL/shadowv.glsl");
+    shadowPro.loadFragFile("GLSL/shadowf.glsl");
+    shadowPro.link();
 
     glBindTexture(GL_TEXTURE_2D, texID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -162,12 +176,7 @@ void DepthTexture::init()
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-
-    shadowPro.loadVertexFile("GLSL/shadowv.glsl");
-    shadowPro.loadFragFile("GLSL/shadowf.glsl");
-    shadowPro.link();
-
-
+    isValid = true;
     inited = true;
 }
 

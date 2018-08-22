@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -65,6 +65,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="opencvx64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -99,7 +100,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -160,6 +160,7 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ImageCon.cpp" />
     <ClCompile Include="Shape\camera.cpp" />
     <ClCompile Include="Shape\ComplexShape.cpp" />
     <ClCompile Include="Shape\image3d.cpp" />
@@ -170,7 +171,6 @@
     <ClCompile Include="shape\shape.cpp" />
     <ClCompile Include="Shape\texture.cpp" />
     <ClCompile Include="Shape\vaoarray.cpp" />
-    <ClCompile Include="ImageCon.cpp" />
     <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -181,7 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GLSL\clouds.glsl" />
-    <None Include="GLSL\frag.glsl" />
+    <None Include="GLSL\attr_frag.glsl" />
     <None Include="GLSL\raym.glsl">
       <FileType>Text</FileType>
     </None>
@@ -189,7 +189,7 @@
     <None Include="GLSL\shadowv.glsl" />
     <None Include="GLSL\sky.glsl" />
     <None Include="GLSL\template.glsl" />
-    <None Include="GLSL\vext.glsl" />
+    <None Include="GLSL\attr_vext.glsl" />
     <None Include="GLSL\water.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
