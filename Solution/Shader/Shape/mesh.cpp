@@ -1,16 +1,16 @@
-#include "ComplexShape.h"
+#include "mesh.h"
 
-TrianglesShape::TrianglesShape()
+Mesh::Mesh()
 {
 }
 
-TrianglesShape::~TrianglesShape()
+Mesh::~Mesh()
 {
 }
 
-bool TrianglesShape::activeVAO = true;
+bool Mesh::activeVAO = true;
 
-void TrianglesShape::addPoint(float px, float py, float pz, float nx, float ny, float nz, float tx, float ty, float r, float g, float b, float a)
+void Mesh::addPoint(float px, float py, float pz, float nx, float ny, float nz, float tx, float ty, float r, float g, float b, float a)
 {
     position.push_back(px);
     position.push_back(py);
@@ -32,15 +32,67 @@ void TrianglesShape::addPoint(float px, float py, float pz, float nx, float ny, 
 }
 
 
-void TrianglesShape::clear()
+void Mesh::clear()
 {
     position.clear();
     texcoord.clear();
     color.clear();
     normal.clear();
+
+    inited = false;
 }
 
-void TrianglesShape::init()
+void Mesh::buildCube(Mesh & shp, float x1, float x2, float y1, float y2, float z1, float z2)
+{
+    shp.drawStyle = Quads;
+
+    shp.clear();
+
+    shp.addPoint(x2, y1, z1, 0, 0, -1, 0, 0);
+    shp.addPoint(x1, y1, z1, 0, 0, -1, 1, 0);
+    shp.addPoint(x1, y2, z1, 0, 0, -1, 1, 1);
+    shp.addPoint(x2, y2, z1, 0, 0, -1, 0, 1);
+
+    //top:4,5,6,7
+    shp.addPoint(x1, y1, z2, 0, 0, 1, 0, 0);
+    shp.addPoint(x2, y1, z2, 0, 0, 1, 1, 0);
+    shp.addPoint(x2, y2, z2, 0, 0, 1, 1, 1);
+    shp.addPoint(x1, y2, z2, 0, 0, 1, 0, 1);
+    //left:8,9,10,11
+    shp.addPoint(x1, y2, z1, 0, -1, 0, 0, 0);
+    shp.addPoint(x1, y1, z1, 0, -1, 0, 1, 0);
+    shp.addPoint(x1, y1, z2, 0, -1, 0, 1, 1);
+    shp.addPoint(x1, y2, z2, 0, -1, 0, 0, 1);
+    //right:12,13,14,15
+    shp.addPoint(x2, y1, z1, 1, 0, 0, 0, 0);
+    shp.addPoint(x2, y2, z1, 1, 0, 0, 1, 0);
+    shp.addPoint(x2, y2, z2, 1, 0, 0, 1, 1);
+    shp.addPoint(x2, y1, z2, 1, 0, 0, 0, 1);
+    //front:16,17,18,19;
+    shp.addPoint(x2, y2, z1, 0, 1, 0, 0, 0);
+    shp.addPoint(x1, y2, z1, 0, 1, 0, 1, 0);
+    shp.addPoint(x1, y2, z2, 0, 1, 0, 1, 1);
+    shp.addPoint(x2, y2, z2, 0, 1, 0, 0, 1);
+    //back:20,21,22,23;
+    shp.addPoint(x1, y1, z1, 0, -1, 0, 0, 0);
+    shp.addPoint(x2, y1, z1, 0, -1, 0, 1, 0);
+    shp.addPoint(x2, y1, z2, 0, -1, 0, 1, 1);
+    shp.addPoint(x1, y1, z2, 0, -1, 0, 0, 1);
+}
+
+void Mesh::buildQuad(Mesh & shp, float x1, float x2, float y1, float y2)
+{
+    shp.drawStyle = Quads;
+
+    shp.clear();
+
+    shp.addPoint(x2, y1, 0, 0, 0, 1, 0, 0);
+    shp.addPoint(x1, y1, 0, 0, 0, 1, 1, 0);
+    shp.addPoint(x1, y2, 0, 0, 0, 1, 1, 1);
+    shp.addPoint(x2, y2, 0, 0, 0, 1, 0, 1);
+}
+
+void Mesh::init()
 {
     if (activeVAO) {
         buildVAO();
@@ -48,8 +100,10 @@ void TrianglesShape::init()
     }
 }
 
-void TrianglesShape::buildVAO()
+void Mesh::buildVAO()
 {
+    if (position.empty()) return;
+
     vData.init(position.size()/3);
     vData.setVertex3f(&position[0]);
     vData.setColor4f(&color[0]);
@@ -58,17 +112,16 @@ void TrianglesShape::buildVAO()
 
 }
 
-void TrianglesShape::ondraw()
+void Mesh::ondraw()
 {
-    if (!inited) init();
     if (empty()) return;
-
-
+    if (!inited) init();
+    
     if (!activeVAO) renderClient();
     else renderVAO();
 }
 
-void TrianglesShape::renderClient()
+void Mesh::renderClient()
 {
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
@@ -89,65 +142,8 @@ void TrianglesShape::renderClient()
     glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void TrianglesShape::renderVAO()
+void Mesh::renderVAO()
 {
     //if (!indexes.empty()) vData.drawElements(GL_TRIANGLES);
     vData.drawArray(drawStyle);
-}
-
-void Cube::init()
-{
-    drawStyle = QUADS;
-
-    //buttom£º0,1,2,3
-    addPoint(1, -1, -1, 0, 0, -1, 0, 0);
-    addPoint(-1, -1, -1, 0, 0, -1, 1, 0);
-    addPoint(-1, 1, -1, 0, 0, -1, 1, 1);
-    addPoint(1, 1, -1, 0, 0, -1, 0, 1);
-
-    //top:4,5,6,7
-    addPoint(-1, -1, 1, 0, 0, 1, 0, 0);
-    addPoint(1, -1, 1, 0, 0, 1, 1, 0);
-    addPoint(1, 1, 1, 0, 0, 1, 1, 1);
-    addPoint(-1, 1, 1, 0, 0, 1, 0, 1);
-    //left:8,9,10,11
-    addPoint(-1, 1, -1, 0, -1, 0, 0, 0);
-    addPoint(-1, -1, -1, 0, -1, 0, 1, 0);
-    addPoint(-1, -1, 1, 0, -1, 0, 1, 1);
-    addPoint(-1, 1, 1, 0, -1, 0, 0, 1);
-    //right:12,13,14,15
-    addPoint(1, -1, -1, 1, 0, 0, 0, 0);
-    addPoint(1, 1, -1, 1, 0, 0, 1, 0);
-    addPoint(1, 1, 1, 1, 0, 0, 1, 1);
-    addPoint(1, -1, 1, 1, 0, 0, 0, 1);
-    //front:16,17,18,19;
-    addPoint(1, 1, -1, 0, 1, 0, 0, 0);
-    addPoint(-1, 1, -1, 0, 1, 0, 1, 0);
-    addPoint(-1, 1, 1, 0, 1, 0, 1, 1);
-    addPoint(1, 1, 1, 0, 1, 0, 0, 1);
-    //back:20,21,22,23;
-    addPoint(-1, -1, -1, 0, -1, 0, 0, 0);
-    addPoint(1, -1, -1, 0, -1, 0, 1, 0);
-    addPoint(1, -1, 1, 0, -1, 0, 1, 1);
-    addPoint(-1, -1, 1, 0, -1, 0, 0, 1);
-
-    //addIndex(0, 1, 2);
-    //addIndex(0, 2, 3);
-
-    //addIndex(4, 5, 6);
-    //addIndex(4, 6, 7);
-
-    //addIndex(8, 9, 10);
-    //addIndex(8, 10, 11);
-
-    //addIndex(12, 13, 14);
-    //addIndex(12, 14, 15);
-
-    //addIndex(16, 17, 18);
-    //addIndex(16, 18, 19);
-
-    //addIndex(20, 21, 22);
-    //addIndex(20, 22, 23);
-
-    TrianglesShape::init();
 }

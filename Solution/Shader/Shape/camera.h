@@ -6,7 +6,6 @@
 #include"camera.h"
 #include"mesh.h"
 
-
 class Camera : public ShapePRS
 {
 public:
@@ -14,7 +13,7 @@ public:
     bool isOrtho = false;
     bool isMultiScreen = true;
     bool isShaderBack = true;
-  
+
     void setNear(float _near) {
         if (_near<0 || _near>Far) return;
         Near = _near;
@@ -40,12 +39,12 @@ public:
     int getViewButtom() { return buttom; }
     int getViewWidth() { return width; }
     int getViewHeight() { return height; }
-
-    double getRenderTimes(float k = 0.0001) {
-        return (double)renderTime*k;
-    }
     void setViewPort(int x, int y, int width, int height);
     void setWindowSize(int width, int height);
+
+    double getRenderTimes(float k = 0.001) {
+        return (double)renderTime*k;
+    }
 
     void setBackColor(float r, float g, float b, float a) {
         backColor.a = r;
@@ -69,7 +68,13 @@ public:
     }
     const float* getDirectionf3() { return glm::value_ptr(forwardV); }
 
-    Light& getLight() { return mainLight; }
+    void setLightPos(float x, float y, float z, float w) {
+        mainLight.setPostion(x, y, z, w);
+    }
+    void getLightPos(float& x, float& y, float& z, float& w) {
+        mainLight.getPositon(x, y, z, w);
+    }
+    const float* getLightPosf4() { return mainLight.getPositonf4(); }
 
     void init();
 
@@ -89,7 +94,7 @@ public:
     const float* getProjectionMatInvPtr() { return glm::value_ptr(matProjectionInv); }
     const float* getViewMatPtr() { return getModelMatInvPtr(); }
     const float* getViewMatInvPtr() { return getModelMatPtr(); }
-    const float* getLightPosf4() { return mainLight.getPositonf4(); }
+
 protected:
     bool inited = false;
     bool windowsChanged = true;
@@ -123,7 +128,7 @@ protected:
     glm::mat4 matProjectionInv;
     Light mainLight;
     Shader backshd;
-    TrianglesShape backBlock;
+    Mesh backBlock;
 
     void initGl();
     void initBack();
@@ -134,8 +139,5 @@ protected:
     void updateViewPort();
     void setDirectionVec3(glm::vec3 v);
 };
-
-
-
 
 #endif // CAMERA_H

@@ -39,28 +39,27 @@ protected:
     int cols, rows, chns;
 };
 
-class DepthTexture : public Texture {
+class DepthTexture : public Texture{
 public:
-    int shadowSmooth = 3;
     int width = 4096, height = 4096;
     float n = 0.0f, f = 1000.0f, distance = 100.0f;
     float range = 50;
 
     DepthTexture();
     ~DepthTexture();
-    bool enablePbr = false;
-    void loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene);
+
+    void load(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene);
     void beginLoad(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw);
     void endLoad();
-    void setViewMatInv(const float* matptr);
-    void bindShadow();
-    void unbindShadow();
+
+    float shadowAcneBias();
+    const float* getLightPrjViewMat() { return glm::value_ptr(lightPrjViewMat); }
+
 protected:
     GLuint depthMapFBO = 0;
     glm::mat4 lightPrjMat, lightViewMat, lightPrjViewMat;
     Shader shadowPro;
-    void init();
-    float calcBias();
+    void init() override;
 };
 
 #endif

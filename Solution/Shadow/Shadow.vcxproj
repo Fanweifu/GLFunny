@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2B4B9636-8611-4B2E-836F-F6C2F5FE3F5A}</ProjectGuid>
-    <RootNamespace>Shader</RootNamespace>
+    <ProjectGuid>{E5917C79-B752-45AC-BE0A-95F8C4928A46}</ProjectGuid>
+    <RootNamespace>Shadow</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -38,7 +38,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -63,6 +63,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="..\Pros\GLDebugX64.props" />
+    <Import Project="..\Pros\ShaderLibX64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -118,30 +119,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="glHead.h" />
-    <ClInclude Include="Shape\camera.h" />
-    <ClInclude Include="Shape\layer.h" />
-    <ClInclude Include="Shape\light.h" />
-    <ClInclude Include="Shape\mesh.h" />
-    <ClInclude Include="Shape\modelgl.h" />
-    <ClInclude Include="Shape\shader.h" />
-    <ClInclude Include="Shape\shape.h" />
-    <ClInclude Include="Shape\shapePRS.h" />
-    <ClInclude Include="Shape\texture.h" />
-    <ClInclude Include="Shape\vaoarray.h" />
-    <ClInclude Include="stb_image.h" />
+    <ProjectReference Include="..\Shader\Shader.vcxproj">
+      <Project>{2b4b9636-8611-4b2e-836f-f6c2f5fe3f5a}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Shape\camera.cpp" />
-    <ClCompile Include="Shape\layer.cpp" />
-    <ClCompile Include="Shape\light.cpp" />
-    <ClCompile Include="Shape\mesh.cpp" />
-    <ClCompile Include="Shape\shader.cpp" />
-    <ClCompile Include="Shape\shape.cpp" />
-    <ClCompile Include="Shape\shapePRS.cpp" />
-    <ClCompile Include="Shape\texture.cpp" />
-    <ClCompile Include="Shape\vaoarray.cpp" />
-    <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shadowv_attr_vert.glsl" />
+    <None Include="shadowv_vert.glsl" />
+    <None Include="shadow_frag.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

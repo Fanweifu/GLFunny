@@ -8,6 +8,8 @@ Camera::Camera()
 
 void Camera::beginRender()
 {
+    if (!inited) init();
+
     if (windowsChanged) {
         updateViewPort();
         windowsChanged = false;
@@ -27,7 +29,7 @@ void Camera::beginRender()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glLoadIdentity();
-    if(isShaderBack) drawBack();
+    drawBack();
 
     glLoadMatrixf(value_ptr(modelmatInv));
 
@@ -103,7 +105,7 @@ void Camera::setCamUniform(Shader & shd)
     shd.setUniformMat4(UNIFORM_PROJECTIONINV_MAT4, getProjectionMatInvPtr());
 
     float x, y, z, w;
-    mainLight.getPositon(x, y, z, w);
+    getLightPos(x, y, z, w);
     shd.setUniform4f(UNIFORM_WORLDLIGHT_VEC4, x, y, z, w);
     shd.setUniform3f(UNIFORM_CAMERAPOS_VEC3, posX(), posY(), posZ());
 }
@@ -248,7 +250,7 @@ void Camera::updateViewPort() {
 
 void Camera::setDirectionVec3(glm::vec3 dir)
 {
-    rvec.x = asinf(dir.z / glm::length(dir)) / DEG2RAD;
+	rvec.x = asinf(dir.z / glm::length(dir))/DEG2RAD;
     if (dir.y != 0 || dir.x != 0) rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
     updateModel();
 }
@@ -260,7 +262,7 @@ void Camera::setDirection(float vx, float vy, float vz)
 
 void Camera::init() {
     if (inited) return;
-
+    if (glewInit() != GLEW_OK) return;
     initGl();
     initBack();
     mainLight.init();
@@ -272,7 +274,7 @@ void Camera::init() {
 }
 
 void Camera::initGl() {
-    glewInit();
+   
     glShadeModel(GL_SMOOTH);                        // shading mathod: GL_SMOOTH or GL_FLAT
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);          // 4-byte pixel alignment
 
@@ -287,7 +289,7 @@ void Camera::initGl() {
 
     glEnable(GL_SCISSOR_TEST);
 
-    //glEnable(GL_FRAMEBUFFER_SRGB);
+    glEnable(GL_FRAMEBUFFER_SRGB);
 
     glClearColor(0, 0, 0, 1);
     glClearDepth(1.0f);
@@ -296,24 +298,81 @@ void Camera::initGl() {
 void Camera::drawBack() {
     setCamUniform(backshd);
     backshd.bind();
-    glDepthRange(0.99999, 1);
-
     backBlock.draw();
-
-    glDepthRange(0, 1);
     backshd.unBind();
 }
 
 void Camera::initBack()
 {
-    backBlock.drawStyle = QUADS;
-    backBlock.addPoint(-1, -1, -0.1, 0, 0, 1, 0, 0);
-    backBlock.addPoint(1, -1, -0.1, 0, 0, 1, 1, 0);
-    backBlock.addPoint(1, 1, -0.1, 0, 0, 1, 1, 1);
-    backBlock.addPoint(-1, 1, -0.1, 0, 0, 1, 0, 1);
-    /*backBlock.addIndex(0, 1, 2);
-    backBlock.addIndex(0, 2, 3);*/
+    backBlock.drawStyle = Quads;
+    backBlock.addPoint(-1, -1, 0, 0, 0, 1, 0, 0);
+    backBlock.addPoint(1, -1, 0, 0, 0, 1, 1, 0);
+    backBlock.addPoint(1, 1, 0, 0, 0, 1, 1, 1);
+    backBlock.addPoint(-1, 1, 0, 0, 0, 1, 0, 1);
 
-    backshd.loadFragFile("GLSL/sky.glsl");
+	backshd.loadVertexCode("void main(){\
+		gl_Position = vec4(gl_Vertex.xy,0.9999,1);\
+		}");
+
+    backshd.loadFragCode("uniform float     time;\
+    uniform vec2      viewport;\
+    uniform vec3      cameraPos;\
+    uniform vec4      worldLight;\
+    uniform mat4      projectionInv;\
+    uniform mat4      cameraViewInv;\
+    vec3 yztozy(vec3 p) {\
+        return vec3(p.x, p.z, p.y);\
+    }\
+    vec2 coordToUV(vec2 coord) {\
+        return 2.0*coord / viewport - 1.0;\
+    }\
+    vec3 uvToWorldDir(vec2 uv) {\
+        vec4 camdir = projectionInv*vec4(uv, 1, 1);\
+        camdir = camdir / camdir.w;\
+        vec4 dirp = cameraViewInv*camdir;\
+        return normalize(dirp.xyz - cameraPos);\
+    }\
+    const float coeiff = 0.25;\
+    const vec3 totalSkyLight = vec3(0.3, 0.5, 1.0);\
+    vec3 mie(float dist, vec3 sunL) {\
+        return max(exp(-pow(dist, 0.25)) * sunL - 0.4, 0.0);\
+    }\
+    vec3 getSky(vec3 dir, vec3 sunPos) {\
+        float sunDistance = distance(dir, clamp(sunPos, -1.0, 1.0));\
+        float scatterMult = clamp(sunDistance, 0.0, 1.0);\
+        float sun = clamp(1.0 - smoothstep(0.01, 0.011, scatterMult), 0.0, 1.0);\
+        float dist = dir.z;\
+        dist = (coeiff * mix(scatterMult, 1.0, dist)) / dist;\
+        vec3 mieScatter = mie(sunDistance, vec3(1.0));\
+        vec3 color = dist * totalSkyLight;\
+        color = max(color, 0.0);\
+        color = max(mix(pow(color, 1.0 - color),\
+            color / (2.0 * color + 0.5 - color),\
+            clamp(sunPos.z * 2.0, 0.0, 1.0)), 0.0)\
+            + sun + mieScatter;\
+        color *= (pow(1.0 - scatterMult, 10.0) * 10.0) + 1.0;\
+        float underscatter = distance(sunPos.z * 0.5 + 0.5, 1.0);\
+        color = mix(color, vec3(0.0), clamp(underscatter, 0.0, 1.0));\
+        return color;\
+    }\
+    vec3 checker( vec3 p )\
+    {\
+        if (p.z>0) return vec3(0);\
+        float zv = abs(p.z);\
+        p = p / zv;\
+        float mx = sin(p.x*3.14), my = sin(p.y*3.14);\
+        float k = smoothstep(-0.01, 0.01, mx*my)*0.2 + 0.1;\
+        return vec3(k);\
+    }\
+    void main() {\
+        vec2 uv = coordToUV(gl_FragCoord.xy);\
+        vec3 dir = uvToWorldDir(uv);\
+        vec3 sunPos = normalize(worldLight.xyz);\
+        vec3 color = getSky(dir, sunPos);\
+        color = color / (2.0 * color + 0.5 - color);\
+        gl_FragColor = vec4(color, 1.0);\
+    }");
+
+
     backshd.link();
 }

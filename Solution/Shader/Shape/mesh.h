@@ -1,13 +1,12 @@
 #pragma once
 #include "shapePRS.h"
 #include "vaoarray.h"
-#include<stdio.h>
 #include<vector>
 
 enum DrawType
 {
     Triangles = GL_TRIANGLES,
-    QUADS = GL_QUADS,
+    Quads = GL_QUADS,
     Points = GL_POINTS,
     Lines = GL_LINES
 };
@@ -20,11 +19,15 @@ public:
     DrawType drawStyle = Triangles;
 
     Mesh();
-    virtual ~Mesh();
+    ~Mesh();
 
     void addPoint(float px, float py, float pz, float nx = 0, float ny = 0, float nz = 1, float tx = 0, float ty = 0, float r = 1, float g = 1, float b = 1, float a = 1);
     void clear();
     bool empty() { return position.size() == 0; }
+    
+    static void buildCube(Mesh& shp, float x1 = -1, float x2 = 1, float y1 = -1, float y2 = 1, float z1 = -1, float z2 = 1);
+    static void buildQuad(Mesh& shp, float x1 = -1, float x2 = 1, float y1 = -1, float y2 = 1);
+
 protected:
     bool inited = false;
     std::vector<float> position;
@@ -40,7 +43,3 @@ protected:
     void renderVAO();
 };
 
-class Cube : public Mesh {
-protected:
-    void init() override;
-};

@@ -60,6 +60,7 @@ void ImgTexture::makeColor(float r, float g, float b, float a)
     isValid = true;
 }
 
+
 DepthTexture::DepthTexture()
 {
 }
@@ -70,7 +71,7 @@ DepthTexture::~DepthTexture()
     glDeleteFramebuffers(1, &depthMapFBO);
 }
 
-void DepthTexture::loadDepthMap(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene)
+void DepthTexture::load(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene)
 {
     beginLoad(camposx, camposy, camposz, lightx, lighty, lightz, lightw);
 
@@ -113,50 +114,10 @@ void DepthTexture::endLoad()
     glPopMatrix();
 }
 
-void DepthTexture::setViewMatInv(const float* matptr)
-{
-    shadowPro.setUniformMat4(UNIFORM_CAMERAVIEWINV_MAT4 , matptr);
-}
-
-void DepthTexture::bindShadow()
-{
-    Texture::bind(3);
-
-    shadowPro.bind();
-    shadowPro.setUniform1i("baseTex", 0);
-    shadowPro.setUniform1i("depthTex", 3);
-    shadowPro.setUniform1f("biasFactor", calcBias());
-    shadowPro.setUniformMat4("lightSpace", value_ptr(lightPrjViewMat));
-    shadowPro.setUniform1i("smoothLevel", shadowSmooth);
-
-    if (enablePbr) {
-        shadowPro.setUniform1i("enablePbr", true);
-        
-        shadowPro.setUniform1i("normalTex", 1);
-        shadowPro.setUniform1i("specularTex", 2);
-    }
-    else {
-        shadowPro.setUniform1i("enablePbr", false);
-    }
-}
-
-void DepthTexture::unbindShadow()
-{
-    Texture::unbind();
-
-    shadowPro.unBind();
-}
-
 void DepthTexture::init()
 {
-   
-
     glGenFramebuffers(1, &depthMapFBO);
     glGenTextures(1, &texID);
-
-    shadowPro.loadVertexFile("GLSL/shadowv.glsl");
-    shadowPro.loadFragFile("GLSL/shadowf.glsl");
-    shadowPro.link();
 
     glBindTexture(GL_TEXTURE_2D, texID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -180,7 +141,8 @@ void DepthTexture::init()
     inited = true;
 }
 
-float DepthTexture::calcBias()
+
+float DepthTexture::shadowAcneBias()
 {
     return range / width / (f - n) / 2;
 }
