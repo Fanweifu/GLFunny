@@ -143,9 +143,6 @@ void DepthTexture::init()
     glGenFramebuffers(1, &depthMapFBO);
     glGenTextures(1, &texID);
 
-    shadowPro.loadVertexFile("GLSL/shadowv.glsl");
-    shadowPro.loadFragFile("GLSL/shadowf.glsl");
-    shadowPro.link();
 
     glBindTexture(GL_TEXTURE_2D, texID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -164,6 +161,12 @@ void DepthTexture::init()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    shadowPro.loadVertexFile("GLSL/shadowv.glsl");
+    shadowPro.loadFragFile("GLSL/shadowf.glsl");
+    shadowPro.link();
+
 
     inited = true;
 }

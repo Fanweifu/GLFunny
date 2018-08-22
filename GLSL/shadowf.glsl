@@ -1,15 +1,12 @@
-#version 130
+#version 330 compatibility
 
 in vec4 fragLight;
 in vec2 texcoord;
 in vec3 normal;
 
-uniform bool enablePbr;
 uniform int smoothLevel;
 uniform float biasFactor;
 uniform sampler2D baseTex;
-uniform sampler2D normalTex;
-uniform sampler2D specularTex;
 uniform sampler2D depthTex;
 
 float calcShadow(vec4 frag,float tanval){
@@ -53,25 +50,24 @@ void main(){
     
 
     vec3 halfv = normalize(gl_LightSource[0].halfVector.xyz);
-    vec3 normalz = enablePbr?normalize(gl_NormalMatrix*(2*texture2D(normalTex, texcoord).rgb-1)):normalize(normal);
+    vec3 normalz = normalize(normal);
 
-    if (!gl_FrontFacing) {
-        normalz = -normalz;
-    }
+    
 	float cosVal = dot(normalz, lightori);
 	float tanval = sqrt(1-cosVal*cosVal)/abs(cosVal);
-
+    float specK = pow(max(dot(normalz, halfv), 0.0), gl_FrontMaterial.shininess) ;
 	
     vec4 diffuse = gl_LightSource[0].diffuse* gl_FrontMaterial.diffuse* max(cosVal,0);
-    vec4 materialSpecular = enablePbr ? texture2D(specularTex, texcoord) : gl_FrontMaterial.specular;
-    vec4 specular = gl_LightSource[0].specular* materialSpecular * pow( max(dot(normalz,halfv),0), gl_FrontMaterial.shininess);
+    vec4 specular = gl_LightSource[0].specular* gl_FrontMaterial.specular * specK;
 
 
     float shadowK = calcShadow(fragLight,tanval);
-	
-    matcolor += (1-shadowK)*(diffuse +specular);
+    matcolor = vec4(0.5, 0.5, 0.5, 1);
 
 
-    gl_FragColor = vec4(matcolor.xyz*(enablePbr?0.4:1),1) *texture2D(baseTex, texcoord);
+    matcolor += /*(1-shadowK)**/(diffuse + specular);
+
+
+    gl_FragColor = vec4(vec3(specK<0?-0.5:0.5),1)+ vec4(0.8, 0.8, 0.8, 1) /** texture2D(baseTex, texcoord)*/;
     
 }

@@ -27,7 +27,7 @@ void Camera::beginRender()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glLoadIdentity();
-    drawBack();
+    if(isShaderBack) drawBack();
 
     glLoadMatrixf(value_ptr(modelmatInv));
 
@@ -287,7 +287,7 @@ void Camera::initGl() {
 
     glEnable(GL_SCISSOR_TEST);
 
-    glEnable(GL_FRAMEBUFFER_SRGB);
+    //glEnable(GL_FRAMEBUFFER_SRGB);
 
     glClearColor(0, 0, 0, 1);
     glClearDepth(1.0f);
@@ -298,7 +298,7 @@ void Camera::drawBack() {
     backshd.bind();
     glDepthRange(0.99999, 1);
 
-    //backBlock.draw();
+    backBlock.draw();
 
     glDepthRange(0, 1);
     backshd.unBind();

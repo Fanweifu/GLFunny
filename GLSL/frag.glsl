@@ -3,7 +3,8 @@ in vec2 TexCoord;
 
 uniform sampler2D baseTex;
 
-void main(){    vec4 matcolor;
+void main(){
+    vec4 matcolor;
 	matcolor += gl_FrontMaterial.emission;
     matcolor += (gl_LightSource[0].ambient*+gl_LightModel.ambient)*gl_FrontMaterial.ambient;
     
@@ -23,5 +24,7 @@ void main(){    vec4 matcolor;
 
 
     matcolor += (diffuse +specular);
-    gl_FragColor = matcolor*texture2D(baseTex, TexCoord);		 
+    gl_FragColor = matcolor*texture2D(baseTex, TexCoord);
+
+		 
 }

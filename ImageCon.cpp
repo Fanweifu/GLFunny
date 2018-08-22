@@ -204,7 +204,7 @@ void shadowTest() {
     testshp.texture1 = textureNor;
     testshp.texture2 = textureSpe;
 
-
+    camera.isShaderBack = false;
     camera.setPosition(0, 0.5, 1);
     
 }

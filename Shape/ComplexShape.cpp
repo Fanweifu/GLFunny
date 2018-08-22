@@ -8,7 +8,7 @@ TrianglesShape::~TrianglesShape()
 {
 }
 
-bool TrianglesShape::activeVAO = false;
+bool TrianglesShape::activeVAO = true;
 
 void TrianglesShape::addPoint(float px, float py, float pz, float nx, float ny, float nz, float tx, float ty, float r, float g, float b, float a)
 {
@@ -78,31 +78,31 @@ void TrianglesShape::ondraw()
 
 void TrianglesShape::renderClient()
 {
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, &position[0]);
+    //glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(VERTEX_SIZE , GL_FLOAT, 0, &position[0]);
 
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(4, GL_FLOAT, 0, &color[0]);
+    //glEnableClientState(GL_COLOR_ARRAY);
+    glColorPointer(COLOR_SIZE, GL_FLOAT, 0, &color[0]);
 
-    glEnableClientState(GL_NORMAL_ARRAY);
+    //glEnableClientState(GL_NORMAL_ARRAY);
     glNormalPointer(GL_FLOAT, 0, &normal[0]);
 
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, &texcoord[0]);
+    //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(TEXCOORD_SIZE , GL_FLOAT, 0, &texcoord[0]);
 
     if (indexes.empty()) glDrawArrays(GL_TRIANGLES, 0, position.size() / 3);
     glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, &indexes[0]);
 
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+   /* glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);*/
 }
 
 void TrianglesShape::renderVAO()
 {
     if (!indexes.empty()) vData.drawElements(GL_TRIANGLES);
-    vData.drawArray(GL_TRIANGLES);
+    vData.drawArray(GL_QUADS);
 }
 
 void Cube::init()
