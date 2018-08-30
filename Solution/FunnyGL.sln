@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Image", "Image", "{4C07CE5A
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shadow", "Shadow\Shadow.vcxproj", "{E5917C79-B752-45AC-BE0A-95F8C4928A46}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DepthRayMarch", "DepthRayMarch\DepthRayTrace.vcxproj", "{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,11 +43,20 @@ Global
 		{E5917C79-B752-45AC-BE0A-95F8C4928A46}.Release|x64.Build.0 = Release|x64
 		{E5917C79-B752-45AC-BE0A-95F8C4928A46}.Release|x86.ActiveCfg = Release|Win32
 		{E5917C79-B752-45AC-BE0A-95F8C4928A46}.Release|x86.Build.0 = Release|Win32
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}.Debug|x64.ActiveCfg = Debug|x64
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}.Debug|x64.Build.0 = Debug|x64
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}.Debug|x86.ActiveCfg = Debug|Win32
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}.Debug|x86.Build.0 = Debug|Win32
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}.Release|x64.ActiveCfg = Release|x64
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}.Release|x64.Build.0 = Release|x64
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}.Release|x86.ActiveCfg = Release|Win32
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E5917C79-B752-45AC-BE0A-95F8C4928A46} = {55996CA0-59A0-4EDC-99F4-A7F51F3DC7F8}
+		{AC0D21E0-3673-4654-A9DD-E6C41D3AB88B} = {55996CA0-59A0-4EDC-99F4-A7F51F3DC7F8}
 	EndGlobalSection
 EndGlobal

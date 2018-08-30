@@ -49,7 +49,7 @@ void main(){
 	float tanval = sqrt(1-cosVal*cosVal)/abs(cosVal);	
     float NL = max(cosVal, 0);
     float VN = max(dot(normalz, halfv), 0);
-    vec4 diffuse = vec4(1)* NL;
+    vec4 diffuse = vec4(0.6)* NL;
     vec4 specular = vec4(0.3) * pow(VN, 10);
 
     float shadowK = calcShadow(fragLight,tanval);

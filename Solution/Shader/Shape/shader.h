@@ -28,6 +28,7 @@ public:
     bool loadVertexFile(const char*filename);
 
     bool link();
+    void clear();
     virtual void bind();
     virtual void unBind();
 
