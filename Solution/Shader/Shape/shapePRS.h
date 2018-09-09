@@ -5,65 +5,48 @@
 #include"texture.h"
 #include"shape.h"
 
-typedef void(*xyzChangedHdl)(float x, float y, float z);
-typedef void(*voidHdl)();
-
- class ShapePRS: public Shape
+class ShapePRS : public Shape
 {
 public:
     ShapePRS();
 
     bool visible = true;
 
-    Texture texture0;
-    Texture texture1;
-    Texture texture2;
+    Texture2D texture0;
+    Texture2D texture1;
+    Texture2D texture2;
 
     float posX() { return pvec.x; }
     float posY() { return pvec.y; }
     float posZ() { return pvec.z; }
     void setPosition(float x, float y, float z)
     {
-        auto newv = glm::vec3(x, y, z);
-        bool diff = pvec != newv;
-        pvec = newv;
-        if (diff) {
-            updateModel();
-            onPositionChanged();
-        }
+        pvec = glm::vec3(x, y, z);
+        updateModel();
+        
     }
     const float* getPositionf3() { return glm::value_ptr(pvec); }
-    virtual void onPositionChanged() {}
+   
 
     float rotX() { return rvec.x; }
     float rotY() { return rvec.y; }
     float rotZ() { return rvec.z; }
     void setRotation(float x, float y, float z) {
-        auto newv = glm::vec3(x, y, z);
-        bool diff = rvec != newv;
-        rvec = newv;
-        if (diff) {
-            updateModel();
-            onRotationChanged();
-        }
+         rvec = glm::vec3(x, y, z);
+         updateModel();
     }
+
     const float* getRotationf3() { return glm::value_ptr(rvec); }
-    virtual void onRotationChanged() {}
+   
 
     float sclX() { return svec.x; }
     float sclY() { return svec.y; }
     float sclZ() { return svec.z; }
     void setScale(float x, float y, float z) {
-        auto newv = glm::vec3(x, y, z);
-        bool diff = svec != newv;
-        svec = newv;
-        if (diff) {
-            updateModel();
-            onScaleChanged();
-        }
+        svec = glm::vec3(x, y, z);
+        updateModel();
     }
     const float* getScalef3() { return glm::value_ptr(svec); }
-    virtual void onScaleChanged() {}
 
     void toLocalPos(float&x, float &y, float &z);
     void toWorldPos(float&x, float &y, float &z);
@@ -73,15 +56,9 @@ public:
     const float* getModelMatPtr() { return glm::value_ptr(modelmat); }
     const float* getModelMatInvPtr() { return glm::value_ptr(modelmatInv); }
 
-    
-
 protected:
 
     bool useShader = true;
-
-    xyzChangedHdl posEvent = NULL;
-    xyzChangedHdl rotEvent = NULL;
-    xyzChangedHdl sclEvent = NULL;
 
     glm::vec3 pvec = glm::vec3(0);
     glm::vec3 rvec = glm::vec3(0);
@@ -92,8 +69,6 @@ protected:
 
     virtual void updateModel();
     virtual void ondraw() { };
-
-    
 };
 
 #endif // SHAPE_H

@@ -128,9 +128,12 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="proc_frag.glsl" />
     <None Include="sphere_frag.glsl" />
-    <None Include="sphere_fragdepth.glsl" />
-    <None Include="sphere_vert.glsl" />
+    <None Include="sphere_fragdepth.glsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="proc_vert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

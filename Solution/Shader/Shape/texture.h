@@ -2,44 +2,79 @@
 #define TEXTRUE_H
 
 #include"stb_image.h"
+#include"object.h"
 #include"shader.h"
+#include"vaoarray.h"
 #include"shape.h"
-class Texture {
+
+class FBObject : public glObject {
+public:
+    FBObject();
+    ~FBObject();
+
+    void init() override;
+    void unInit() override;
+    void bind() override;
+    void unBind() override;
+    bool vaild() override;
+
+    int Width() { return width; }
+    int Height() { return height; }
+    void attchDepth(GLuint tex);
+    void attchColor(GLuint tex, int clrlv = 0);
+    void resize(int w, int h);
+
+private:
+    unsigned int fbo;
+    int width = 500, height = 500;
+    std::map<GLenum, GLint> texbindinfo;
+};
+
+class Texture : public glObject {
 public:
 
     Texture() {};
-    ~Texture() {
-        glDeleteTextures(1, &texID);
-    };
+    ~Texture() {};
 
-    unsigned int TexID() { return texID; }
+    unsigned int TexID() { return m_texID; }
+    unsigned int Level() { return m_activeLevel; }
 
-    virtual void bind(int level = 0);
-    virtual void unbind();
+    virtual void bind(int level)=0;
+    void init() override;
+    void unInit() override;
+    void bind() override;
+    
+protected: 
+    unsigned int m_activeLevel = 0;
+    unsigned int m_texID = 0;
+
+    
+};
+
+class Texture2D : public  Texture {
+public:
+    bool empty() { return Width() == 0 || Height() == 0; }
+    int Width();
+    int Height();
+
+    void bind(int level) override;
+    void unBind() override;
+
+    bool loadFileImg(char* path);
+    void buildByColor(float r, float g, float b, float a = 1);
+    void attchDepthFBO(FBObject &fbo);
+    void attchColorFBO(FBObject &fbo);
 
 protected:
-    bool inited = false;
-    bool isValid = false;
-    int level = 0;
-    unsigned int texID = 0;
+    
 
-    virtual void init();
 };
 
 class ImgTexture :public Texture {
-public:
-    bool empty() { return cols == 0 || rows == 0 || chns == 0; }
-    int width() { return cols; }
-    int height() { return rows; }
-    int chanels() { return chns; }
 
-    bool loadRgbImg(char* path);
-    void makeColor(float r, float g, float b, float a = 1);
-protected:
-    int cols, rows, chns;
 };
 
-class DepthTexture : public Texture{
+class DepthTexture : public Texture2D{
 public:
     int width = 4096, height = 4096;
     float n = 0.0f, f = 1000.0f, distance = 100.0f;

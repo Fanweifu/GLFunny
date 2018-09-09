@@ -8,7 +8,7 @@ Mesh::~Mesh()
 {
 }
 
-bool Mesh::activeVAO = true;
+bool Mesh::activeVAO = false;
 
 void Mesh::addPoint(float px, float py, float pz, float nx, float ny, float nz, float tx, float ty, float r, float g, float b, float a)
 {
@@ -105,10 +105,12 @@ void Mesh::buildVAO()
     if (position.empty()) return;
 
     vData.init(position.size()/3);
+    vData.bind();
     vData.setVertex3f(&position[0]);
     vData.setColor4f(&color[0]);
     vData.setNormal3f(&normal[0]);
     vData.setTexCoord2f(&texcoord[0]);
+    vData.unBind();
 
 }
 
@@ -133,7 +135,7 @@ void Mesh::renderClient()
     glNormalPointer(GL_FLOAT, 0, &normal[0]);
     glTexCoordPointer(TEXCOORD_SIZE , GL_FLOAT, 0, &texcoord[0]);
 
-    glDrawArrays(GL_QUADS, 0, position.size() / 3);
+    glDrawArrays(drawStyle, 0, position.size() / 3);
    
 
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -144,6 +146,5 @@ void Mesh::renderClient()
 
 void Mesh::renderVAO()
 {
-    //if (!indexes.empty()) vData.drawElements(GL_TRIANGLES);
     vData.drawArray(drawStyle);
 }

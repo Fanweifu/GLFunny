@@ -1,111 +1,110 @@
 #version 130
 
 uniform float     time;
-uniform vec2      viewport;
+uniform vec2      viewport;//窗口分辨率
 
-const float radiu = 0.5;
-
-vec2 coord2uv(vec2 coord) {
-	return 2.0*coord / viewport.xy - 1.0;
+//坐标归一到[-1,1]
+vec2 coord2uv(vec2 coord){
+    return 2.0*coord/viewport.xy-1.0;
 }
 
-vec3 uv2ray(vec2 uv) {
-	vec4 camdir = gl_ProjectionMatrixInverse*vec4(uv, 1, 1);
-	camdir = camdir / camdir.w;
-	vec3 dir = mat3(gl_ModelViewMatrixInverse)*vec3(camdir);
-	return normalize(dir);
+//通过uv计算本地坐标系下的射线方向
+vec3 uv2ray(vec2 uv){
+     vec4 camdir = gl_ProjectionMatrixInverse*vec4(uv,1,1);
+     camdir = camdir/camdir.w;//W归一后 得出相机坐标体系下的点
+     vec3 dir = mat3(gl_ModelViewMatrixInverse)*vec3(camdir);
+     return normalize(dir);
 }
 
-vec3 lightPos() {
+//本地坐标系下的视点坐标
+vec3 cameraPos(){
+    return vec3(gl_ModelViewMatrixInverse*vec4(0,0,0,1));
+}
+
+//计算本地坐标系下的灯光方向（平行光）
+vec3 lightPos(){
 	return normalize(mat3(gl_ModelViewMatrixInverse)*gl_LightSource[0].position.xyz);
 }
 
-vec3 eyePosition() {
-	return vec3(gl_ModelViewMatrixInverse*vec4(0, 0, 0, 1));
+//本地坐标系下点光源坐标
+vec3 spotLightPos(){    
+    return vec3(gl_ModelViewMatrixInverse*gl_LightSource[0].position);
+}
+#define MAXSTEP 40 //最大逼近步数
+#define TOLERANCE 0.0001 // 距离需要减小到该值以下 
+
+
+float sdsphere(vec3 pos,float r){
+    return length(pos)-r;
 }
 
-///rayTrace
-
-const float maxPrecis = 0.0001;
-const float minDiscard = 0.3;
-const int maxStep = 40;
-
-float sdsphere(vec3 pos, float radiu) {
-	return abs(length(pos) - radiu);
+vec2 map(vec3 pos){
+    return vec2(sdsphere(pos,1),0.5);
 }
 
-vec2 rayMarch(vec3 pos) {
-	return vec2(sdsphere(pos, radiu), 1);
+//输入:视点坐标，射线方向;
+//输出:最近点和对应材质系数。
+bool marching(vec3 pos,vec3 ray,out vec3 closeing,out float material){
+    int step =0;
+    float mindist = 1;
+    vec2 res;
+    do{
+        res = map(pos);
+        if(res.x<mindist){
+            mindist = res.x;
+            material = res.y;
+            closeing = pos;
+        }
+        
+        pos+= ray*res.x;       
+        step++;
+    }while(res.x>TOLERANCE&&step<=MAXSTEP);
+
+    
+    return step<=MAXSTEP;
 }
 
-//#define Smooth 1
+float procDepth(vec3 localPos){
+    vec4 frag = gl_ModelViewProjectionMatrix*vec4(localPos,1);
+    frag/=frag.w;
+    return (frag.z+1)/2;
+}
 
-vec3 lightModel(vec3 eye, vec3 normal, vec3 light) {
-	float NL = max(dot(normal, light), 0);
-	float RL = max(dot(eye, reflect(light, normal)), 0);
-	return vec3(0.5) + vec3(0.5)*NL + vec3(0.5)*pow(RL, 1);
+#define NORMALESP 0.001
+vec3 procNormal(vec3 marchpt)
+{
+    float dist = map(marchpt).x;
+
+    return normalize(vec3(
+        dist-map(marchpt-vec3(NORMALESP,0,0)).x,
+        dist-map(marchpt-vec3(0,NORMALESP,0)).x,
+        dist-map(marchpt-vec3(0,0,NORMALESP)).x
+    ));
+}
+
+vec3 lightModel(vec3 eye,vec3 normal, vec3 light,float material){
+	float NL = max(dot(normal,light),0);
+	float RL = max(dot(eye,reflect(light,normal)),0);
+	return vec3(material*0.1)+vec3(material)*NL+ vec3(material)*pow(RL,10);
+}
+
+//
+
+void main(){
+    vec2 uv = coord2uv(gl_FragCoord.xy);
+    vec3 ro = cameraPos();
+    vec3 rd = uv2ray(uv);
+
+    vec3 nearest;
+    float material;
+      
+    if(marching(ro,rd,nearest,material)){
+		vec3 normal = procNormal(nearest);
+        gl_FragDepth = procDepth(nearest);
+        gl_FragColor = vec4(lightModel(rd,normal,lightPos(),material)*normal,1);
+    }else{
+       discard;
+    }
 }
 
 
-void main() {
-	vec4 color;
-	float depth = 0;
-#ifdef Smooth
-	for (int i = -Smooth; i <= Smooth; i++) {
-		for (int j = -Smooth; j <= Smooth; j++) {
-			vec2 frag = gl_FragCoord.xy + vec2(i, j);
-#else
-	vec2 frag = gl_FragCoord.xy;
-#endif
-	vec2 uv = coord2uv(frag);
-	vec3 dir = uv2ray(uv);
-
-	vec2 march;
-	float stepNum = 0;
-	float mindist = 1;
-	vec3 pos = eyePosition();
-	vec3 nestpt = pos;
-	do {
-		march = rayMarch(pos);
-		if (mindist>march.x) {
-			nestpt = pos;
-			mindist = march.x;
-		}
-		pos += march.x*dir;
-		stepNum++;
-	} while (march.x>maxPrecis&&stepNum<maxStep);
-
-	float alpha = 1;
-
-	float discarddist = minDiscard*(sin(time) / 2.0 + 1.8);
-
-	if (stepNum >= maxStep) {
-		if (mindist>discarddist) {
-			discard;
-			return;
-		}
-		else alpha = pow(smoothstep(-discarddist, -maxPrecis, -mindist), 2);
-	}
-
-	float dist = rayMarch(pos).x;
-	vec3 sunlight = lightPos();
-	vec3 normal = stepNum >= maxStep ? sunlight : normalize(pos);/*normalize(vec3((dist-rayMarch(pos-vec3(maxPrecis,0,0))).x,
-																 (dist-rayMarch(pos-vec3(0,maxPrecis,0))).x,
-																 (dist-rayMarch(pos-vec3(0,0,maxPrecis))).x));*/
-	color += vec4(lightModel(dir, normal, sunlight), alpha);
-
-	vec4 fragpos = gl_ModelViewProjectionMatrix*vec4(nestpt, 1);
-	fragpos /= fragpos.w;
-	depth += fragpos.z;
-
-#ifdef Smooth
-		}
-	}
-	int cnt = (2 * Smooth + 1)*(2 * Smooth + 1);
-	color /= cnt;
-	depth /= cnt;
-#endif
-	depth = clamp(depth, 0, 1);
-	gl_FragDepth = depth;
-	gl_FragColor = vec4(vec3(normalize(nestpt))*color.xyz, alpha);
-}

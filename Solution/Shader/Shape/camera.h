@@ -37,8 +37,8 @@ public:
 
     int getViewLeft() { return left; }
     int getViewButtom() { return buttom; }
-    int getViewWidth() { return width; }
-    int getViewHeight() { return height; }
+    int ViewWidth() { return width; }
+    int ViewHeight() { return height; }
     void setViewPort(int x, int y, int width, int height);
     void setWindowSize(int width, int height);
 

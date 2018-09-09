@@ -2,14 +2,21 @@
 #include<Shape\mesh.h>
 #include<GL\freeglut.h>
 float step = 0.1f;
-ImgTexture tex;
+
+Texture2D tex;
+Texture2D depthMap;
+Texture2D colorMap;
+FBObject fbo;
 Camera camera;
 Mesh mesh;
 Mesh cube;
+Mesh quad;
+Shader procShd;
 Shader rayShd;
 
 void reshape(int width, int height) {
     camera.setWindowSize(width, height);
+    fbo.resize(width, height);
 }
 
 void moveMouse(int x, int y) {
@@ -64,17 +71,20 @@ void spkeyFunc(int key, int x, int y) {
 }
 
 void initCamera() {
-
     camera.init();
     camera.lookAt(5, 5, 5, 0, 0, 0);
     camera.setViewPort(0, 0, 500, 500);
 }
 
 void render() {
+    bool valid = fbo.vaild();
+
+    //fbo.bind();
+
     camera.beginRender();
 
     rayShd.bind();
-    camera.setCamUniform(rayShd);
+    rayShd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
 
     for (int i = 0; i <= 5; i++) {
         glPushMatrix();
@@ -85,10 +95,36 @@ void render() {
         glPushMatrix();
     }
 
-
     rayShd.unBind();
 
+    glTranslatef(-0.5, -0.8, 0);
+    cube.draw();
+
     camera.endRender();
+
+    /*fbo.unBind();
+
+
+
+
+    camera.beginRender();
+
+    colorMap.bind(0);
+    depthMap.bind(1);
+
+    procShd.bind();
+    procShd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
+    procShd.setUniform1i("colorMap", 0);
+    procShd.setUniform1i("depthMap", 1);
+
+    quad.draw();
+
+    procShd.unBind();
+
+    depthMap.unBind();
+    colorMap.unBind();
+
+    camera.endRender();*/
 
     glutSwapBuffers();
 }
@@ -110,16 +146,23 @@ void initGlut() {
 }
 
 void raymarchTest() {
-
     Mesh::buildCube(mesh);
     Mesh::buildCube(cube);
-    
-    //MeshShape::activeVAO = false;
-    tex.loadRgbImg("..\\wood.jpg");
+    Mesh::buildQuad(quad);
+    Mesh::activeVAO = false;
+
+    tex.loadFileImg("..\\Image\\wood.jpg");
     cube.texture0 = tex;
-    //rayShd.loadVertexFile("sphere_vert.glsl");
-    rayShd.loadFragFile("sphere_fragdepth.glsl");
+
+    rayShd.loadFragFile("sphere_frag.glsl");
     rayShd.link();
+
+    colorMap.attchColorFBO(fbo);
+    depthMap.attchDepthFBO(fbo);
+
+    procShd.loadVertexFile("proc_vert.glsl");
+    procShd.loadFragFile("proc_frag.glsl");
+    procShd.link();
 }
 
 int main(int arg, char**argv) {

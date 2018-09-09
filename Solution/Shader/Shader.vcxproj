@@ -123,7 +123,7 @@
     <ClInclude Include="Shape\layer.h" />
     <ClInclude Include="Shape\light.h" />
     <ClInclude Include="Shape\mesh.h" />
-    <ClInclude Include="Shape\modelgl.h" />
+    <ClInclude Include="Shape\object.h" />
     <ClInclude Include="Shape\shader.h" />
     <ClInclude Include="Shape\shape.h" />
     <ClInclude Include="Shape\shapePRS.h" />

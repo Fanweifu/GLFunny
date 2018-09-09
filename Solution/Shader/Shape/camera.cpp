@@ -99,7 +99,7 @@ void Camera::localMove(float right, float forward, float up)
 void Camera::setCamUniform(Shader & shd)
 {
     shd.bind();
-    shd.setUniform2f(UNIFORM_VIEWPORT_VEC2, getViewWidth(), getViewHeight());
+    shd.setUniform2f(UNIFORM_VIEWPORT_VEC2, ViewWidth(), ViewHeight());
     shd.setUniform1f(UNIFORM_TIME_FLOAT, getRenderTimes(0.01f));
     shd.setUniformMat4(UNIFORM_CAMERAVIEWINV_MAT4, getViewMatInvPtr());
     shd.setUniformMat4(UNIFORM_PROJECTIONINV_MAT4, getProjectionMatInvPtr());

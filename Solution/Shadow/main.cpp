@@ -2,6 +2,7 @@
 #include<Shape\mesh.h>
 #include<Shape\layer.h>
 #include<Shape\texture.h>
+#include<GL\freeglut.h>
 
 float step = 0.1;
 int smooth = 2;
@@ -9,7 +10,7 @@ Camera camera;
 Layer lyr;
 Mesh testshp;
 DepthTexture depthMap;
-ImgTexture texture;
+Texture2D texture;
 Shader shadowShd;
 
 void reshape(int width, int height) {
@@ -86,7 +87,7 @@ void render() {
     lyr.draw();
 
     shadowShd.unBind();
-    depthMap.unbind();
+    depthMap.unBind();
 
     camera.endRender();
 
@@ -121,7 +122,7 @@ void shadowTest() {
     shadowShd.link();
 
     //texture
-    texture.loadRgbImg("..\\Image\\wood.jpg");
+    texture.loadFileImg("..\\Image\\wood.jpg");
     testshp.texture0 = texture;
 
 

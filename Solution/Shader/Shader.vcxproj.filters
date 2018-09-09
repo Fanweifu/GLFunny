@@ -33,9 +33,6 @@
     <ClInclude Include="Shape\mesh.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Shape\modelgl.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Shape\shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
