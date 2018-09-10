@@ -25,7 +25,7 @@ public:
     void resize(int w, int h);
 
 private:
-    unsigned int fbo;
+    unsigned int m_fbo;
     int width = 500, height = 500;
     std::map<GLenum, GLint> texbindinfo;
 };
@@ -83,7 +83,6 @@ public:
     DepthTexture();
     ~DepthTexture();
 
-    void load(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene);
     void beginLoad(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw);
     void endLoad();
 
@@ -93,7 +92,6 @@ public:
 protected:
     GLuint depthMapFBO = 0;
     glm::mat4 lightPrjMat, lightViewMat, lightPrjViewMat;
-    Shader shadowPro;
     void init() override;
 };
 

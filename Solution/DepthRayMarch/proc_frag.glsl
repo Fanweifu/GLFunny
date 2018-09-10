@@ -6,6 +6,6 @@ void main(){
 	vec2 uv = gl_FragCoord.xy/viewport;
 	uv.y = 1- uv.y;
 	
-	gl_FragColor = vec4(texture2D(colorMap,uv).xyz,1);
+	gl_FragColor = vec4(texture2D(depthMap,uv).xyz,1);
 
 } 

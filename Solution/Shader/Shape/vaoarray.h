@@ -7,10 +7,10 @@
 #include"object.h"
 #define VBOCNT 4
 
-#define VERTEX_VBO_INDEX 0
-#define COLOR_VBO_INDEX 1
-#define NORMAL_VBO_INDEX 2
-#define TEXCOORD_VBO_INDEX 3
+#define VERTEX_VBO_LAYOUT 0
+#define COLOR_VBO_LAYOUT 1
+#define NORMAL_VBO_LAYOUT 2
+#define TEXCOORD_VBO_LAYOUT 3
 
 #define VERTEX_SIZE 3
 #define COLOR_SIZE 4
@@ -26,11 +26,7 @@ public:
     void unInit() override;
     void bind() override;
     void unBind() override;
-    virtual void renderData(GLenum mode) {}
-
-  
-
-
+    virtual void renderData(GLenum mode) = 0;
 
 protected:
 
@@ -49,7 +45,7 @@ public:
     void setColor4f(GLfloat* arr);
     void setNormal3f(GLfloat* arr);
     void setTexCoord2f(GLfloat* arr);
-    void drawArray(GLenum mode);
+    void renderData(GLenum mode) override;
 protected:
     GLuint vertexNum = 0;
 private:

@@ -15,8 +15,8 @@ Shader procShd;
 Shader rayShd;
 
 void reshape(int width, int height) {
-    camera.setWindowSize(width, height);
-    fbo.resize(width, height);
+   /*camera.setWindowSize(width, height);
+    fbo.resize(width, height);*/
 }
 
 void moveMouse(int x, int y) {
@@ -79,11 +79,10 @@ void initCamera() {
 void render() {
     bool valid = fbo.vaild();
 
-    //fbo.bind();
-
+    fbo.bind();
     camera.beginRender();
 
-    rayShd.bind();
+   /* rayShd.bind();
     rayShd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
 
     for (int i = 0; i <= 5; i++) {
@@ -97,12 +96,12 @@ void render() {
 
     rayShd.unBind();
 
-    glTranslatef(-0.5, -0.8, 0);
+    glTranslatef(-0.5, -0.8, 0);*/
     cube.draw();
 
     camera.endRender();
 
-    /*fbo.unBind();
+    fbo.unBind();
 
 
 
@@ -118,13 +117,16 @@ void render() {
     procShd.setUniform1i("depthMap", 1);
 
     quad.draw();
+  
 
     procShd.unBind();
+
+    cube.draw();
 
     depthMap.unBind();
     colorMap.unBind();
 
-    camera.endRender();*/
+    camera.endRender();
 
     glutSwapBuffers();
 }
@@ -149,6 +151,7 @@ void raymarchTest() {
     Mesh::buildCube(mesh);
     Mesh::buildCube(cube);
     Mesh::buildQuad(quad);
+    quad.setPosition(0, 0,1.1);
     Mesh::activeVAO = false;
 
     tex.loadFileImg("..\\Image\\wood.jpg");
@@ -157,10 +160,10 @@ void raymarchTest() {
     rayShd.loadFragFile("sphere_frag.glsl");
     rayShd.link();
 
-    colorMap.attchColorFBO(fbo);
+    //colorMap.attchColorFBO(fbo);
     depthMap.attchDepthFBO(fbo);
 
-    procShd.loadVertexFile("proc_vert.glsl");
+    //procShd.loadVertexFile("proc_vert.glsl");
     procShd.loadFragFile("proc_frag.glsl");
     procShd.link();
 }

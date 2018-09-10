@@ -146,5 +146,5 @@ void Mesh::renderClient()
 
 void Mesh::renderVAO()
 {
-    vData.drawArray(drawStyle);
+    vData.renderData(drawStyle);
 }

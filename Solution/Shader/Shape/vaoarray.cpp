@@ -14,37 +14,37 @@ void AttribArray::init(int ptsNum)
 
 void AttribArray::setVertex3f(GLfloat * arr)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[VERTEX_VBO_INDEX]);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[VERTEX_VBO_LAYOUT]);
     glBufferData(GL_ARRAY_BUFFER, vertexNum* VERTEX_SIZE * sizeof(float), arr, getEnum(true));
-    glVertexAttribPointer(VERTEX_VBO_INDEX, VERTEX_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
-    glEnableVertexAttribArray(VERTEX_VBO_INDEX);
+    glVertexAttribPointer(VERTEX_VBO_LAYOUT, VERTEX_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
+    glEnableVertexAttribArray(VERTEX_VBO_LAYOUT);
 }
 
 void AttribArray::setColor4f(GLfloat * arr)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[COLOR_VBO_INDEX]);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[COLOR_VBO_LAYOUT]);
     glBufferData(GL_ARRAY_BUFFER, vertexNum * COLOR_SIZE * sizeof(float), arr, getEnum(true));
-    glVertexAttribPointer(COLOR_VBO_INDEX, COLOR_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
-    glEnableVertexAttribArray(COLOR_VBO_INDEX);
+    glVertexAttribPointer(COLOR_VBO_LAYOUT, COLOR_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
+    glEnableVertexAttribArray(COLOR_VBO_LAYOUT);
 }
 
 void AttribArray::setNormal3f(GLfloat * arr)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[NORMAL_VBO_INDEX]);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[NORMAL_VBO_LAYOUT]);
     glBufferData(GL_ARRAY_BUFFER, vertexNum * NORMAL_SIZE * sizeof(float), arr, getEnum(true));
-    glVertexAttribPointer(NORMAL_VBO_INDEX, NORMAL_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
-    glEnableVertexAttribArray(NORMAL_VBO_INDEX);
+    glVertexAttribPointer(NORMAL_VBO_LAYOUT, NORMAL_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
+    glEnableVertexAttribArray(NORMAL_VBO_LAYOUT);
 }
 
 void AttribArray::setTexCoord2f(GLfloat * arr)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[TEXCOORD_VBO_INDEX]);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[TEXCOORD_VBO_LAYOUT]);
     glBufferData(GL_ARRAY_BUFFER, vertexNum * TEXCOORD_SIZE * sizeof(float), arr, getEnum(true));
-    glVertexAttribPointer(TEXCOORD_VBO_INDEX, TEXCOORD_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
-    glEnableVertexAttribArray(TEXCOORD_VBO_INDEX);
+    glVertexAttribPointer(TEXCOORD_VBO_LAYOUT, TEXCOORD_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
+    glEnableVertexAttribArray(TEXCOORD_VBO_LAYOUT);
 }
 
-void AttribArray::drawArray(GLenum mode)
+void AttribArray::renderData(GLenum mode)
 {
     glBindVertexArray(m_vaoID);
     glDrawArrays(mode, 0, vertexNum);

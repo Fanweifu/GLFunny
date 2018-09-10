@@ -12,7 +12,7 @@ FBObject::~FBObject()
 
 void FBObject::bind()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     isBinded = true;
 }
 
@@ -55,7 +55,7 @@ void FBObject::init()
 {
     if (isInited) return;
 
-    glGenFramebuffers(1, &fbo);
+    glGenFramebuffers(1, &m_fbo);
 
     isInited = true;
 }
@@ -64,13 +64,14 @@ void FBObject::unInit()
 {
     if (!isInited) return;
 
-    glDeleteFramebuffers(1, &fbo);
+    glDeleteFramebuffers(1, &m_fbo);
     isInited = isVaild = isBinded = false;
 }
 
 void FBObject::attchDepth(GLuint tex)
 {
     init();
+
     glBindTexture(GL_TEXTURE_2D, tex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -81,13 +82,12 @@ void FBObject::attchDepth(GLuint tex)
     float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-    bind();
-
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tex, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
 
-    unBind();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -242,26 +242,16 @@ DepthTexture::~DepthTexture()
     glDeleteFramebuffers(1, &depthMapFBO);
 }
 
-void DepthTexture::load(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw, Shape& scene)
-{
-    beginLoad(camposx, camposy, camposz, lightx, lighty, lightz, lightw);
-
-    scene.draw();
-
-    endLoad();
-
-}
 
 void DepthTexture::beginLoad(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw)
 {
-    if (!isInited) init();
-
-    glPushMatrix();
-
-    glViewport(0, 0, width, height);
-    glScissor(0, 0, width, height);
+    init();
 
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+
+    glPushMatrix();
+    glViewport(0, 0, width, height);
+    glScissor(0, 0, width, height);
     glClear(GL_DEPTH_BUFFER_BIT);
 
     glm::vec3 camPos(camposx, camposy, camposz);
@@ -287,6 +277,8 @@ void DepthTexture::endLoad()
 
 void DepthTexture::init()
 {
+    if (isInited) return;
+
     glGenFramebuffers(1, &depthMapFBO);
     glGenTextures(1, &m_texID);
 
