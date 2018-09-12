@@ -9,12 +9,17 @@ int smooth = 2;
 Camera camera;
 Layer lyr;
 Mesh testshp;
+FBObject fbo;
 DepthTexture depthMap;
 Texture2D texture;
 Shader shadowShd;
 
 void reshape(int width, int height) {
     camera.setWindowSize(width, height);
+    int shadowScale = 4;
+    int w = shadowScale*width, h = shadowScale*height;
+    depthMap.width = w; depthMap.height = h;
+    fbo.resize(w, h);
 }
 
 void moveMouse(int x, int y) {
@@ -68,10 +73,17 @@ void render() {
     float x, y, z, w;
     camera.getLightPos(x, y, z, w);
 
-    depthMap.beginLoad(camera.posX(), camera.posY(), camera.posZ(), x, y, z, w);
+    depthMap.begin(camera.posX(), camera.posY(), camera.posZ(), x, y, z, w);
+    
+    fbo.bind();
+    fbo.clearBuffers();
+    
     lyr.draw();
-    depthMap.endLoad();
+    fbo.unBind();
 
+    depthMap.end();
+    
+    
     camera.beginRender();
 
     depthMap.bind(3);
@@ -112,7 +124,7 @@ void initGlut() {
 
 void shadowTest() {
     //cube build
-    Mesh::activeVAO = true;
+    Mesh::activeVAO = false;
     Mesh::buildCube(testshp);
 
     //shader init
@@ -124,7 +136,9 @@ void shadowTest() {
     //texture
     texture.loadFileImg("..\\Image\\wood.jpg");
     testshp.texture0 = texture;
-
+    
+    fbo.resize(depthMap.width, depthMap.height);
+    depthMap.attchDepthStencilFBO(fbo);
 
 
     Layer * comp1 = new Layer();

@@ -9,7 +9,7 @@ void ShapePRS::draw() {
 
     if (!visible) return;
 
-    Shape::draw();
+    
 
     glPushMatrix();
 
@@ -19,16 +19,13 @@ void ShapePRS::draw() {
     texture1.bind(1);
     texture2.bind(2);
 
-   
-
     ondraw();
-
-   
 
     texture2.unBind();
     texture1.unBind();
     texture0.unBind();
 
+    Shape::draw();
 
     glPopMatrix();
 }

@@ -26,6 +26,8 @@ void Camera::beginRender()
     glMatrixMode(GL_MODELVIEW);
 
     glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
+    glClearDepth(1);
+    glClearStencil(0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glLoadIdentity();
@@ -284,12 +286,13 @@ void Camera::initGl() {
     glEnable(GL_MULTISAMPLE);
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
 
     glEnable(GL_SCISSOR_TEST);
-
-    glEnable(GL_FRAMEBUFFER_SRGB);
+   
+    //glEnable(GL_FRAMEBUFFER_SRGB);
 
     glClearColor(0, 0, 0, 1);
     glClearDepth(1.0f);

@@ -30,7 +30,6 @@ public:
 
 protected:
 
-    GLuint m_vaoID = 0;
     GLuint m_vbosID[VBOCNT];
     
 };

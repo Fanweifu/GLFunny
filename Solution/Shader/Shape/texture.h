@@ -17,15 +17,14 @@ public:
     void bind() override;
     void unBind() override;
     bool vaild() override;
-
+    void clearBuffers();
     int Width() { return width; }
     int Height() { return height; }
-    void attchDepth(GLuint tex);
-    void attchColor(GLuint tex, int clrlv = 0);
+    void attchStencilDepth(GLuint tex);
+    void attchColor(GLuint tex);
     void resize(int w, int h);
 
 private:
-    unsigned int m_fbo;
     int width = 500, height = 500;
     std::map<GLenum, GLint> texbindinfo;
 };
@@ -36,7 +35,6 @@ public:
     Texture() {};
     ~Texture() {};
 
-    unsigned int TexID() { return m_texID; }
     unsigned int Level() { return m_activeLevel; }
 
     virtual void bind(int level)=0;
@@ -46,33 +44,27 @@ public:
     
 protected: 
     unsigned int m_activeLevel = 0;
-    unsigned int m_texID = 0;
-
-    
 };
 
-class Texture2D : public  Texture {
+class Texture2D : public Texture {
 public:
     bool empty() { return Width() == 0 || Height() == 0; }
     int Width();
     int Height();
 
-    void bind(int level) override;
+    void bind(int level=0) override;
     void unBind() override;
 
     bool loadFileImg(char* path);
     void buildByColor(float r, float g, float b, float a = 1);
-    void attchDepthFBO(FBObject &fbo);
+    void attchDepthStencilFBO(FBObject &fbo);
     void attchColorFBO(FBObject &fbo);
-
+   
 protected:
     
 
 };
 
-class ImgTexture :public Texture {
-
-};
 
 class DepthTexture : public Texture2D{
 public:
@@ -83,16 +75,14 @@ public:
     DepthTexture();
     ~DepthTexture();
 
-    void beginLoad(float camposx, float camposy, float camposz, float lightx, float lighty, float lightz, float lightw);
-    void endLoad();
-
+   
+    //camera position:vec3(cx,cy,cz)  vec3(lx,ly,lz) is lw==0? light dircation £º spot light position
+    void begin(float cx, float cy, float cz, float lx, float ly, float lz, float lw = 0);
+    void end();
     float shadowAcneBias();
     const float* getLightPrjViewMat() { return glm::value_ptr(lightPrjViewMat); }
-
 protected:
-    GLuint depthMapFBO = 0;
     glm::mat4 lightPrjMat, lightViewMat, lightPrjViewMat;
-    void init() override;
 };
 
 #endif

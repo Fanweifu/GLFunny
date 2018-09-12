@@ -48,7 +48,6 @@ public:
     void setUniformMat4(const string & pNm, const float* matPtr, bool transpose = false);
 
 private:
-    unsigned int m_program;
     map<const string, int> m_paramsMap;
     
     int getParamID(const string& pNm);

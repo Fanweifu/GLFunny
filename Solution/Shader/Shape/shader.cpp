@@ -46,7 +46,7 @@ bool Shader::complie_attch(GLenum type, const char *source) {
     }
     else {
         if (!isInited) init();
-        glAttachShader(m_program, shader);
+        glAttachShader(m_objID, shader);
         glDeleteShader(shader);
         return true;
     }
@@ -55,7 +55,7 @@ bool Shader::complie_attch(GLenum type, const char *source) {
 void Shader::init()
 {
     if (!isInited) {
-        m_program = glCreateProgram();
+        m_objID = glCreateProgram();
         isInited = true;
     }
 }
@@ -63,8 +63,8 @@ void Shader::init()
 void Shader::unInit()
 {
     if (isInited) {
-        glDeleteProgram(m_program);
-        m_program = 0;
+        glDeleteProgram(m_objID);
+        m_objID = 0;
         isInited = isBinded = isVaild = false;
     }
 }
@@ -93,7 +93,7 @@ GLint Shader::getParamID(const string &pNm) {
         return (*it).second;
     }
     else {
-        GLint idx = glGetUniformLocation(m_program, pNm.c_str());
+        GLint idx = glGetUniformLocation(m_objID, pNm.c_str());
         if (idx == -1) {
             cout << pNm << " can't be found!\n";
         }
@@ -103,13 +103,13 @@ GLint Shader::getParamID(const string &pNm) {
 }
 
 bool Shader::link() {
-    glLinkProgram(m_program);
+    glLinkProgram(m_objID);
 
     GLint success;
     char info[200];
-    glGetProgramiv(m_program, GL_LINK_STATUS, &success);
+    glGetProgramiv(m_objID, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(m_program, 512, NULL, info);
+        glGetProgramInfoLog(m_objID, 512, NULL, info);
         cout << "link failed\n" << info;
         return (isVaild = false);
     }
@@ -125,7 +125,7 @@ void Shader::clear()
 }
 
 void Shader::bind() {
-    if (isVaild) glUseProgram(m_program);
+    if (isVaild) glUseProgram(m_objID);
 }
 
 void Shader::unBind()
