@@ -29,10 +29,13 @@ GLuint createShader(GLenum type, const char*source, GLint& success) {
 
     if (!success)
     {
-        char info[1000];
-        glGetShaderInfoLog(shader, 512, NULL, info);
+        GLint infoLen = 0;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
+        char* buf = (char*)malloc(infoLen);
+        glGetShaderInfoLog(shader, infoLen, NULL, buf);
         printf("compile failed!\n");
-        printf(info);
+        printf(buf);
+        free(buf);
     }
     return shader;
 }
@@ -106,11 +109,18 @@ bool Shader::link() {
     glLinkProgram(m_objID);
 
     GLint success;
-    char info[200];
+    
     glGetProgramiv(m_objID, GL_LINK_STATUS, &success);
+
     if (!success) {
-        glGetProgramInfoLog(m_objID, 512, NULL, info);
-        cout << "link failed\n" << info;
+        GLint infoLen = 0;
+        glGetProgramiv(m_objID, GL_INFO_LOG_LENGTH, &infoLen);
+
+        char* buf = (char*)malloc(infoLen);
+        glGetProgramInfoLog(m_objID, infoLen, NULL, buf);
+        printf("link failed\n%s",buf);
+        free(buf);
+
         return (isVaild = false);
     }
     else

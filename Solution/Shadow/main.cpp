@@ -16,10 +16,10 @@ Shader shadowShd;
 
 void reshape(int width, int height) {
     camera.setWindowSize(width, height);
-    int shadowScale = 4;
-    int w = shadowScale*width, h = shadowScale*height;
-    depthMap.width = w; depthMap.height = h;
-    fbo.resize(w, h);
+    //int shadowScale = 4;
+    //int w = shadowScale*width, h = shadowScale*height;
+    //depthMap.width = w; depthMap.height = h;
+    //fbo.resize(w, h);
 }
 
 void moveMouse(int x, int y) {
@@ -139,7 +139,6 @@ void shadowTest() {
     
     fbo.resize(depthMap.width, depthMap.height);
     depthMap.attchDepthStencilFBO(fbo);
-
 
     Layer * comp1 = new Layer();
     comp1->addUnique(&testshp);

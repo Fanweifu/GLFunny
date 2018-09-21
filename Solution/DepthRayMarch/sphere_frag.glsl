@@ -44,19 +44,19 @@ vec2 map(vec3 pos){
 
 //输入:视点坐标，射线方向;
 //输出:最近点和对应材质系数。
-bool marching(vec3 pos,vec3 ray,out vec3 closeing,out float material){
+bool marching(vec3 pos,vec3 ray,out float nearDis,out float material){
     int step =0;
-    float mindist = 1;
+    float mindist = 1,accDis = 0;
     vec2 res;
+	nearDis = 0;
     do{
-        res = map(pos);
+        res = map(pos+accDis*ray);
+		accDis += res.x;
         if(res.x<mindist){
             mindist = res.x;
             material = res.y;
-            closeing = pos;
+            nearDis = accDis;
         }
-        
-        pos+= ray*res.x;       
         step++;
     }while(res.x>TOLERANCE&&step<=MAXSTEP);
 
@@ -95,12 +95,12 @@ void main(){
     vec3 ro = cameraPos();
     vec3 rd = uv2ray(uv);
 
-    vec3 nearest;
-    float material;
+    float material,accdis;
       
-    if(marching(ro,rd,nearest,material)){
-		vec3 normal = procNormal(nearest);
-        gl_FragDepth = procDepth(nearest);
+    if(marching(ro,rd,accdis,material)){
+		vec3 cp = ro+rd*accdis;
+		vec3 normal = procNormal(cp);
+        gl_FragDepth = procDepth(cp);
         gl_FragColor = vec4(lightModel(rd,normal,lightPos(),material)*normal,1);
     }else{
        discard;

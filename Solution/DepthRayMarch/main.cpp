@@ -1,19 +1,27 @@
 #include<Shape\camera.h>
 #include<Shape\mesh.h>
 #include<GL\freeglut.h>
-float step = 0.1f;
+#include<math.h>
+#define TESTFRAGFILE1 "water_frag.glsl"
+#define TESTFRAGFILE2 "eve_frag.glsl"
+#define USEFBO
 
+float step = 0.1f;
+float offsetX = 0;
+float offsetY = 0;
+float offsetZ = 0;
+float zta = 0;
 Texture2D tex;
 Texture2D depthMap;
 Texture2D colorMap;
-Texture2D stencilMap;
 FBObject fbo;
 Camera camera;
 Mesh mesh;
 Mesh cube;
 Mesh quad;
 Shader procShd;
-Shader rayShd;
+Shader rayShd1;
+Shader rayShd2;
 
 void reshape(int width, int height) {
     camera.setWindowSize(width, height);
@@ -24,7 +32,7 @@ void moveMouse(int x, int y) {
     camera.moveMouse(x, y);
     float dx, dy, dz;
     camera.mouseRay(x, y, dx, dy, dz);
-    camera.setLightPos(1, 1, 1, 0);
+    //camera.setLightPos(dx , dy, 1, 0);
 }
 
 void dragMouse(int x, int y) {
@@ -47,9 +55,9 @@ void keyFunc(unsigned char key, int x, int y) {
         camera.localMove(1 * step, 0, 0);
         break;
     case ' ':
-        rayShd.clear();
-        rayShd.loadFragFile("sphere_frag.glsl");
-        rayShd.link();
+        rayShd1.clear();
+        rayShd1.loadFragFile(TESTFRAGFILE1);
+        rayShd1.link();
     }
 }
 
@@ -57,81 +65,82 @@ void spkeyFunc(int key, int x, int y) {
     switch (key)
     {
     case GLUT_KEY_UP:
-        cube.setPosition(cube.posX(), cube.posY() + 0.1, cube.posZ());
+        offsetZ += 0.1;
         break;
     case GLUT_KEY_DOWN:
-        cube.setPosition(cube.posX(), cube.posY() - 0.1, cube.posZ());
+        offsetZ -= 0.1;
         break;
     case GLUT_KEY_LEFT:
-        cube.setPosition(cube.posX() - 0.1, cube.posY(), cube.posZ());
+        offsetX -= 0.1;
         break;
     case GLUT_KEY_RIGHT:
-        cube.setPosition(cube.posX() + 0.1, cube.posY(), cube.posZ());
+        offsetZ += 0.1;
         break;
     }
 }
 
 void initCamera() {
     camera.init();
-    camera.setFar(20);
     camera.lookAt(5, 5, 5, 0, 0, 0);
     camera.setViewPort(0, 0, 500, 500);
 }
 
+
 void render() {
 
-
-    bool valid = fbo.vaild();
+    zta += 0.01;
+    camera.setLightPos(cos(zta), sin(zta), 1,0);
 
     camera.beginRender();
-
+#ifdef USEFBO
     fbo.bind();
     fbo.clearBuffers();
+#endif 
+   
 
-    rayShd.bind();
-    rayShd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
+    
 
-     for (int i = 0; i <= 0; i++) {
-         glPushMatrix();
-         glTranslatef(0, i * 5, 0);
-         glScaled(i + 1, i + 1, i + 1);
-
-         mesh.draw();
-         glPushMatrix();
-    }
-    rayShd.unBind();
-
-    glTranslatef(-0.5, -0.8, -1);
-
+    rayShd2.bind();
+    rayShd2.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
+    rayShd2.setUniform1f("time", camera.getRenderTimes(0.01));
     cube.draw();
+    rayShd2.unBind();
+
+    glTranslatef(offsetX, offsetY, offsetZ);
+    cube.draw();
+    glTranslatef(-offsetX, -offsetY, -offsetZ);
+   
+    rayShd1.bind();
+    rayShd1.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
+    rayShd1.setUniform1f("time", camera.getRenderTimes(0.01));
+
+    mesh.draw();
+    rayShd1.unBind();
+
+#ifdef USEFBO
     fbo.unBind();
+#endif
+
     camera.endRender();
 
-    camera.beginRender();
+#ifdef USEFBO
+
 
     colorMap.bind(0);
     depthMap.bind(1);
-    stencilMap.bind(2);
-
     procShd.bind();
     procShd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
     procShd.setUniform1i("colorMap", 0);
     procShd.setUniform1i("depthMap", 1);
-    procShd.setUniform1i("stencilMap", 2);
-    procShd.setUniformMat4("prjMatInv", camera.getProjectionMatInvPtr());
+    procShd.setUniform1i("smoothl", 6);
 
     quad.draw();
 
     procShd.unBind();
-
-    stencilMap.unBind();
     depthMap.unBind();
     colorMap.unBind();
-
-
-   
-
-    camera.endRender();
+    
+#endif
 
     glutSwapBuffers();
 }
@@ -154,17 +163,17 @@ void initGlut() {
 
 void raymarchTest() {
     Mesh::activeVAO = false;
-    Mesh::buildCube(mesh);
+    Mesh::buildCube(mesh,-100,100,-100,100,-6,6);
     Mesh::buildCube(cube);
     Mesh::buildQuad(quad);
-    quad.setPosition(0, 0, 1.1);
-    
 
     tex.loadFileImg("..\\Image\\wood.jpg");
     cube.texture0 = tex;
 
-    rayShd.loadFragFile("sphere_frag.glsl");
-    rayShd.link();
+    rayShd1.loadFragFile(TESTFRAGFILE1);
+    rayShd1.link();
+    rayShd2.loadFragFile(TESTFRAGFILE2);
+    rayShd2.link();
 
     colorMap.attchColorFBO(fbo);
     depthMap.attchDepthStencilFBO(fbo);
@@ -174,18 +183,11 @@ void raymarchTest() {
     procShd.link();
 }
 
-void initStencil() {
-    glStencilMask(0xFF);
-    glStencilFunc(GL_ALWAYS, 0xFF, 0xFF);
-    glStencilOp(GL_INCR, GL_INCR, GL_INCR);
-}
-
 int main(int arg, char**argv) {
     glutInit(&arg, argv);
     glewInit();
     initGlut();
     initCamera();
-    initStencil();
     raymarchTest();
     glutMainLoop();
     return 0;

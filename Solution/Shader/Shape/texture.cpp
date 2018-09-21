@@ -84,8 +84,9 @@ void FBObject::attchStencilDepth(GLuint tex)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_STENCIL_TEXTURE_MODE, GL_STENCIL_INDEX);
 
     float borderColor[] = { 1.0, 1.0, 1.0, 0.0 };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
@@ -93,6 +94,8 @@ void FBObject::attchStencilDepth(GLuint tex)
     glBindFramebuffer(GL_FRAMEBUFFER, m_objID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, tex, 0);
    
+    //glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,tex,0);
+    //glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_TEXTURE_2D, tex, 0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -281,7 +284,8 @@ void DepthTexture::begin(float cx, float cy, float cz, float lx, float ly, float
     glm::vec3 camPos(cx, cy, cz);
     glm::vec4 lightPos(lx, ly, lz, lw);
 
-    lightPrjMat = glm::ortho(-range / 2, range / 2, -range / 2, range / 2, n, f);
+    float ratio = (float)width / height;
+    lightPrjMat = glm::ortho(-range / 2, range / 2, -range / 2/ ratio, range / 2/ ratio, n, f);
     lightViewMat = glm::lookAt((glm::vec3(lightPos))*distance + camPos, camPos, glm::vec3(0, 0, 1));
     lightPrjViewMat = lightPrjMat*lightViewMat;
 
