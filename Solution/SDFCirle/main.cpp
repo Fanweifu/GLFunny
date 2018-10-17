@@ -1,31 +1,20 @@
-#include<glHead.h>
 #include<Shape\camera.h>
-#include<Shape\texture.h>
 #include<Shape\mesh.h>
+#include<Shape\layer.h>
+#include<Shape\texture.h>
 #include<GL\freeglut.h>
 
-
-#define TESTFRAGFILE "lighttomodel_frag.glsl"
-float step = 0.1f;
-float offsetX = 0;
-float offsetY = 0;
-float offsetZ = 0;
-float zta = 0;
-Texture2D tex;
+float step = 0.1;
+int smooth = 2;
 Camera camera;
-Mesh mesh;
-Shader procShd;
-
+Mesh testshp;
+Shader shd;
 void reshape(int width, int height) {
     camera.setWindowSize(width, height);
-   
 }
 
 void moveMouse(int x, int y) {
     camera.moveMouse(x, y);
-    float dx, dy, dz;
-    camera.mouseRay(x, y, dx, dy, dz);
-    //camera.setLightPos(dx , dy, 1, 0);
 }
 
 void dragMouse(int x, int y) {
@@ -47,10 +36,6 @@ void keyFunc(unsigned char key, int x, int y) {
     case 'd':
         camera.localMove(1 * step, 0, 0);
         break;
-    case ' ':
-        procShd.clear();
-        procShd.loadFragFile(TESTFRAGFILE);
-        procShd.link();
     }
 }
 
@@ -58,43 +43,28 @@ void spkeyFunc(int key, int x, int y) {
     switch (key)
     {
     case GLUT_KEY_UP:
-        offsetZ += 0.1;
+        camera.localMove(0, 0, 1);
         break;
     case GLUT_KEY_DOWN:
-        offsetZ -= 0.1;
-        break;
-    case GLUT_KEY_LEFT:
-        offsetX -= 0.1;
-        break;
-    case GLUT_KEY_RIGHT:
-        offsetZ += 0.1;
-        break;
+        camera.localMove(0, 0, -1);
     }
 }
 
 void initCamera() {
     camera.init();
-    camera.lookAt(5, 5, 5, 0, 0, 0);
+    camera.setPosition(0, 0, 5);
     camera.setViewPort(0, 0, 500, 500);
 }
 
-
 void render() {
-
-    zta += 0.01;
-    camera.setLightPos(cos(zta), sin(zta), 1, 0);
-
+   
     camera.beginRender();
-
-    procShd.bind();
-    procShd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
-    procShd.setUniform1f("time", camera.getRenderTimes(0.01));
-    mesh.draw();
-    procShd.unBind();
-
-    glTranslatef(offsetX, offsetY, offsetZ);
-    mesh.draw();
     
+    shd.bind();
+    shd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
+
+    testshp.draw();
+
     camera.endRender();
 
     glutSwapBuffers();
@@ -105,7 +75,7 @@ void initGlut() {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
 
-    glutCreateWindow("raymarch");
+    glutCreateWindow("Shadow");
 
     glutPassiveMotionFunc(moveMouse);
     glutMotionFunc(dragMouse);
@@ -116,13 +86,13 @@ void initGlut() {
     glutReshapeFunc(reshape);
 }
 
-void rayMarch() {
-    Mesh::activeVAO = true;
-    Mesh::buildCube(mesh);
- 
-
-    tex.loadFileImg("..\\Image\\wood.jpg");
-    mesh.texture0 = tex;
+void shadowTest() {
+    //cube build
+    Mesh::activeVAO = false;
+    Mesh::buildCube(testshp);
+    shd.loadVertexFile("sdf_vert.glsl");
+    shd.loadFragFile("sdf_frag.glsl");
+    shd.link();
 
 }
 
@@ -131,7 +101,8 @@ int main(int arg, char**argv) {
     glewInit();
     initGlut();
     initCamera();
-    rayMarch();
+
+    shadowTest();
     glutMainLoop();
     return 0;
 }

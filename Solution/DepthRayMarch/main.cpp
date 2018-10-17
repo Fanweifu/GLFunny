@@ -3,8 +3,8 @@
 #include<GL\freeglut.h>
 #include<math.h>
 #define TESTFRAGFILE1 "water_frag.glsl"
-#define TESTFRAGFILE2 "sphere_frag.glsl"
-#define USEFBO
+#define TESTFRAGFILE2 "eve_frag.glsl"
+//#define USEFBO
 
 float step = 0.1f;
 float offsetX = 0;
@@ -31,9 +31,6 @@ void reshape(int width, int height) {
 
 void moveMouse(int x, int y) {
     camera.moveMouse(x, y);
-    float dx, dy, dz;
-    camera.mouseRay(x, y, dx, dy, dz);
-    //camera.setLightPos(dx , dy, 1, 0);
 }
 
 void dragMouse(int x, int y) {
@@ -169,7 +166,7 @@ void initGlut() {
     glutReshapeFunc(reshape);
 }
 
-void lightToModel() {
+void rayMarch() {
     Mesh::activeVAO = false;
     Mesh::buildCube(mesh,-100,100,-100,100,-6,6);
     Mesh::buildCube(cube);
@@ -183,8 +180,8 @@ void lightToModel() {
     rayShd2.loadFragFile(TESTFRAGFILE2);
     rayShd2.link();
 
-    colorMap.attchColorFBO(fbo);
-    depthMap.attchDepthStencilFBO(fbo);
+    //colorMap.attchColorFBO(fbo);
+    //depthMap.attchDepthStencilFBO(fbo);
 
     procShd.loadVertexFile("proc_vert.glsl");
     procShd.loadFragFile("proc_frag.glsl");
@@ -196,7 +193,7 @@ int main(int arg, char**argv) {
     glewInit();
     initGlut();
     initCamera();
-    lightToModel();
+    rayMarch();
     glutMainLoop();
     return 0;
 }
