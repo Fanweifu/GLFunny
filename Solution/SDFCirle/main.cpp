@@ -36,19 +36,19 @@ void keyFunc(unsigned char key, int x, int y) {
     case 'd':
         camera.localMove(1 * step, 0, 0);
         break;
+    case ' ':
+        shd.clear();
+        shd.loadVertexFile("sdf_vert.glsl");
+        shd.loadFragFile("sdf_frag.glsl");
+        shd.link();
+        break;
     }
 }
 
-void spkeyFunc(int key, int x, int y) {
-    switch (key)
-    {
-    case GLUT_KEY_UP:
-        camera.localMove(0, 0, 1);
-        break;
-    case GLUT_KEY_DOWN:
-        camera.localMove(0, 0, -1);
-    }
+void mouseWheel(int b, int d, int x, int y) {
+    camera.localMove(0, 0, d);
 }
+
 
 void initCamera() {
     camera.init();
@@ -80,7 +80,7 @@ void initGlut() {
     glutPassiveMotionFunc(moveMouse);
     glutMotionFunc(dragMouse);
     glutKeyboardFunc(keyFunc);
-    glutSpecialFunc(spkeyFunc);
+    glutMouseWheelFunc(mouseWheel);
     glutDisplayFunc(render);
     glutIdleFunc(render);
     glutReshapeFunc(reshape);
@@ -89,11 +89,10 @@ void initGlut() {
 void shadowTest() {
     //cube build
     Mesh::activeVAO = false;
-    Mesh::buildCube(testshp);
+    Mesh::buildQuad(testshp);
     shd.loadVertexFile("sdf_vert.glsl");
     shd.loadFragFile("sdf_frag.glsl");
     shd.link();
-
 }
 
 int main(int arg, char**argv) {
