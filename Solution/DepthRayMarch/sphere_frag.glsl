@@ -74,7 +74,7 @@ float procDepth(vec3 localPos){
 vec3 procNormal(vec3 marchpt)
 {
     float dist = map(marchpt).x;
-
+ 
     return normalize(vec3(
         dist-map(marchpt-vec3(NORMALESP,0,0)).x,
         dist-map(marchpt-vec3(0,NORMALESP,0)).x,
@@ -82,10 +82,11 @@ vec3 procNormal(vec3 marchpt)
     ));
 }
 
-vec3 lightModel(vec3 eye,vec3 normal, vec3 light,float material){
+vec3 lightModel(vec3 eyedir,vec3 normal, vec3 light,float material){
 	float NL = max(dot(normal,light),0);
-	float RL = max(dot(eye,reflect(light,normal)),0);
-	return vec3(material*0.1)+vec3(material)*NL+ vec3(material)*pow(RL,10);
+	vec3 halfVec = normalize(-eyedir+light);
+	float RL = max(dot(normal,halfVec),0);
+	return /*vec3(material*0.1)*/+vec3(material)*NL+ vec3(material)*pow(RL,9);
 }
 
 //
@@ -101,7 +102,7 @@ void main(){
 		vec3 cp = ro+rd*accdis;
 		vec3 normal = procNormal(cp);
         gl_FragDepth = procDepth(cp);
-        gl_FragColor = vec4(lightModel(rd,normal,lightPos(),material)*normal,1);
+        gl_FragColor = vec4(lightModel(rd,normal,lightPos(),material)/**normal*/,1);
     }else{
        discard;
     }

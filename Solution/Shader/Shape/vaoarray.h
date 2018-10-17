@@ -1,16 +1,19 @@
 #ifndef VAOARRAY_H
 #define VAOARRAY_H
 
-#include<glHead.h>
+
 #include<assert.h>
 #include<map>
+#include<vector>
+#include"glHead.h"
 #include"object.h"
-#define VBOCNT 4
 
 #define VERTEX_VBO_LAYOUT 0
 #define COLOR_VBO_LAYOUT 1
 #define NORMAL_VBO_LAYOUT 2
 #define TEXCOORD_VBO_LAYOUT 3
+#define TAGENT_VBO_LAYOUT 4
+#define BITTAGENT_VBO_LAYOUT 5
 
 #define VERTEX_SIZE 3
 #define COLOR_SIZE 4
@@ -26,12 +29,16 @@ public:
     void unInit() override;
     void bind() override;
     void unBind() override;
+    
+    void init(int cnt);
+
     virtual void renderData(GLenum mode) = 0;
 
 protected:
+    int vbocnt = 0;
+    GLuint * m_vbosID;
+    void initBuffs(int cnt);
 
-    GLuint m_vbosID[VBOCNT];
-    
 };
 
 class AttribArray :public BindData
@@ -39,16 +46,19 @@ class AttribArray :public BindData
 public:
 
     AttribArray() : BindData() {}
-    void init(int ptsNum);
+    void init(int ptsNum,int buffs = 4 );
     void setVertex3f(GLfloat* arr);
     void setColor4f(GLfloat* arr);
     void setNormal3f(GLfloat* arr);
     void setTexCoord2f(GLfloat* arr);
+    void setOtherData3f(GLfloat* arr, int layout);
     void renderData(GLenum mode) override;
 protected:
     GLuint vertexNum = 0;
 private:
 };
+
+
 
 
 
