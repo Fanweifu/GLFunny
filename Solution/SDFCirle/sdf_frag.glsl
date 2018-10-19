@@ -1,6 +1,5 @@
 #version 120
 
-uniform vec2 viewport;
 uniform vec4 backColor = vec4(1,1,1,0);
 uniform vec4 lineColor = vec4(0,0,0,1);
 uniform vec4 fillColor = vec4(0,1,1,1);

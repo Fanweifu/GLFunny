@@ -29,7 +29,7 @@ private:
     std::map<GLenum, GLint> texbindinfo;
 };
 
-class Texture : public glObject {
+class  Texture : public glObject {
 public:
 
     Texture() {};

@@ -46,6 +46,12 @@ public:
         svec = glm::vec3(x, y, z);
         updateModel();
     }
+    void setScale(float s) {
+        svec = glm::vec3(s);
+        updateModel();
+    }
+
+
     const float* getScalef3() { return glm::value_ptr(svec); }
 
     void toLocalPos(float&x, float &y, float &z);

@@ -344,7 +344,7 @@ void Camera::initBack()
         float sunDistance = distance(dir, clamp(sunPos, -1.0, 1.0));\
         float scatterMult = clamp(sunDistance, 0.0, 1.0);\
         float sun = clamp(1.0 - smoothstep(0.01, 0.011, scatterMult), 0.0, 1.0);\
-        float dist = dir.z;\
+        float dist = max(dir.z,0.2);\
         dist = (coeiff * mix(scatterMult, 1.0, dist)) / dist;\
         vec3 mieScatter = mie(sunDistance, vec3(1.0));\
         vec3 color = dist * totalSkyLight;\
@@ -355,7 +355,7 @@ void Camera::initBack()
             + sun + mieScatter;\
         color *= (pow(1.0 - scatterMult, 10.0) * 10.0) + 1.0;\
         float underscatter = distance(sunPos.z * 0.5 + 0.5, 1.0);\
-        color = mix(color, vec3(0.0), clamp(underscatter, 0.0, 1.0));\
+        color = mix(color, vec3(0), clamp(underscatter, 0.0, 1.0));\
         return color;\
     }\
     vec3 checker( vec3 p )\
