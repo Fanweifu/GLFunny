@@ -116,11 +116,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="charSDF128X128.png" />
-    <Image Include="charSDF256X256.png" />
-    <Image Include="charSDF32X32.png" />
-    <Image Include="charSDF512X512.png" />
-    <Image Include="charSDF64X64.png" />
+    <Image Include="font.jpg" />
+    <Image Include="fontsdf.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -130,6 +127,9 @@
       <FileType>Document</FileType>
     </Text>
     <Text Include="sdfFont_frag.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="sdf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

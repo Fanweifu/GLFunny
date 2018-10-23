@@ -10,9 +10,12 @@ class Camera : public ShapePRS
 {
 public:
     Camera();
-    bool isOrtho = false;
-    bool isMultiScreen = true;
-    bool isShaderBack = true;
+    bool support_split_screen = true;
+    bool advance_background = true;
+    bool ortho_projeciton = false;
+    bool ortho_autoRect = true;
+    float ortho_fixedRectHeight = 300;
+    float ortho_autoRect_Scale = 1;
 
     void setNear(float _near) {
         if (_near<0 || _near>Far) return;
@@ -80,9 +83,15 @@ public:
 
     void lookAt(float ex, float ey, float ez, float tx, float ty, float tz);
 
-    void setOrthoH(int h) { owidth = Ratio*h; oheight = h; updateProjection(); }
-    void beginRender();
-    void endRender();
+    void beginFrame();
+   
+    void setViewPort();
+    void clearBuffer();
+    void loadProjection();
+    void loadModelView();
+    void drawBack();
+    void countTimes();
+
     void dragMouse(int x, int y, float speed = 0.1f);
     void moveMouse(int x, int y);
     void mouseCoordToUV(int mx, int my, float &u, float &v);
@@ -133,7 +142,6 @@ protected:
     void initGl();
     void initBack();
     void ondraw();
-    void drawBack();
     void updateModel();
     void updateProjection();
     void updateViewPort();

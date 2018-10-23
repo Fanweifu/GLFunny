@@ -1,49 +1,71 @@
 #version 120
 
 uniform sampler2D sdfTex;
-uniform vec2 texSize =vec2(32,32);//滚轮切换不同分辨率的SDF纹理
-uniform vec4 backColor = vec4(1,1,1,0);
-uniform vec4 lineColor = vec4(1,1,1,1);
-uniform vec4 fillColor = vec4(0,1,1,1);
-uniform float lineDist = 0.05;// 描边距离
-uniform float fillDist = 0.005;//填充距离 方向左右调整
-uniform float smoothDelta = 0.001;//描边距离 方向上下调整
+uniform vec2 sdfSize = vec2(32,32);//sdf贴图分辨率
+uniform vec4 backColor = vec4(0,0,0,1);//背景色
+uniform vec4 foreColor = vec4(1,1,1,1);//前景色（填充）
+
+uniform bool stroke = false;//使用描边？
+uniform vec4 strokeColor = vec4(1,1,1,1);//描边颜色
+uniform bool strokeGlow = true;//描边渐变？
+
+uniform bool shadow = false; //使用阴影？
+uniform bool shadowGlow = true;//使用阴影渐变?
+uniform vec2 shadowOffest = vec2(0.003);//阴影偏移
+uniform vec4 shadowColor = vec4(0,0,0,1);//阴影颜色
+
+uniform float strokeWidth = 0.008;// 描边宽度
+uniform float markDist = 0.003;// 填充距离  控制字体粗细
+uniform float smoothDelta = 0.002;// 抗锯齿因子
 
 varying vec2 texcoord;
 
+#define NS 2
 
 float sdfFunc(vec2 coord){
-	return texture2D(sdfTex,coord).r-0.5;
+	return (texture2D(sdfTex,coord).r-0.5);//half is zero
 }
 
-//float sdfCircle(vec2 coord, vec2 center, float radius)
-//{
-//	return distance(coord,center) - radius;
-//}
 
-//float sdfBilinear(vec2 coord){
-//	vec2 pixcoord = coord*texSize;
-//	float x = pixcoord.x,y = pixcoord.y;
-//	float x1 = floor(x),x2 =ceil(x),y1 = floor(y),y2 = ceil(y);
-//	return sdfFunc(vec2(x1,y1)/texSize)*(x2-x)*(y2-y)+sdfFunc(vec2(x2,y1)/texSize)*(x-x1)*(y2-y)+sdfFunc(vec2(x1,y2)/texSize)*(x2-x)*(y-y1)+sdfFunc(vec2(x2,y2)/texSize)*(x-x1)*(y-y1);
-//}
-
-
-vec4 render(float d) 
+vec4 render(vec2 coord) 
 {
-	float anti = max(smoothDelta,0);
+	float d = sdfFunc(coord) , anti = fwidth(d)/2;
 	vec4 color = backColor;
-	color = mix(lineColor,color,smoothstep(-anti,anti,d-lineDist-fillDist));
-	color = mix(fillColor,color,smoothstep(-anti,anti,d-fillDist));
 
+	float fontDist = stroke? markDist+strokeWidth:markDist;
+
+	if(shadow){
+		float shwd = sdfFunc(texcoord+shadowOffest);
+		if(shadowGlow) color = mix(shadowColor,color,smoothstep(-length(shadowOffest)*2,0,shwd-fontDist));
+		else color = mix(shadowColor,color,smoothstep(-anti,anti,shwd-fontDist));
+	}
+
+
+	if(stroke){
+		if(strokeGlow) color = mix(strokeColor,color,smoothstep(0,strokeWidth,d-markDist));
+		else color = mix(strokeColor,color,smoothstep(-anti,anti,d-fontDist));
+	}
+
+
+	color = mix(foreColor,color,smoothstep(-anti,anti,d-markDist));
+	
 	return color;
 }
 
 
 
-void main() 
-{
-	float d = sdfFunc(texcoord);
+void main(){
+
+    vec2 dx = dFdx(texcoord),dy = dFdy(texcoord);
+	vec4 outcolor;
+	for(int i=0;i<NS;i++){
+		for(int j=0;j<NS;j++){
+			vec2 pix = vec2(i,j)/NS-0.5;
+			outcolor+=render(texcoord+pix*vec2(dx+dy));
+		}
+    }
 	
-	gl_FragColor = render(d);
+	
+
+	gl_FragColor = outcolor/(NS*NS);
 }

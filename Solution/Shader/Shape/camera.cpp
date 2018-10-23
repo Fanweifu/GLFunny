@@ -6,7 +6,21 @@ Camera::Camera()
 {
 }
 
-void Camera::beginRender()
+void Camera::beginFrame()
+{
+    setViewPort();
+
+    loadProjection();
+    loadModelView();
+
+    drawBack();
+
+    mainLight.draw();
+
+    countTimes();
+}
+
+void Camera::setViewPort()
 {
     if (!inited) init();
 
@@ -15,32 +29,29 @@ void Camera::beginRender()
         windowsChanged = false;
     }
 
-    if (isMultiScreen) {
+    if (support_split_screen) {
         glViewport(left, buttom, width, height);
         glScissor(left, buttom, width, height);
     }
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(value_ptr(matProjection));
-
-    glMatrixMode(GL_MODELVIEW);
-
-    glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
-    glClearDepth(1);
-    glClearStencil(0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-    glLoadIdentity();
-    drawBack();
-
-    glLoadMatrixf(value_ptr(modelmatInv));
-
-    mainLight.draw();
 }
 
-void Camera::endRender()
+void Camera::clearBuffer()
 {
-    renderTime += 1;
+    glClearColor(backColor.r, backColor.g, backColor.b, backColor.a);
+    glClearDepth(1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
+
+void Camera::loadProjection()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(value_ptr(matProjection));
+}
+
+void Camera::loadModelView()
+{
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixf(value_ptr(modelmatInv));
 }
 
 void Camera::dragMouse(int x, int y, float speed)
@@ -214,14 +225,14 @@ void Camera::updateModel()
 void Camera::setViewPort(int x, int y, int w, int h) {
     if (w == 0 || h == 0) return;
 
-    owidth *= (float(w) / width);
-    oheight *= (float(h) / height);
-
     left = x;
     buttom = y;
     width = w;
     height = h;
     Ratio = float(w) / h;
+
+    oheight = ortho_autoRect ? height*ortho_autoRect_Scale : ortho_fixedRectHeight;
+    owidth = oheight*Ratio;
 
     windowsChanged = true;
 }
@@ -232,7 +243,7 @@ void Camera::setWindowSize(int width, int height) {
 
 void Camera::updateProjection()
 {
-    if (isOrtho) {
+    if (ortho_projeciton) {
         matProjection = glm::ortho(-owidth / 2, owidth / 2, -oheight / 2, oheight / 2, Near, Far);
     }
     else {
@@ -252,7 +263,7 @@ void Camera::updateViewPort() {
 
 void Camera::setDirectionVec3(glm::vec3 dir)
 {
-	rvec.x = asinf(dir.z / glm::length(dir))/DEG2RAD;
+    rvec.x = asinf(dir.z / glm::length(dir)) / DEG2RAD;
     if (dir.y != 0 || dir.x != 0) rvec.z = atan2f(dir.y, dir.x) / DEG2RAD;
     updateModel();
 }
@@ -276,7 +287,6 @@ void Camera::init() {
 }
 
 void Camera::initGl() {
-   
     glShadeModel(GL_SMOOTH);                        // shading mathod: GL_SMOOTH or GL_FLAT
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);          // 4-byte pixel alignment
 
@@ -286,12 +296,12 @@ void Camera::initGl() {
     glEnable(GL_MULTISAMPLE);
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_STENCIL_TEST);
+    //glEnable(GL_STENCIL_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
 
     glEnable(GL_SCISSOR_TEST);
-   
+
     //glEnable(GL_FRAMEBUFFER_SRGB);
 
     glClearColor(0, 0, 0, 1);
@@ -305,6 +315,11 @@ void Camera::drawBack() {
     backshd.unBind();
 }
 
+void Camera::countTimes()
+{
+    renderTime += 1;
+}
+
 void Camera::initBack()
 {
     backBlock.drawStyle = Quads;
@@ -313,7 +328,7 @@ void Camera::initBack()
     backBlock.addPoint(1, 1, 0, 0, 0, 1, 1, 1);
     backBlock.addPoint(-1, 1, 0, 0, 0, 1, 0, 1);
 
-	backshd.loadVertexCode("void main(){\
+    backshd.loadVertexCode("void main(){\
 		gl_Position = vec4(gl_Vertex.xy,0.9999,1);\
 		}");
 
@@ -375,7 +390,6 @@ void Camera::initBack()
         color = color / (2.0 * color + 0.5 - color);\
         gl_FragColor = vec4(color, 1.0);\
     }");
-
 
     backshd.link();
 }

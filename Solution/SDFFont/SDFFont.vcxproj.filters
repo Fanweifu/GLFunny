@@ -15,19 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="charSDF32X32.png">
+    <Image Include="font.jpg">
       <Filter>Source Files</Filter>
     </Image>
-    <Image Include="charSDF64X64.png">
-      <Filter>Source Files</Filter>
-    </Image>
-    <Image Include="charSDF128X128.png">
-      <Filter>Source Files</Filter>
-    </Image>
-    <Image Include="charSDF256X256.png">
-      <Filter>Source Files</Filter>
-    </Image>
-    <Image Include="charSDF512X512.png">
+    <Image Include="fontsdf.png">
       <Filter>Source Files</Filter>
     </Image>
   </ItemGroup>
@@ -43,5 +34,10 @@
     <Text Include="sdfFont_frag.glsl">
       <Filter>Source Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="sdf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

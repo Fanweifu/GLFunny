@@ -1,4 +1,4 @@
-#include<glHead.h>
+#include<gl_def.h>
 #include<Shape\camera.h>
 #include<Shape\texture.h>
 #include<Shape\mesh.h>

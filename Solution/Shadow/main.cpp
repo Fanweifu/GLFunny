@@ -8,7 +8,7 @@ float step = 0.1;
 int smooth = 2;
 Camera camera;
 Layer lyr;
-Mesh testshp;
+Mesh sdfshp;
 FBObject fbo;
 DepthTexture depthMap;
 Texture2D texture;
@@ -122,10 +122,10 @@ void initGlut() {
     glutReshapeFunc(reshape);
 }
 
-void shadowTest() {
+void sdfFontTest() {
     //cube build
     Mesh::activeVAO = false;
-    Mesh::buildCube(testshp);
+    Mesh::buildCube(sdfshp);
 
     //shader init
     if (Mesh::activeVAO) shadowShd.loadVertexFile("shadowv_attr_vert.glsl");
@@ -135,17 +135,17 @@ void shadowTest() {
 
     //texture
     texture.loadFileImg("..\\Image\\wood.jpg");
-    testshp.texture0 = texture;
+    sdfshp.texture0 = texture;
     
     fbo.resize(depthMap.width, depthMap.height);
     depthMap.attchDepthStencilFBO(fbo);
 
     Layer * comp1 = new Layer();
-    comp1->addUnique(&testshp);
+    comp1->addUnique(&sdfshp);
     Layer * comp2 = new Layer();
     comp2->setPosition(0, 0, -5);
     comp2->setScale(10, 10, 1);
-    comp2->addUnique(&testshp);
+    comp2->addUnique(&sdfshp);
 
     lyr.addUnique(comp1);
     lyr.addUnique(comp2);
@@ -159,7 +159,7 @@ int main(int arg, char**argv) {
     initGlut();
     initCamera();
 
-    shadowTest();
+    sdfFontTest();
     glutMainLoop();
     return 0;
 }

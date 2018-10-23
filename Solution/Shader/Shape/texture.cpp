@@ -46,14 +46,13 @@ void FBObject::resize(int w, int h)
             case GL_DEPTH_STENCIL_ATTACHMENT:
                 attchStencilDepth(kv.second);
                 break;
-            
+
             case GL_COLOR_ATTACHMENT0:
                 attchColor(kv.second);
                 break;
-           /* case GL_STENCIL_ATTACHMENT:
-                attchStencil(kv.second);
-                break;*/
-            
+                /* case GL_STENCIL_ATTACHMENT:
+                     attchStencil(kv.second);
+                     break;*/
             }
         }
     }
@@ -93,7 +92,7 @@ void FBObject::attchStencilDepth(GLuint tex)
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_objID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, tex, 0);
-   
+
     //glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,tex,0);
     //glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_TEXTURE_2D, tex, 0);
 
@@ -120,7 +119,6 @@ void FBObject::attchColor(GLuint tex)
     glBindFramebuffer(GL_FRAMEBUFFER, m_objID);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
-    
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -129,24 +127,24 @@ void FBObject::attchColor(GLuint tex)
     texbindinfo[GL_COLOR_ATTACHMENT0] = tex;
 }
 
-int Texture2D::Width()
-{
-    int w = 0;
-
-    if (!isVaild) return w;
-
-    CHECKBIND(glGetTexGeniv(GL_TEXTURE_2D, GL_TEXTURE_WIDTH, &w);)
-        return w;
-}
-
-int Texture2D::Height()
-{
-    int h = 0;
-
-    if (!isVaild) return h;
-    CHECKBIND(glGetTexGeniv(GL_TEXTURE_2D, GL_TEXTURE_HEIGHT, &h);)
-        return h;
-}
+//int Texture2D::Width()
+//{
+//    int w = 0;
+//
+//    if (!isVaild) return w;
+//
+//    CHECKBIND(glGetTexGeniv(GL_TEXTURE_2D, GL_TEXTURE_WIDTH, &w);)
+//        return w;
+//}
+//
+//int Texture2D::Height()
+//{
+//    int h = 0;
+//
+//    if (!isVaild) return h;
+//    CHECKBIND(glGetTexGeniv(GL_TEXTURE_2D, GL_TEXTURE_HEIGHT, &h);)
+//        return h;
+//}
 
 void Texture2D::bind(int lev)
 {
@@ -187,18 +185,28 @@ void Texture::bind()
 
 bool Texture2D::loadFileImg(char * path)
 {
-    init();
-
     int cols, rows, chns;
     unsigned char* data = stbi_load(path, &cols, &rows, &chns, 4);
+
+    bool res = setTexImg(data, cols, rows);
+
+    delete[] data;
+
+    return res;
+}
+
+bool Texture2D::setTexImg(const void * data, int cols, int rows, int interformat, int format, int type)
+{
+    init();
+
+    m_width = cols, m_height = rows;
 
     glBindTexture(GL_TEXTURE_2D, m_objID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-    delete[] data;
-
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexImage2D(GL_TEXTURE_2D, 0, interformat , cols, rows, 0, format, type, data);
     return (isVaild = true);
 }
 
@@ -231,7 +239,6 @@ void Texture2D::attchColorFBO(FBObject &fbo)
     fbo.attchColor(m_objID);
     isVaild = true;
 }
-
 
 DepthTexture::DepthTexture()
 {
@@ -275,16 +282,15 @@ DepthTexture::~DepthTexture()
 //    glPopMatrix();
 //}
 
-void DepthTexture::begin(float cx, float cy, float cz, float lx, float ly, float lz,float lw)
+void DepthTexture::begin(float cx, float cy, float cz, float lx, float ly, float lz, float lw)
 {
-    
     glPushMatrix();
-    
+
     glm::vec3 camPos(cx, cy, cz);
     glm::vec4 lightPos(lx, ly, lz, lw);
 
     float ratio = (float)width / height;
-    lightPrjMat = glm::ortho(-range / 2, range / 2, -range / 2/ ratio, range / 2/ ratio, n, f);
+    lightPrjMat = glm::ortho(-range / 2, range / 2, -range / 2 / ratio, range / 2 / ratio, n, f);
     lightViewMat = glm::lookAt((glm::vec3(lightPos))*distance + camPos, camPos, glm::vec3(0, 0, 1));
     lightPrjViewMat = lightPrjMat*lightViewMat;
 
@@ -294,8 +300,6 @@ void DepthTexture::begin(float cx, float cy, float cz, float lx, float ly, float
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(value_ptr(lightViewMat));
 }
-
-
 
 void DepthTexture::end()
 {

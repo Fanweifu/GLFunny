@@ -1,5 +1,5 @@
 #pragma once
-#include<glHead.h>
+#include<gl_def.h>
 
 class Shape
 {

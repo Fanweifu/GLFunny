@@ -118,7 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="glHead.h" />
+    <ClInclude Include="gl_def.h" />
     <ClInclude Include="Shape\camera.h" />
     <ClInclude Include="Shape\layer.h" />
     <ClInclude Include="Shape\light.h" />
@@ -129,7 +129,10 @@
     <ClInclude Include="Shape\shapePRS.h" />
     <ClInclude Include="Shape\texture.h" />
     <ClInclude Include="Shape\vaoarray.h" />
-    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Stb\stb_image.h" />
+    <ClInclude Include="stb\stb_image_resize.h" />
+    <ClInclude Include="Stb\stb_image_write.h" />
+    <ClInclude Include="Stb\stb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\camera.cpp" />
@@ -141,7 +144,12 @@
     <ClCompile Include="Shape\shapePRS.cpp" />
     <ClCompile Include="Shape\texture.cpp" />
     <ClCompile Include="Shape\vaoarray.cpp" />
-    <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Stb\stb_image.cpp" />
+    <ClCompile Include="stb\stb_image_resize.cpp" />
+    <ClCompile Include="Stb\stb_image_write.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Stb\stb_truetype.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

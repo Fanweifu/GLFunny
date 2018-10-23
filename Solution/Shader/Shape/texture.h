@@ -1,7 +1,9 @@
 #ifndef TEXTRUE_H
 #define TEXTRUE_H
 
-#include"stb_image.h"
+#include"stb\stb_image.h"
+#include"stb\stb_image_write.h"
+#include"stb\stb_image_resize.h"
 #include"object.h"
 #include"shader.h"
 #include"vaoarray.h"
@@ -49,19 +51,21 @@ protected:
 class Texture2D : public Texture {
 public:
     bool empty() { return Width() == 0 || Height() == 0; }
-    int Width();
-    int Height();
+    int Width() { return m_width; }
+    int Height() { return m_height; }
 
     void bind(int level=0) override;
     void unBind() override;
 
     bool loadFileImg(char* path);
+    bool setTexImg(const void *data, int cols, int rows, int interformat = GL_RGBA , int format = GL_RGBA, int type = GL_UNSIGNED_BYTE );
     void buildByColor(float r, float g, float b, float a = 1);
     void attchDepthStencilFBO(FBObject &fbo);
     void attchColorFBO(FBObject &fbo);
    
 protected:
-    
+    int m_width = 0;
+    int m_height = 0;
 
 };
 

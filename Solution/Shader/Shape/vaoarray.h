@@ -5,7 +5,7 @@
 #include<assert.h>
 #include<map>
 #include<vector>
-#include"glHead.h"
+#include"gl_def.h"
 #include"object.h"
 
 #define VERTEX_VBO_LAYOUT 0

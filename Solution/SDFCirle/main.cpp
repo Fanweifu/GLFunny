@@ -7,7 +7,7 @@
 float step = 0.1;
 int smooth = 2;
 Camera camera;
-Mesh testshp;
+Mesh sdfshp;
 Shader shd;
 void reshape(int width, int height) {
     camera.setWindowSize(width, height);
@@ -63,7 +63,7 @@ void render() {
     shd.bind();
     shd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
 
-    testshp.draw();
+    sdfshp.draw();
 
     camera.endRender();
 
@@ -86,10 +86,10 @@ void initGlut() {
     glutReshapeFunc(reshape);
 }
 
-void shadowTest() {
+void sdfFontTest() {
     //cube build
     Mesh::activeVAO = false;
-    Mesh::buildQuad(testshp);
+    Mesh::buildQuad(sdfshp);
     shd.loadVertexFile("sdf_vert.glsl");
     shd.loadFragFile("sdf_frag.glsl");
     shd.link();
@@ -101,7 +101,7 @@ int main(int arg, char**argv) {
     initGlut();
     initCamera();
 
-    shadowTest();
+    sdfFontTest();
     glutMainLoop();
     return 0;
 }
