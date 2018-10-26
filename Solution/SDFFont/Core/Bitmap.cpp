@@ -19,6 +19,13 @@ Bitmap<T>::Bitmap(const Bitmap<T> &orig) : w(orig.w), h(orig.h) {
     memcpy(content, orig.content, w*h*sizeof(T));
 }
 
+template <typename T>
+Bitmap<T>::Bitmap(const T* data,int width,int height) : w(width), h(height) {
+    content = new T[w*h];
+    memcpy(content, data, w*h * sizeof(T));
+}
+
+
 #ifdef MSDFGEN_USE_CPP11
 template <typename T>
 Bitmap<T>::Bitmap(Bitmap<T> &&orig) : content(orig.content), w(orig.w), h(orig.h) {

@@ -79,6 +79,9 @@
     <ClInclude Include="Ext\import-font.h">
       <Filter>Ext</Filter>
     </ClInclude>
+    <ClInclude Include="freetype\sdf.h">
+      <Filter>FreeType</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -127,10 +130,5 @@
     <ClCompile Include="Ext\import-font.cpp">
       <Filter>Ext</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="font.png">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

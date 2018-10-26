@@ -2,6 +2,7 @@
 #include "freetype\freetype.h"
 #include "msdfgen.h"
 #include "Core\Bitmap.h"
+#include <stb\stb_image_write.h>
 #include "save-png.h"
 #include <cstdlib>
 #include <queue>
@@ -162,11 +163,11 @@ namespace msdfgen {
 #define ABORT(msg) { puts(msg); return 1; }
 #define LARGE_VALUE 1e240
 
-    int fontSDF(const char *file, uint16_t unicode, const char *outfile, int width, int height, GlyphInfo& info,Vector2& basePoint, float* &dataptr)
+    int fontSDF(const char *ttffile,  wchar_t unicode, const char *outsdffile, const char*outfontfile, int height, int &width, GlyphInfo& info,Vector2& basePoint, Vector2&lefttop)
     {
-        // Load input
-        Vector2 translate;
+        
         double glyphAdvance = 0;
+        const float scl = 1 / 64.0f;
         double pxRange = 2;
         Shape shape;
         FT_Error err;
@@ -174,7 +175,7 @@ namespace msdfgen {
         FT_Face face;
 
         if (FT_Init_FreeType(&lib))  return -1;
-        if (FT_New_Face(lib, file, 0, &face)) return -1;
+        if (FT_New_Face(lib, ttffile, 0, &face)) return -1;
 
         
         if (FT_Load_Char(face, unicode, FT_LOAD_NO_SCALE)) return -1;
@@ -182,6 +183,13 @@ namespace msdfgen {
         shape.contours.clear();
         shape.inverseYAxis = false;
         
+        
+        //calc box
+        double fontscale = (float)height / (face->bbox.yMax - face->bbox.yMin) / scl;
+        float fwidth = (face->bbox.xMax - face->bbox.xMin)*scl*fontscale;
+        width = (((int)fwidth - 1) / 4 + 1) * 4;
+
+
 
         FtContext context = {};
         context.shape = &shape;
@@ -217,13 +225,13 @@ namespace msdfgen {
         if (!shape.validate())
             ABORT("The geometry of the loaded shape is invalid.");
         //shape.normalize();
-
-        Vector2 scale(width/16.0f);
+        Vector2 translate;
+        Vector2 scale(fontscale);
 
      
         auto meters = face->glyph->metrics;
 
-        const float scl = 1 / 64.0f;
+       
    
 
         // Auto-frame
@@ -255,9 +263,9 @@ namespace msdfgen {
         //translate += pxRange / scale;
 
         // Compute output
-        Bitmap<float> *sdf = new Bitmap<float>(width, height);;
+        Bitmap<float> sdf(width, height);
         Bitmap<FloatRGB> msdf;
-        generateSDF(*sdf, shape, dims.x , scale, translate);
+        generateSDF(sdf, shape, dims.y , scale, translate);
         
 
         info.width = scale.x*(meters.width*scl);
@@ -270,10 +278,20 @@ namespace msdfgen {
        
 
         basePoint = (Vector2(l-meters.horiBearingX*scl , meters.horiBearingY*scl) + translate)*scale;
-        Vector2 lefttop = (Vector2(l, b) + translate) *scale;
-        dataptr = (float*)sdf->data();
+        lefttop = (Vector2(l, b) + translate) *scale;
+        
 
-        return savePng(*sdf, outfile);
+
+        if (FT_Set_Pixel_Sizes(face, width, height)) return -1;
+        if (FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL)) return -1;
+        FT_Bitmap& map = face->glyph->bitmap;
+
+        
+        stbi_write_bmp(outfontfile, map.width, map.rows, 1, map.buffer);
+        
+
+
+        return savePng(sdf, outsdffile);
     }
    
 }

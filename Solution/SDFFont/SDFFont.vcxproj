@@ -116,9 +116,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="font.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Core\Bitmap.cpp" />
     <ClCompile Include="Core\Contour.cpp" />
     <ClCompile Include="Core\edge-coloring.cpp" />
@@ -160,6 +157,7 @@
     <ClInclude Include="Ext\import-font.h" />
     <ClInclude Include="Ext\save-png.h" />
     <ClInclude Include="freetype\freetype.h" />
+    <ClInclude Include="freetype\sdf.h" />
     <ClInclude Include="msdfgen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

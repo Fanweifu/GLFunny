@@ -1,7 +1,6 @@
 #version 120
 
 uniform sampler2D sdfTex;
-uniform vec2 sdfSize = vec2(32,32);//sdf贴图分辨率
 uniform vec4 backColor = vec4(0,0,0,1);//背景色
 uniform vec4 foreColor = vec4(1,0,0,1);//前景色（填充）
 
@@ -11,11 +10,11 @@ uniform bool strokeGlow = false;//描边渐变？
 
 uniform bool shadow = false; //使用阴影？
 uniform bool shadowGlow = false;//使用阴影渐变?
-uniform vec2 shadowOffest = vec2(0.03);//阴影偏移
+uniform vec2 shadowOffest = vec2(0.01);//阴影偏移
 uniform vec4 shadowColor = vec4(0,0,0,1);//阴影颜色
 
 uniform float strokeWidth = 0.02;// 描边宽度
-uniform float markDist = 0.003;// 填充距离  控制字体粗细
+uniform float markDist = 0.0;// 填充距离  控制字体粗细
 //uniform float smoothDelta = 0.002;// 抗锯齿因子
 
 varying vec2 texcoord;
@@ -30,7 +29,7 @@ float sdfFunc(vec2 coord){
 vec4 render(vec2 coord) 
 {
     float d = sdfFunc(coord);
-	float dx = dFdx(d), dy = dFdy(d) , anti = abs(dx)+abs(dy);
+	float anti = fwidth(d);
 	vec4 color = backColor;
 
 	

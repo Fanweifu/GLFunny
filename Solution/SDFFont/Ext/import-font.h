@@ -56,6 +56,6 @@ bool loadGlyph(Shape &output, FontHandle *font, int unicode, double *advance = N
 /// Returns the kerning distance adjustment between two specific glyphs.
 bool getKerning(double &output, FontHandle *font, int unicode1, int unicode2);
 
-int fontSDF(const char *file, uint16_t unicode, const char *outfile, int width, int height, GlyphInfo& info , Vector2& basePoint, float* &dataptr);
+int fontSDF(const char *ttffile, wchar_t unicode, const char *outsdffile, const char*outfontfile, int height, int &width, GlyphInfo& info, Vector2& basePoint, Vector2&lefttop);
 
 }

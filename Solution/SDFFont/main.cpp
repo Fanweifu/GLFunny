@@ -4,21 +4,25 @@
 #include<Shape\texture.h>
 #include<GL\freeglut.h>
 #include"Ext\import-font.h"
+#include"freetype\sdf.h"
 //#include"sdfExample.h"
-#define TESTNUM 10
+#define TESTNUM 20
 #define TESTSIZE 32
-#define TESTWIDTH 512
-#define TESTHEIGHT 64
-unsigned char texData[TESTWIDTH*TESTHEIGHT] = { 0.0f };
-float curx = 8, cury = 32;
+#define TESTWIDTH (TESTSIZE*20)
+#define TESTHEIGHT TESTSIZE
+#define TESTPIEXLS (TESTHEIGHT*TESTWIDTH)
+unsigned char sdfAllData[TESTPIEXLS] = { 0.0f };
+float sdfcurleft = 0, sdfcurtop = 0;
+unsigned char texAllData[TESTPIEXLS] = { 0.0f };
+float fontcurleft = 0, fontcurtop = 0;
 
 float markDist = 0;
 float rotateZ = 0;
 float scale = 1;
 Camera camera;
-Texture2D sdfTex[TESTNUM];
+Texture2D sdfTex;
 Texture2D fontTex;
-Mesh charQuad;
+Mesh sdfQuad;
 Mesh textQuad;
 Shader shd;
 
@@ -30,6 +34,14 @@ void copyRect(unsigned char *src,int sleft,int stop, int sw, int sh, int sstride
         memcpy(dst + (i + dtop)*dstride + dleft, src + (i+stop)*sstride + sleft, sw);
     }
     
+}
+
+void copyImg(unsigned char *src, int sw, int sh, unsigned char *dst, int dleft, int dtop, int dw, int dh) {
+
+    for (size_t i = 0; i < sh; i++)
+    {
+        memcpy(dst + (i + dtop)*dw + dleft, src + i *sw , sw);
+    }
 }
 
 
@@ -81,10 +93,10 @@ void spkeyFunc(int key, int x, int y) {
         rotateZ -= 1;
         break;
     case GLUT_KEY_LEFT:
-        markDist += 0.001;
+        markDist += 0.01;
         break;
     case GLUT_KEY_RIGHT:
-        markDist -= 0.001;
+        markDist -= 0.01;
         break;
     }
 }
@@ -118,36 +130,40 @@ void render() {
     camera.drawBack();
 
 
-    int width = TESTSIZE;
+
+    glScaled(scale, scale, scale);
+
+    glRotatef(rotateZ, 0, 0, 1);
+
     shd.bind();
     shd.setUniform1i("sdfTex", 0);
     shd.setUniform1f("markDist", markDist);
-    shd.setUniform2f("sdfSize", width, width);
-   
-    glScaled(scale, scale, scale);
+    shd.setUniform2f("sdfSize",TESTWIDTH , TESTHEIGHT);
+ 
 
-
+    
     shd.setUniform4f("foreColor", 0, 1, 1, 1);
-    shd.setUniform4f("backColor", 0, 0, 0, 1);
+    shd.setUniform4f("backColor", 1, 1, 1, 0);
     shd.setUniform1i("stroke", 1);
     shd.setUniform1i("shadow", 1);
-   /* shd.setUniform4f("foreColor", 1, 0, 0, 1);
-    shd.setUniform4f("backColor", 1, 1, 1, 0);
-    shd.setUniform1i("stroke", 0);
-    shd.setUniform1i("shadow", 0);*/
-    charQuad.setRotation(0, 0, rotateZ);
-    glTranslatef(0, TESTHEIGHT, 0);
-    textQuad.draw();
+  
+
+    glTranslatef(0, TESTHEIGHT/2, 0);
+    sdfQuad.texture0 = sdfTex;
+    sdfQuad.draw();
+    shd.unBind();
+
 
     glTranslatef(0, -TESTHEIGHT, 0);
-
-    glTranslatef(-width*(TESTNUM - 1) / 2, 0, 0);
+    sdfQuad.texture0 = fontTex;
+    sdfQuad.draw();
+  /*  glTranslatef(-width*(TESTNUM - 1) / 2, 0, 0);
     for (size_t i = 0; i < TESTNUM; i++)
     {
         charQuad.texture0 = sdfTex[i];
         charQuad.draw();
         glTranslatef(width, 0, 0);
-    }
+    }*/
     
     
 
@@ -175,30 +191,7 @@ void initGlut() {
     glutReshapeFunc(reshape);
 }
 
-unsigned char* loadImg(const char* file, int &cols, int &rows, int &chns, int deschns) {
 
-    unsigned char* data = stbi_load(file, &cols, &rows, &chns, 1);
-
-    int fcols = ((cols - 1) / 4 + 1) * 4, frows = ((rows - 1) / 4 + 1) * 4;
-    if (fcols != cols || frows != rows) {
-        unsigned char* fdata = (unsigned char*)malloc(fcols*frows);
-        memset(fdata, 0, fcols*frows);
-        int orow = (frows - rows) / 2, ocol = (fcols - cols) / 2;
-        for (size_t i = 0; i < rows; i++)
-        {
-            for (size_t j = 0; j < cols; j++)
-            {
-                fdata[(i + orow)*fcols + (j + ocol)] = data[i*cols + j]+0.5;
-            }
-        }
-
-        delete[] data;
-        data = fdata;
-        rows = frows, cols = fcols;
-    }
-
-    return data;
-}
 
 void initTexture() {
     //int cols, rows, chns;
@@ -210,34 +203,45 @@ void initTexture() {
 
     ////stbi_write_png("fontsdf.png", cols, rows, 1, outdata, cols);
     
-
-    for (size_t i = 0; i < TESTNUM; i++)
+    const wchar_t* test = L"VideoÐ¡Ó°ÊÓÆµ¤·¤ç¤¦¤¨¤¤";
+    int length = wcslen(test);
+    for (size_t i = 0; i < length; i++)
     {
-        char fileName[20];
-        sprintf_s(fileName, "fontsdf%d.png", i);
+        char sdfFileName[30];
+        sprintf_s(sdfFileName, "fontsdf%d.png", i);
+        char fontFileName[30];
+        sprintf_s(fontFileName, "font%d.bmp", i);
         float * data = NULL;
 
         msdfgen::GlyphInfo info;
         msdfgen::Vector2 basePt;
-
-        msdfgen::fontSDF("C:\\Windows\\Fonts\\STHUPO.TTF", 0x0041+(i%2)*0x0020+i, fileName , TESTSIZE, TESTSIZE, info ,basePt , data);
+        msdfgen::Vector2 lefttop;
+        int width = 0;
+        msdfgen::fontSDF("C:\\Windows\\Fonts\\msyh.ttc", test[i] , sdfFileName , fontFileName, TESTSIZE , width , info ,basePt , lefttop);
 
         int row, col, chns;
-        auto filedata = stbi_load(fileName, &col, &row, &chns, 1);
-
-        sdfTex[i].setTexImg(filedata, TESTSIZE, TESTSIZE, GL_RED, GL_RED, GL_UNSIGNED_BYTE);
+        auto sdfdata = stbi_load(sdfFileName, &col, &row, &chns, 1);
 
         int sleft = roundf(basePt.x + info.offset_x), stop = roundf(basePt.y - info.offset_y);
-        int dleft = roundf(curx - basePt.x), dtop = roundf(cury - basePt.y);
+        int dleft = roundf(sdfcurleft - basePt.x), dtop = roundf(sdfcurtop - basePt.y);
+        copyImg(sdfdata, col, row, sdfAllData, sdfcurleft, 0, TESTWIDTH, TESTHEIGHT);
+        sdfcurleft += col;
 
-        copyRect(filedata,sleft,stop, (int)roundf(info.width) , (int)roundf(info.height) , TESTSIZE , texData , dleft,dtop, TESTWIDTH, TESTHEIGHT, TESTWIDTH);
-        curx += info.advance_x;
+        int fontwidth, fontheight, fontchns;
+        auto fontfile = stbi_load(fontFileName, &fontwidth, &fontheight, &fontchns, 1);
+
+        copyImg(fontfile, fontwidth, fontheight, texAllData, fontcurleft + (int)roundf(lefttop.x), fontcurtop + (int)roundf(lefttop.y), TESTWIDTH, TESTHEIGHT);
+        fontcurleft += col;
+        //copyRect(filedata ,sleft,stop, (int)roundf(info.width) , (int)roundf(info.height) , col , texData , dleft,dtop, TESTWIDTH, TESTHEIGHT, TESTWIDTH);
+        //curx += info.advance_x;
+        
+        delete[] sdfdata;
+        delete[] fontfile;
     }
-
-    fontTex.setTexImg(texData, TESTWIDTH, TESTHEIGHT, GL_RED, GL_RED, GL_UNSIGNED_BYTE);
-
-    //delete[] outdata;
-    //delete[] data;
+    //sdfBuild(sdfAllData, TESTWIDTH, TESTSIZE, texAllData, TESTWIDTH, TESTHEIGHT, TESTWIDTH);
+    fontTex.setTexImg(texAllData, TESTWIDTH, TESTHEIGHT, GL_RED, GL_RED, GL_UNSIGNED_BYTE);
+    sdfTex.setTexImg(sdfAllData, TESTWIDTH, TESTHEIGHT, GL_RED, GL_RED, GL_UNSIGNED_BYTE);
+    stbi_write_bmp("GenSDF.bmp", TESTWIDTH, TESTHEIGHT, 1, sdfAllData);
 }
 
 void sdfFontTest() {
@@ -247,20 +251,20 @@ void sdfFontTest() {
     //cube build
     Mesh::activeVAO = false;
     
-    float halfw = TESTSIZE / 2, halfh = TESTSIZE / 2;
-    charQuad.drawStyle = Quads;
-    charQuad.addPoint(-halfw, halfh, 0, 0, 0);
-    charQuad.addPoint(halfw, halfh, 0, 1, 0);
-    charQuad.addPoint(halfw, -halfh, 0, 1, 1);
-    charQuad.addPoint(-halfw, -halfh, 0, 0, 1);
+    float halfw = TESTWIDTH / 2, halfh = TESTHEIGHT / 2;
+    sdfQuad.drawStyle = Quads;
+    sdfQuad.addPoint(-halfw, halfh, 0, 0, 0);
+    sdfQuad.addPoint(halfw, halfh, 0, 1, 0);
+    sdfQuad.addPoint(halfw, -halfh, 0, 1, 1);
+    sdfQuad.addPoint(-halfw, -halfh, 0, 0, 1);
+    //sdfQuad.texture0 = sdfTex;
 
-    halfw = TESTWIDTH / 2, halfh = TESTHEIGHT / 2;
-    textQuad.drawStyle = Quads;
+    /*textQuad.drawStyle = Quads;
     textQuad.addPoint(-halfw, halfh, 0, 0, 0);
     textQuad.addPoint(halfw, halfh, 0, 1, 0);
     textQuad.addPoint(halfw, -halfh, 0, 1, 1);
-    textQuad.addPoint(-halfw, -halfh, 0, 0, 1);
-    textQuad.texture0 = fontTex;
+    textQuad.addPoint(-halfw, -halfh, 0, 0, 1);*/
+    //textQuad.texture0 = fontTex;
 
 
     shd.loadVertexFile("sdfFont_vert.glsl");

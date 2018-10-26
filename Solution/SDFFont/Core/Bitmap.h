@@ -16,6 +16,7 @@ public:
     Bitmap();
     Bitmap(int width, int height);
     Bitmap(const Bitmap<T> &orig);
+    Bitmap(const T* data, int width, int height);
 #ifdef MSDFGEN_USE_CPP11
     Bitmap(Bitmap<T> &&orig);
 #endif
