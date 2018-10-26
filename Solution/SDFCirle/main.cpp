@@ -58,14 +58,13 @@ void initCamera() {
 
 void render() {
    
-    camera.beginRender();
+    camera.beginFrame();
     
     shd.bind();
     shd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
 
     sdfshp.draw();
 
-    camera.endRender();
 
     glutSwapBuffers();
 }

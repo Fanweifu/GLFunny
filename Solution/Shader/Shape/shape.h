@@ -1,7 +1,7 @@
 #pragma once
 #include<gl_def.h>
 
-class Shape
+class ShapeBase
 {
 public:
 
@@ -10,8 +10,8 @@ public:
     bool visible = true;
 
 
-    Shape();
-    ~Shape();
+    ShapeBase();
+    ~ShapeBase();
 
     virtual void draw();
 protected:

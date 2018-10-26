@@ -60,9 +60,6 @@
     <ClInclude Include="Stb\stb_image_write.h">
       <Filter>Header Files\stb</Filter>
     </ClInclude>
-    <ClInclude Include="Stb\stb_truetype.h">
-      <Filter>Header Files\stb</Filter>
-    </ClInclude>
     <ClInclude Include="stb\stb_image_resize.h">
       <Filter>Header Files\stb</Filter>
     </ClInclude>
@@ -104,10 +101,5 @@
     <ClCompile Include="stb\stb_image_resize.cpp">
       <Filter>Resource Files\stb</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Stb\stb_truetype.cpp">
-      <Filter>Resource Files\stb</Filter>
-    </Text>
   </ItemGroup>
 </Project>

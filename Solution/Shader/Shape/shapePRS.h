@@ -5,7 +5,7 @@
 #include"texture.h"
 #include"shape.h"
 
-class ShapePRS : public Shape
+class ShapePRS : public ShapeBase
 {
 public:
     ShapePRS();

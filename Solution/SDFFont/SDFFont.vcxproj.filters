@@ -1,43 +1,136 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Ext">
+      <UniqueIdentifier>{383044bc-4038-484c-b717-0e16b38fff15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FreeType">
+      <UniqueIdentifier>{5fae75e0-a045-47c0-876a-0ee846d128a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="font.jpg">
-      <Filter>Source Files</Filter>
-    </Image>
-    <Image Include="fontsdf.png">
-      <Filter>Source Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <Text Include="sdfFont_frag.glsl">
       <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="sdfFont_vert.glsl">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\arithmetics.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Bitmap.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Contour.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\EdgeColor.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\edge-coloring.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\EdgeHolder.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\edge-segments.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\equation-solver.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\render-sdf.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\save-bmp.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Shape.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\shape-description.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\SignedDistance.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Vector2.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="msdfgen.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Ext\save-png.h">
+      <Filter>Ext</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\freetype.h">
+      <Filter>FreeType</Filter>
+    </ClInclude>
+    <ClInclude Include="Ext\import-font.h">
+      <Filter>Ext</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Bitmap.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Contour.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\edge-coloring.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\EdgeHolder.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\edge-segments.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\equation-solver.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\msdfgen.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\render-sdf.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\save-bmp.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Shape.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\shape-description.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\SignedDistance.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Vector2.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Ext\save-png.cpp">
+      <Filter>Ext</Filter>
+    </ClCompile>
+    <ClCompile Include="Ext\import-font.cpp">
+      <Filter>Ext</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="sdfFont_vert.glsl">
-      <Filter>Source Files</Filter>
-    </Text>
-    <Text Include="sdfFont_frag.glsl">
-      <Filter>Source Files</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="sdf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Image Include="font.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

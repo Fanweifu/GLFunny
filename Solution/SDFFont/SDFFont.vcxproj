@@ -116,10 +116,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="font.jpg" />
-    <Image Include="fontsdf.png" />
+    <Image Include="font.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\Bitmap.cpp" />
+    <ClCompile Include="Core\Contour.cpp" />
+    <ClCompile Include="Core\edge-coloring.cpp" />
+    <ClCompile Include="Core\edge-segments.cpp" />
+    <ClCompile Include="Core\EdgeHolder.cpp" />
+    <ClCompile Include="Core\equation-solver.cpp" />
+    <ClCompile Include="Core\msdfgen.cpp" />
+    <ClCompile Include="Core\render-sdf.cpp" />
+    <ClCompile Include="Core\save-bmp.cpp" />
+    <ClCompile Include="Core\shape-description.cpp" />
+    <ClCompile Include="Core\Shape.cpp" />
+    <ClCompile Include="Core\SignedDistance.cpp" />
+    <ClCompile Include="Core\Vector2.cpp" />
+    <ClCompile Include="Ext\import-font.cpp" />
+    <ClCompile Include="Ext\save-png.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -129,7 +143,24 @@
     <Text Include="sdfFont_frag.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="sdf.h" />
+    <ClInclude Include="Core\arithmetics.hpp" />
+    <ClInclude Include="Core\Bitmap.h" />
+    <ClInclude Include="Core\Contour.h" />
+    <ClInclude Include="Core\edge-coloring.h" />
+    <ClInclude Include="Core\edge-segments.h" />
+    <ClInclude Include="Core\EdgeColor.h" />
+    <ClInclude Include="Core\EdgeHolder.h" />
+    <ClInclude Include="Core\equation-solver.h" />
+    <ClInclude Include="Core\render-sdf.h" />
+    <ClInclude Include="Core\save-bmp.h" />
+    <ClInclude Include="Core\shape-description.h" />
+    <ClInclude Include="Core\Shape.h" />
+    <ClInclude Include="Core\SignedDistance.h" />
+    <ClInclude Include="Core\Vector2.h" />
+    <ClInclude Include="Ext\import-font.h" />
+    <ClInclude Include="Ext\save-png.h" />
+    <ClInclude Include="freetype\freetype.h" />
+    <ClInclude Include="msdfgen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

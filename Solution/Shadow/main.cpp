@@ -84,7 +84,7 @@ void render() {
     depthMap.end();
     
     
-    camera.beginRender();
+    camera.beginFrame();
 
     depthMap.bind(3);
 
@@ -101,7 +101,7 @@ void render() {
     shadowShd.unBind();
     depthMap.unBind();
 
-    camera.endRender();
+
 
     glutSwapBuffers();
 }

@@ -25,7 +25,7 @@ void ShapePRS::draw() {
     texture1.unBind();
     texture0.unBind();
 
-    Shape::draw();
+    ShapeBase::draw();
 
     glPopMatrix();
 }

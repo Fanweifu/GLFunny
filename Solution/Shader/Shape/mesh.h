@@ -21,7 +21,7 @@ public:
     Mesh();
     ~Mesh();
 
-    void addPoint(float px, float py, float pz, float nx = 0, float ny = 0, float nz = 1, float tx = 0, float ty = 0, float r = 1, float g = 1, float b = 1, float a = 1);
+    void addPoint(float px, float py, float pz, float u = 0, float v = 0, float nx = 0, float ny = 0, float nz = 1, float r = 1, float g = 1, float b = 1, float a = 1);
     void clear();
     bool empty() { return position.size() == 0; }
     

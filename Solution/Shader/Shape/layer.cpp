@@ -9,15 +9,15 @@ void Layer::ondraw() {
     }
 }
 
-void Layer::addUnique(Shape *shp) {
+void Layer::addUnique(ShapeBase *shp) {
     add(shp);
 }
 
-Shape* Layer::removeAt(int idx) {
+ShapeBase* Layer::removeAt(int idx) {
     return items.at(idx);
 }
 
-bool Layer::remove(Shape* shp) {
+bool Layer::remove(ShapeBase* shp) {
     return true;
 }
 

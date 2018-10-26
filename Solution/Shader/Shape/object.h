@@ -2,7 +2,7 @@
 
 #define CHECKBIND(proc)     if(isBinded) proc else{bind(); proc unBind();}
 
-class glObject
+class  glObject
 {
 public:
     glObject() {};

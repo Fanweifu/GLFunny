@@ -10,16 +10,16 @@ class Layer : public ShapePRS
 public:
     Layer();
 
-    virtual void add(Shape* shp) {  items.push_back(shp); }
-    virtual void addUnique(Shape *shp);
-    virtual Shape* removeAt(int idx);
-    virtual bool remove(Shape *shp);
-    virtual Shape*  getItemAt(unsigned int idx) { assert(idx >= 0 && idx < count()); return items.at(idx); }
+    virtual void add(ShapeBase* shp) {  items.push_back(shp); }
+    virtual void addUnique(ShapeBase *shp);
+    virtual ShapeBase* removeAt(int idx);
+    virtual bool remove(ShapeBase *shp);
+    virtual ShapeBase*  getItemAt(unsigned int idx) { assert(idx >= 0 && idx < count()); return items.at(idx); }
     virtual unsigned int count() { return items.size(); }
 
 protected:
 
-    std::vector<Shape*> items;
+    std::vector<ShapeBase*> items;
 
     void ondraw();
 };

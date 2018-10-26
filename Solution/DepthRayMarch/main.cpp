@@ -93,7 +93,7 @@ void render() {
     zta += 0.01;
     camera.setLightPos(cos(zta)*cos(1), sin(zta)*cos(1), sin(1),0);
 
-    camera.beginRender();
+    camera.beginFrame();
 #ifdef USEFBO
     fbo.bind();
     fbo.clearBuffers();
@@ -125,7 +125,7 @@ void render() {
     fbo.unBind();
 #endif
 
-    camera.endRender();
+   
 
 #ifdef USEFBO
 

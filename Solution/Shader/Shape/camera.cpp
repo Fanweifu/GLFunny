@@ -9,14 +9,13 @@ Camera::Camera()
 void Camera::beginFrame()
 {
     setViewPort();
-
+    clearBuffer();
     loadProjection();
     loadModelView();
 
     drawBack();
 
-    mainLight.draw();
-
+   
     countTimes();
 }
 
@@ -52,6 +51,7 @@ void Camera::loadModelView()
 {
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(value_ptr(modelmatInv));
+    mainLight.draw();
 }
 
 void Camera::dragMouse(int x, int y, float speed)
@@ -243,7 +243,7 @@ void Camera::setWindowSize(int width, int height) {
 
 void Camera::updateProjection()
 {
-    if (ortho_projeciton) {
+    if (EnableOrtho) {
         matProjection = glm::ortho(-owidth / 2, owidth / 2, -oheight / 2, oheight / 2, Near, Far);
     }
     else {
@@ -276,6 +276,9 @@ void Camera::setDirection(float vx, float vy, float vz)
 void Camera::init() {
     if (inited) return;
     if (glewInit() != GLEW_OK) return;
+
+    rvec = glm::vec3(-90, 0, 90);
+
     initGl();
     initBack();
     mainLight.init();

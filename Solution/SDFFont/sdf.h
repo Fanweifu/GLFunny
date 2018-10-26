@@ -62,7 +62,7 @@ void sdfCoverageToDistance(unsigned char* out, int outstride, float maxdist,
 #include <math.h>
 #include <stdlib.h>
 
-#define SDF_MAX_PASSES 10		// Maximum number of distance transform passes
+#define SDF_MAX_PASSES 100		// Maximum number of distance transform passes
 #define SDF_SLACK 0.001f		// Controls how much smaller the neighbour value must be to cosnider, too small slack increse iteration count.
 #define SDF_SQRT2 1.4142136f	// sqrt(2)
 #define SDF_BIG 1e+37f			// Big value used to initialize the distance field.

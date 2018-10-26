@@ -12,7 +12,7 @@ public:
     Camera();
     bool support_split_screen = true;
     bool advance_background = true;
-    bool ortho_projeciton = false;
+    bool EnableOrtho = false;
     bool ortho_autoRect = true;
     float ortho_fixedRectHeight = 300;
     float ortho_autoRect_Scale = 1;
@@ -71,7 +71,7 @@ public:
     }
     const float* getDirectionf3() { return glm::value_ptr(forwardV); }
 
-    void setLightPos(float x, float y, float z, float w) {
+    void setLightPos(float x, float y, float z, float w = 0) {
         mainLight.setPostion(x, y, z, w);
     }
     void getLightPos(float& x, float& y, float& z, float& w) {
@@ -84,7 +84,7 @@ public:
     void lookAt(float ex, float ey, float ez, float tx, float ty, float tz);
 
     void beginFrame();
-   
+
     void setViewPort();
     void clearBuffer();
     void loadProjection();
