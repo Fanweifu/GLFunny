@@ -8,7 +8,7 @@ float step = 0.1;
 int smooth = 2;
 Camera camera;
 Mesh sdfshp;
-Shader shd;
+Shader sdfshd;
 void reshape(int width, int height) {
     camera.setWindowSize(width, height);
 }
@@ -37,10 +37,10 @@ void keyFunc(unsigned char key, int x, int y) {
         camera.localMove(1 * step, 0, 0);
         break;
     case ' ':
-        shd.clear();
-        shd.loadVertexFile("sdf_vert.glsl");
-        shd.loadFragFile("sdf_frag.glsl");
-        shd.link();
+        sdfshd.clear();
+        sdfshd.loadVertexFile("sdf_vert.glsl");
+        sdfshd.loadFragFile("sdf_frag.glsl");
+        sdfshd.link();
         break;
     }
 }
@@ -60,8 +60,8 @@ void render() {
    
     camera.beginFrame();
     
-    shd.bind();
-    shd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
+    sdfshd.bind();
+    sdfshd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
 
     sdfshp.draw();
 
@@ -89,9 +89,9 @@ void sdfFontTest() {
     //cube build
     Mesh::activeVAO = false;
     Mesh::buildQuad(sdfshp);
-    shd.loadVertexFile("sdf_vert.glsl");
-    shd.loadFragFile("sdf_frag.glsl");
-    shd.link();
+    sdfshd.loadVertexFile("sdf_vert.glsl");
+    sdfshd.loadFragFile("sdf_frag.glsl");
+    sdfshd.link();
 }
 
 int main(int arg, char**argv) {

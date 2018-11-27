@@ -173,22 +173,29 @@ namespace msdfgen {
         FT_Error err;
         FT_Library lib;
         FT_Face face;
+        FT_BBox box;
 
         if (FT_Init_FreeType(&lib))  return -1;
         if (FT_New_Face(lib, ttffile, 0, &face)) return -1;
 
-        
-        if (FT_Load_Char(face, unicode, FT_LOAD_NO_SCALE)) return -1;
-        
-        shape.contours.clear();
-        shape.inverseYAxis = false;
-        
-        
-        //calc box
+
+
         double fontscale = (float)height / (face->bbox.yMax - face->bbox.yMin) / scl;
         float fwidth = (face->bbox.xMax - face->bbox.xMin)*scl*fontscale;
         width = (((int)fwidth - 1) / 4 + 1) * 4;
 
+        if (FT_Set_Pixel_Sizes(face, width, height)) return -1;
+        
+        
+        //calc box
+        
+
+        if (FT_Load_Char(face, unicode, FT_LOAD_NO_SCALE)) return -1;
+        
+       
+
+        shape.contours.clear();
+        shape.inverseYAxis = false;
 
 
         FtContext context = {};
@@ -282,7 +289,7 @@ namespace msdfgen {
         
 
 
-        if (FT_Set_Pixel_Sizes(face, width, height)) return -1;
+        
         if (FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL)) return -1;
         FT_Bitmap& map = face->glyph->bitmap;
 

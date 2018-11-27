@@ -160,6 +160,10 @@
     <ClInclude Include="freetype\sdf.h" />
     <ClInclude Include="msdfgen.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="fonttext_frag.glsl" />
+    <None Include="puresdfFont_frag.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

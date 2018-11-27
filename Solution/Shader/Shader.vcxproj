@@ -118,7 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="gl_def.h" />
+    <ClInclude Include="gldef.h" />
     <ClInclude Include="Shape\camera.h" />
     <ClInclude Include="Shape\layer.h" />
     <ClInclude Include="Shape\light.h" />

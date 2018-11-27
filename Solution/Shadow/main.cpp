@@ -134,7 +134,7 @@ void sdfFontTest() {
     shadowShd.link();
 
     //texture
-    texture.loadFileImg("..\\Image\\wood.jpg");
+    texture.loadImg("..\\Image\\wood.jpg");
     sdfshp.texture0 = texture;
     
     fbo.resize(depthMap.width, depthMap.height);

@@ -183,16 +183,49 @@ void Texture::bind()
     bind(0);
 }
 
-bool Texture2D::loadFileImg(char * path)
+bool Texture2D::loadImg(char * path, int deschns)
 {
     int cols, rows, chns;
-    unsigned char* data = stbi_load(path, &cols, &rows, &chns, 4);
+    unsigned char* data = stbi_load(path, &cols, &rows, &chns, deschns);
 
-    bool res = setTexImg(data, cols, rows);
+
+	int format = deschns == 1 ? GL_RED : (deschns == 3 ? GL_RGB : GL_RGBA);
+    bool res = setTexImg(data, cols, rows,format,format);
 
     delete[] data;
 
     return res;
+}
+
+unsigned char * loadBinData(const char*path, int &size) {
+	
+
+	FILE*reader = fopen(path, "r");
+	if (reader == NULL) return NULL;
+
+	fseek(reader, 0, SEEK_END);
+	size = ftell(reader);
+	rewind(reader);
+	unsigned char*data = (unsigned char*)malloc(size);
+	memset(data, 255, size);
+	fread(data, 1, size, reader);
+	fclose(reader);
+	return data;
+}
+
+bool Texture2D::loadBin(char * path, int w, int h, int chn)
+{
+	
+
+	int desireSize = w*h*chn;
+	int factSize = 0;
+	auto data = loadBinData(path, factSize);
+	if (data == NULL) return false;
+
+	if (desireSize != factSize) return false;
+
+	int format = chn == 1 ? GL_RED : (chn == 3 ? GL_RGB : GL_RGBA);
+	setTexImg(data, w, h, format, format);
 }
 
 bool Texture2D::setTexImg(const void * data, int cols, int rows, int interformat, int format, int type)
@@ -214,14 +247,12 @@ void Texture2D::buildByColor(float r, float g, float b, float a)
 {
     init();
 
-    float data[4]{r,g,b,a};
+    unsigned char data[4]{r*255,g*255,b*255,a*255};
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, m_objID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F , 1, 1, 0, GL_RGBA32F, GL_FLOAT , data);
-
-   
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA , 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE , data);
 
     isVaild = true;
 }

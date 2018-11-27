@@ -57,7 +57,8 @@ public:
     void bind(int level=0) override;
     void unBind() override;
 
-    bool loadFileImg(char* path);
+    bool loadImg(char* path, int desChns = 4);
+	bool loadBin(char*path, int w, int h, int chn);
     bool setTexImg(const void *data, int cols, int rows, int interformat = GL_RGBA , int format = GL_RGBA, int type = GL_UNSIGNED_BYTE );
     void buildByColor(float r, float g, float b, float a = 1);
     void attchDepthStencilFBO(FBObject &fbo);

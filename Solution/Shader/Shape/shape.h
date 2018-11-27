@@ -1,5 +1,5 @@
 #pragma once
-#include<gl_def.h>
+#include<gldef.h>
 
 class ShapeBase
 {

@@ -172,7 +172,7 @@ void rayMarch() {
     Mesh::buildCube(cube);
     Mesh::buildQuad(quad);
 
-    tex.loadFileImg("..\\Image\\wood.jpg");
+    tex.loadImg("..\\Image\\wood.jpg");
     cube.texture0 = tex;
 
     rayShd1.loadFragFile(TESTFRAGFILE1);

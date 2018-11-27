@@ -131,4 +131,12 @@
       <Filter>Ext</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="puresdfFont_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fonttext_frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

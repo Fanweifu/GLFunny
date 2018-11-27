@@ -1,4 +1,3 @@
-#include<gl_def.h>
 #include<Shape\camera.h>
 #include<Shape\texture.h>
 #include<Shape\mesh.h>
@@ -84,7 +83,11 @@ void render() {
     zta += 0.01;
     camera.setLightPos(cos(zta), sin(zta), 1, 0);
 
-    camera.beginRender();
+	camera.beginFrame();
+	
+	camera.drawBack();
+
+
 
     procShd.bind();
     procShd.setUniform2f("viewport", camera.ViewWidth(), camera.ViewHeight());
@@ -95,7 +98,8 @@ void render() {
     glTranslatef(offsetX, offsetY, offsetZ);
     mesh.draw();
     
-    camera.endRender();
+	camera.countTimes();
+
 
     glutSwapBuffers();
 }
@@ -121,7 +125,7 @@ void rayMarch() {
     Mesh::buildCube(mesh);
  
 
-    tex.loadFileImg("..\\Image\\wood.jpg");
+    tex.loadImg("../Image/wood.jpg");
     mesh.texture0 = tex;
 
 }

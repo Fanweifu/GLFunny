@@ -1,7 +1,7 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include"gl_def.h"
+#include"gldef.h"
 #include<assert.h>
 
 class Light

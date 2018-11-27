@@ -51,9 +51,6 @@
     <ClInclude Include="Shape\object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gl_def.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Stb\stb_image.h">
       <Filter>Header Files\stb</Filter>
     </ClInclude>
@@ -62,6 +59,9 @@
     </ClInclude>
     <ClInclude Include="stb\stb_image_resize.h">
       <Filter>Header Files\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="gldef.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

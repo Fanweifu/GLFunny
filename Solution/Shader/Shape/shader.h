@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include"gl_def.h"
+#include"gldef.h"
 #include"object.h"
 #include<map>
 

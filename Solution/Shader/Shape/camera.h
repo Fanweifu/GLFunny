@@ -11,7 +11,6 @@ class Camera : public ShapePRS
 public:
     Camera();
     bool support_split_screen = true;
-    bool advance_background = true;
     bool EnableOrtho = false;
     bool ortho_autoRect = true;
     float ortho_fixedRectHeight = 300;

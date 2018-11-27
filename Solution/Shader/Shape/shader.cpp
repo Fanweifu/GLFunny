@@ -132,6 +132,7 @@ bool Shader::link() {
 void Shader::clear()
 {
     unInit();
+	m_paramsMap.clear();
 }
 
 void Shader::bind() {
