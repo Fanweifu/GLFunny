@@ -6,73 +6,76 @@ ShapePRS::ShapePRS()
 }
 
 void ShapePRS::draw() {
+	if (!visible) return;
 
-    if (!visible) return;
+	glPushMatrix();
 
-    
+	glMultMatrixf(glm::value_ptr(modelmat));
 
-    glPushMatrix();
+	if (texture0 > 0) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture0);
+	}
 
-    glMultMatrixf(glm::value_ptr(modelmat));
+	if (texture1 > 0) {
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+	}
 
-    texture0.bind(0);
-    texture1.bind(1);
-    texture2.bind(2);
+	if (texture2 > 0) {
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+	}
 
-    ondraw();
+	ondraw();
 
-    texture2.unBind();
-    texture1.unBind();
-    texture0.unBind();
+	ShapeBase::draw();
 
-    ShapeBase::draw();
-
-    glPopMatrix();
+	glPopMatrix();
 }
 
-
 void ShapePRS::updateModel() {
-    modelmat = glm::translate(glm::mat4(1.0), pvec);
-    modelmat = glm::scale(modelmat, svec);
-    modelmat = glm::rotate(modelmat, rvec.z*DEG2RAD, glm::vec3(0, 0, 1));
-    modelmat = glm::rotate(modelmat, rvec.y*DEG2RAD, glm::vec3(0, 1, 0));
-    modelmat = glm::rotate(modelmat, rvec.x*DEG2RAD, glm::vec3(1, 0, 0));
+	modelmat = glm::translate(glm::mat4(1.0), pvec);
+	modelmat = glm::scale(modelmat, svec);
+	modelmat = glm::rotate(modelmat, rvec.z*DEG2RAD, glm::vec3(0, 0, 1));
+	modelmat = glm::rotate(modelmat, rvec.y*DEG2RAD, glm::vec3(0, 1, 0));
+	modelmat = glm::rotate(modelmat, rvec.x*DEG2RAD, glm::vec3(1, 0, 0));
 
-    modelmatInv = glm::inverse(modelmat);
+	modelmatInv = glm::inverse(modelmat);
 }
 
 void ShapePRS::toLocalPos(float &x, float &y, float &z) {
-    glm::vec4 vl(x, y, z, 1);
-    glm::vec4 wv = vl*modelmatInv;
+	glm::vec4 vl(x, y, z, 1);
+	glm::vec4 wv = vl*modelmatInv;
 
-    x = wv[0];
-    y = wv[1];
-    z = wv[2];
+	x = wv[0];
+	y = wv[1];
+	z = wv[2];
 }
 
 void ShapePRS::toWorldPos(float &x, float &y, float &z) {
-    glm::vec4 vl(x, y, z, 1);
-    glm::vec4 wv = vl*modelmat;
+	glm::vec4 vl(x, y, z, 1);
+	glm::vec4 wv = vl*modelmat;
 
-    x = wv[0];
-    y = wv[1];
-    z = wv[2];
+	x = wv[0];
+	y = wv[1];
+	z = wv[2];
 }
 
 void ShapePRS::toLocalDir(float & x, float & y, float & z)
 {
-    toLocalPos(x, y, z);
-    float ox, oy, oz;
-    toLocalPos(ox, oy, oz);
+	toLocalPos(x, y, z);
+	float ox, oy, oz;
+	toLocalPos(ox, oy, oz);
 
-    x -= ox; y -= oy; z -= oz;
+	x -= ox; y -= oy; z -= oz;
 }
 
 void ShapePRS::toWorldDir(float & x, float & y, float & z)
 {
-    toWorldPos(x, y, z);
-    float ox, oy, oz;
-    toWorldPos(ox, oy, oz);
+	toWorldPos(x, y, z);
+	float ox, oy, oz;
+	toWorldPos(ox, oy, oz);
 
-    x -= ox; y -= oy; z -= oz;
+	x -= ox; y -= oy; z -= oz;
 }

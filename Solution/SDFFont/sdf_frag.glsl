@@ -14,16 +14,16 @@ uniform bool shadow = false; //使用阴影？
 uniform bool shadowGlow = false;//使用阴影渐变?
 uniform vec2 shadowOffest = vec2(0.01);//阴影偏移
 uniform vec4 shadowColor = vec4(0,0,0,1);//阴影颜色
-uniform float distScale = 8.0;
+uniform float distScale = 16.0;
 uniform float antiFactor = 1.0;
 uniform float strokeWidth = 0.02;// 描边宽度
 uniform float markDist = 0.0;// 填充距离  控制字体粗细
 
-varying vec2 texcoord;
+varying vec2 texCoord;
 
 
 float sdfFunc(vec2 coord){
-	return -(texture2D(sdfTex,coord).r-0.5)/distScale;//half is zero
+	return -(texture2D(sdfTex,coord).r-0.5)*distScale;//half is zero
 }
 
 
@@ -59,5 +59,6 @@ vec4 render(vec2 coord)
 }
 
 void main(){
-	gl_FragColor = render(texcoord);
+	gl_FragColor = render(texCoord);
+	gl_FragColor.rgb*= gl_FragColor.a;
 }

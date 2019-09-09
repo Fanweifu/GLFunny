@@ -17,10 +17,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="sdfFont_frag.glsl">
+    <Text Include="vert.glsl">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="sdfFont_vert.glsl">
+    <Text Include="sdf_frag.glsl">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
@@ -70,14 +70,8 @@
     <ClInclude Include="msdfgen.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Ext\save-png.h">
-      <Filter>Ext</Filter>
-    </ClInclude>
     <ClInclude Include="freetype\freetype.h">
       <Filter>FreeType</Filter>
-    </ClInclude>
-    <ClInclude Include="Ext\import-font.h">
-      <Filter>Ext</Filter>
     </ClInclude>
     <ClInclude Include="freetype\sdf.h">
       <Filter>FreeType</Filter>
@@ -124,18 +118,12 @@
     <ClCompile Include="Core\Vector2.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Ext\save-png.cpp">
-      <Filter>Ext</Filter>
-    </ClCompile>
-    <ClCompile Include="Ext\import-font.cpp">
-      <Filter>Ext</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="puresdfFont_frag.glsl">
+    <None Include="texture_frag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="fonttext_frag.glsl">
+    <None Include="puresdf_frag.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

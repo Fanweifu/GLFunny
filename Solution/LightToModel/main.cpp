@@ -98,7 +98,7 @@ void render() {
     glTranslatef(offsetX, offsetY, offsetZ);
     mesh.draw();
     
-	camera.countTimes();
+	camera.doCount();
 
 
     glutSwapBuffers();
@@ -126,7 +126,7 @@ void rayMarch() {
  
 
     tex.loadImg("../Image/wood.jpg");
-    mesh.texture0 = tex;
+    mesh.texture0 = tex.ObjectID();
 
 }
 

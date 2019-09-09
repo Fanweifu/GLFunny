@@ -77,7 +77,7 @@ void spkeyFunc(int key, int x, int y) {
     }
 }
 
-void mouseWheel(int b, int d, int x,int y) {
+void mouseEvent(int b, int d, int x,int y) {
     zScale += d*0.1;
 }
 
@@ -158,7 +158,7 @@ void initGlut() {
 
     glutPassiveMotionFunc(moveMouse);
     glutMotionFunc(dragMouse);
-    glutMouseWheelFunc(mouseWheel);
+    glutMouseWheelFunc(mouseEvent);
     glutKeyboardFunc(keyFunc);
     glutSpecialFunc(spkeyFunc);
     glutDisplayFunc(render);
@@ -173,7 +173,7 @@ void rayMarch() {
     Mesh::buildQuad(quad);
 
     tex.loadImg("..\\Image\\wood.jpg");
-    cube.texture0 = tex;
+    cube.texture0 = tex.ObjectID();
 
     rayShd1.loadFragFile(TESTFRAGFILE1);
     rayShd1.link();

@@ -63,6 +63,9 @@
     <ClInclude Include="gldef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shape\perlin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shape\camera.cpp">
@@ -100,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="stb\stb_image_resize.cpp">
       <Filter>Resource Files\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape\perlin.cpp">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

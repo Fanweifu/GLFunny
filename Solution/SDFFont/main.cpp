@@ -1,4 +1,4 @@
-#include<Shape\camera.h>
+ï»¿#include<Shape\camera.h>
 #include<Shape\mesh.h>
 #include<Shape\layer.h>
 #include<Shape\texture.h>
@@ -30,7 +30,7 @@ Mesh textQuad;
 Shader sdfshd;
 Shader baseshd;
 
-//ÎÒÊÇ ²â ÊÔÎÄ×Ö
+//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 void copyRect(unsigned char *src, int sleft, int stop, int recW, int recH, int sstride, unsigned char *dst, int dleft, int dtop, int dstride, int dh) {
     for (size_t i = 0; i < recH; i++)
@@ -126,15 +126,14 @@ void spkeyFunc(int key, int x, int y) {
     }
 }
 
-void mouseWheel(int b, int d, int x, int y) {
+void mouseEvent(int b, int d, int x, int y) {
     scale *= (1 + d*0.1f);
 }
 
 void initCamera() {
     glEnable(GL_DEPTH_CLAMP);
 	camera.setBackColor(0, 0, 0, 1);
-    camera.EnableOrtho = true;
-    camera.ortho_autoRect = true;
+    camera.enableOrtho = true;
     camera.init();
     camera.setLightPos(0, 0, 1, 0);
     camera.setPosition(0, 0, 1000);
@@ -165,7 +164,7 @@ void render() {
         sdfshd.setUniform1i("shadow", 0);*/
 
         //glTranslatef(0, TESTHEIGHT/2, 0);
-        sdfQuad.texture0 = sdfTex;
+        sdfQuad.texture0 = sdfTex.ObjectID();
         sdfQuad.draw();
         sdfshd.unBind();
     }
@@ -176,7 +175,7 @@ void render() {
 	
 	baseshd.bind();
 	baseshd.setUniform1i("baseTex", 0);
-	sdfQuad.texture0 = fontTex;
+	sdfQuad.texture0 = fontTex.ObjectID();
 	sdfQuad.draw();
 	baseshd.unBind();
     /*  glTranslatef(-width*(TESTNUM - 1) / 2, 0, 0);
@@ -187,7 +186,7 @@ void render() {
           glTranslatef(width, 0, 0);
       }*/
 
-    camera.countTimes();
+	camera.doCount();
 
     glutSwapBuffers();
 }
@@ -202,14 +201,14 @@ void initGlut() {
     glutMotionFunc(dragMouse);
     glutKeyboardFunc(keyFunc);
     glutSpecialFunc(spkeyFunc);
-    glutMouseWheelFunc(mouseWheel);
+    glutMouseWheelFunc(mouseEvent);
     glutDisplayFunc(render);
     glutIdleFunc(render);
     glutReshapeFunc(reshape);
 }
 
 void initTextureGenSDF() {
-    const wchar_t* test = L"VideoÐ¡Ó°ÊÓÆµ¤·¤ç¤¦¤¨¤¤";
+    const wchar_t* test = L"VideoÐ¡Ó°ï¿½ï¿½Æµï¿½ï¿½ï¿½ç¤¦ï¿½ï¿½ï¿½ï¿½";
     int length = wcslen(test);
     for (size_t i = 0; i < length; i++)
     {
@@ -223,7 +222,7 @@ void initTextureGenSDF() {
         msdfgen::Vector2 basePt;
         msdfgen::Vector2 lefttop;
         int width = 0;
-        msdfgen::fontSDF("C:\\Windows\\Fonts\\msyh.ttc", test[i], sdfFileName, fontFileName, TESTSIZE, width, info, basePt, lefttop);
+        //msdfgen::fontSDF("C:\\Windows\\Fonts\\msyh.ttc", test[i], sdfFileName, fontFileName, TESTSIZE, width, info, basePt, lefttop);
 
         int row, col, chns;
         //auto sdfdata = stbi_load(sdfFileName, &col, &row, &chns, 1);
@@ -277,7 +276,7 @@ void sdfFontTest() {
     Mesh::activeVAO = false;
 	
     float halfw = fontTex.Width() / 2, halfh = fontTex.Height() / 2;
-    sdfQuad.drawStyle = Quads;
+    sdfQuad.drawStyle = DrawType::Quads;
     sdfQuad.addPoint(-halfw, halfh, 0, 0, 0);
     sdfQuad.addPoint(halfw, halfh, 0, 1, 0);
     sdfQuad.addPoint(halfw, -halfh, 0, 1, 1);

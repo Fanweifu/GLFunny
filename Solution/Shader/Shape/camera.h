@@ -11,10 +11,7 @@ class Camera : public ShapePRS
 public:
     Camera();
     bool support_split_screen = true;
-    bool EnableOrtho = false;
-    bool ortho_autoRect = true;
-    float ortho_fixedRectHeight = 300;
-    float ortho_autoRect_Scale = 1;
+    bool enableOrtho = false;
 
     void setNear(float _near) {
         if (_near<0 || _near>Far) return;
@@ -76,7 +73,12 @@ public:
     void getLightPos(float& x, float& y, float& z, float& w) {
         mainLight.getPositon(x, y, z, w);
     }
+
+	void setLigthEnable(bool enable) { mainLight.setEnable(enable); }
+
     const float* getLightPosf4() { return mainLight.getPositonf4(); }
+
+
 
     void init();
 
@@ -89,7 +91,7 @@ public:
     void loadProjection();
     void loadModelView();
     void drawBack();
-    void countTimes();
+    void doCount();
 
     void dragMouse(int x, int y, float speed = 0.1f);
     void moveMouse(int x, int y);
@@ -124,7 +126,7 @@ protected:
 
     long renderTime = 0;
 
-    glm::vec4 backColor = glm::vec4(0, 1, 1, 1);
+    glm::vec4 backColor = glm::vec4(0, 0, 0, 1);
     glm::vec3 uplook = glm::vec3(0, 0, 1);
     glm::vec3 forwardV = glm::vec3(0, 1, 0);
     glm::vec3 rightV = glm::vec3(1, 0, 0);

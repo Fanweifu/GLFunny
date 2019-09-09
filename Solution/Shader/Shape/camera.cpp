@@ -16,7 +16,7 @@ void Camera::beginFrame()
     drawBack();
 
    
-    countTimes();
+    doCount();
 }
 
 void Camera::setViewPort()
@@ -231,7 +231,7 @@ void Camera::setViewPort(int x, int y, int w, int h) {
     height = h;
     Ratio = float(w) / h;
 
-    oheight = ortho_autoRect ? height*ortho_autoRect_Scale : ortho_fixedRectHeight;
+	oheight = height;
     owidth = oheight*Ratio;
 
     windowsChanged = true;
@@ -243,7 +243,7 @@ void Camera::setWindowSize(int width, int height) {
 
 void Camera::updateProjection()
 {
-    if (EnableOrtho) {
+    if (enableOrtho) {
         matProjection = glm::ortho(-owidth / 2, owidth / 2, -oheight / 2, oheight / 2, Near, Far);
     }
     else {
@@ -296,8 +296,6 @@ void Camera::initGl() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glEnable(GL_MULTISAMPLE);
-
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_STENCIL_TEST);
     glEnable(GL_LIGHTING);
@@ -318,14 +316,14 @@ void Camera::drawBack() {
     backshd.unBind();
 }
 
-void Camera::countTimes()
+void Camera::doCount()
 {
     renderTime += 1;
 }
 
 void Camera::initBack()
 {
-    backBlock.drawStyle = Quads;
+    backBlock.drawStyle = DrawType::Quads;
     backBlock.addPoint(-1, -1, 0, 0, 0, 1, 0, 0);
     backBlock.addPoint(1, -1, 0, 0, 0, 1, 1, 0);
     backBlock.addPoint(1, 1, 0, 0, 0, 1, 1, 1);

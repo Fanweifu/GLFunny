@@ -33,24 +33,31 @@ public:
     void init() override;
     void unInit() override;
 
-    void setUniform1f(const string & pNm, float val);
+	GLint getUniformLoc(const char* name);
 
-    void setUniform1i(const string &pNm, int val);
+    void setUniform1f(const char * pNm, float val);
+	void setUniform1f(GLint loc, float val);
 
-    void setUniform1fv(const string & pNm, int size, const float * ptr);
+    void setUniform1i(const char *pNm, int val);
+	void setUniform1i(GLint loc, int val);
 
-    void setUniform2f(const string & pNm, float val0, float val1);
 
-    void setUniform3f(const string & pNm, float val0, float val1, float val2);
+    void setUniform1fv(const char * pNm, int size, const float * ptr);
+	void setUniform1fv(GLint loc, int size, const float * ptr);
 
-    void setUniform4f(const string & pNm, float val0, float val1, float val2, float val3);
+    void setUniform2f(const char * pNm, float val0, float val1);
+	void setUniform2f(GLint loc, float val0, float val1);
 
-    void setUniformMat4(const string & pNm, const float* matPtr, bool transpose = false);
+    void setUniform3f(const char * pNm, float val0, float val1, float val2);
+	void setUniform3f(GLint loc, float val0, float val1, float val2);
 
+
+    void setUniform4f(const char * pNm, float val0, float val1, float val2, float val3);
+	void setUniform4f(GLint loc, float val0, float val1, float val2, float val3);
+
+    void setUniformMat4(const char * pNm, const float* matPtr, bool transpose = false);
+	void setUniformMat4(GLint loc, const float* matPtr, bool transpose = false);
 private:
-    map<const string, int> m_paramsMap;
-    
-    int getParamID(const string& pNm);
     string readFile(const char*filename);
     bool complie_attch(GLenum type, const char * source);
  

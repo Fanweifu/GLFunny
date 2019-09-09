@@ -132,6 +132,9 @@
     </None>
     <None Include="sdf_vert.glsl" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="map_frag.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

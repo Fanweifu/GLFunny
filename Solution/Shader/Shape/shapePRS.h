@@ -12,18 +12,22 @@ public:
 
     bool visible = true;
 
-    Texture2D texture0;
-    Texture2D texture1;
-    Texture2D texture2;
+    GLuint texture0 = 0;
+	GLuint texture1 = 0;
+	GLuint texture2 = 0;
 
     float posX() { return pvec.x; }
     float posY() { return pvec.y; }
     float posZ() { return pvec.z; }
+
+	void setPosX(float x) { setPosition(x, pvec.y, pvec.z); }
+	void setPosY(float y) { setPosition(pvec.x, y, pvec.z); }
+	void setPosZ(float z) { setPosition(pvec.x, pvec.y, z); }
+
     void setPosition(float x, float y, float z)
     {
         pvec = glm::vec3(x, y, z);
         updateModel();
-        
     }
     const float* getPositionf3() { return glm::value_ptr(pvec); }
    

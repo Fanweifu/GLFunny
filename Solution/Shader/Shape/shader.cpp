@@ -29,9 +29,10 @@ GLuint createShader(GLenum type, const char*source, GLint& success) {
 
     if (!success)
     {
-        GLint infoLen = 0;
+		
+        GLint infoLen = 0; 
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-        char* buf = (char*)malloc(infoLen);
+        char* buf = (char*)malloc(infoLen+1);
         glGetShaderInfoLog(shader, infoLen, NULL, buf);
         printf("compile failed!\n");
         printf(buf);
@@ -49,7 +50,7 @@ bool Shader::complie_attch(GLenum type, const char *source) {
     }
     else {
         if (!isInited) init();
-        glAttachShader(m_objID, shader);
+        glAttachShader(m_handle, shader);
         glDeleteShader(shader);
         return true;
     }
@@ -57,8 +58,8 @@ bool Shader::complie_attch(GLenum type, const char *source) {
 
 void Shader::init()
 {
-    if (!isInited) {
-        m_objID = glCreateProgram();
+    if (!isInited&&m_handle==0) {
+        m_handle = glCreateProgram();
         isInited = true;
     }
 }
@@ -66,10 +67,16 @@ void Shader::init()
 void Shader::unInit()
 {
     if (isInited) {
-        glDeleteProgram(m_objID);
-        m_objID = 0;
+        glDeleteProgram(m_handle);
+        m_handle = 0;
         isInited = isBinded = isVaild = false;
     }
+}
+
+GLint Shader::getUniformLoc(const char * name)
+{
+	GLint idx = glGetUniformLocation(m_handle, name);
+	return idx;
 }
 
 bool Shader::loadFragCode(const char *source) {
@@ -90,34 +97,20 @@ bool Shader::loadVertexFile(const char *filename) {
     return loadVertexCode(code.c_str());
 }
 
-GLint Shader::getParamID(const string &pNm) {
-    map<string, GLint>::iterator it = m_paramsMap.find(pNm);
-    if (it != m_paramsMap.end()) {
-        return (*it).second;
-    }
-    else {
-        GLint idx = glGetUniformLocation(m_objID, pNm.c_str());
-        if (idx == -1) {
-            cout << pNm << " can't be found!\n";
-        }
-        m_paramsMap.insert(pair<string, GLint>(pNm, idx));
-        return idx;
-    }
-}
 
 bool Shader::link() {
-    glLinkProgram(m_objID);
+    glLinkProgram(m_handle);
 
     GLint success;
     
-    glGetProgramiv(m_objID, GL_LINK_STATUS, &success);
+    glGetProgramiv(m_handle, GL_LINK_STATUS, &success);
 
     if (!success) {
         GLint infoLen = 0;
-        glGetProgramiv(m_objID, GL_INFO_LOG_LENGTH, &infoLen);
+        glGetProgramiv(m_handle, GL_INFO_LOG_LENGTH, &infoLen);
 
         char* buf = (char*)malloc(infoLen);
-        glGetProgramInfoLog(m_objID, infoLen, NULL, buf);
+        glGetProgramInfoLog(m_handle, infoLen, NULL, buf);
         printf("link failed\n%s",buf);
         free(buf);
 
@@ -132,11 +125,10 @@ bool Shader::link() {
 void Shader::clear()
 {
     unInit();
-	m_paramsMap.clear();
 }
 
 void Shader::bind() {
-    if (isVaild) glUseProgram(m_objID);
+    if (isVaild) glUseProgram(m_handle);
 }
 
 void Shader::unBind()
@@ -144,44 +136,44 @@ void Shader::unBind()
     if (isVaild) glUseProgram(0);
 }
 
-void Shader::setUniform1f(const string & pNm, float val) {
-    GLint idx = getParamID(pNm);
+void Shader::setUniform1f(const char * pNm, float val) {
+	GLint idx = glGetUniformLocation(m_handle, pNm);
     if (idx >= 0) glUniform1f(idx, val);
 }
 
-void Shader::setUniform1i(const string & pNm, int val)
+void Shader::setUniform1i(const char * pNm, int val)
 {
-    GLint idx = getParamID(pNm);
+	GLint idx = glGetUniformLocation(m_handle, pNm);
     if (idx >= 0)glUniform1i(idx, val);
 }
 
 
-void Shader::setUniform1fv(const string & pNm, int size, const float * ptr)
+void Shader::setUniform1fv(const char * pNm, int size, const float * ptr)
 {
-    GLint idx = getParamID(pNm);
+	GLint idx = glGetUniformLocation(m_handle, pNm);
     if (idx >= 0)glUniform1fv(idx, size, ptr);
 }
 
-void Shader::setUniform2f(const string & pNm, float val0, float val1)
+void Shader::setUniform2f(const char * pNm, float val0, float val1)
 {
-    GLint idx = getParamID(pNm);
+	GLint idx = glGetUniformLocation(m_handle, pNm);
     if (idx >= 0)glUniform2f(idx, val0, val1);
 }
 
-void Shader::setUniform3f(const string & pNm, float val0, float val1, float val2)
+void Shader::setUniform3f(const char * pNm, float val0, float val1, float val2)
 {
-    GLint idx = getParamID(pNm);
+	GLint idx = glGetUniformLocation(m_handle, pNm);
     if (idx >= 0)glUniform3f(idx, val0, val1, val2);
 }
 
-void Shader::setUniform4f(const string & pNm, float val0, float val1, float val2, float val3)
+void Shader::setUniform4f(const char * pNm, float val0, float val1, float val2, float val3)
 {
-    GLint idx = getParamID(pNm);
+    GLint idx = glGetUniformLocation(m_handle, pNm);
     if (idx >= 0)glUniform4f(idx, val0, val1, val2, val3);
 }
 
-void Shader::setUniformMat4(const string & pNm, const float*matPtr, bool transpose)
+void Shader::setUniformMat4(const char * pNm, const float*matPtr, bool transpose)
 {
-    GLint idx = getParamID(pNm);
+	GLint idx = glGetUniformLocation(m_handle, pNm);
     if (idx >= 0)glUniformMatrix4fv(idx, 1, transpose, matPtr);
 }

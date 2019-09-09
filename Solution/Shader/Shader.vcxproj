@@ -124,6 +124,7 @@
     <ClInclude Include="Shape\light.h" />
     <ClInclude Include="Shape\mesh.h" />
     <ClInclude Include="Shape\object.h" />
+    <ClInclude Include="Shape\perlin.h" />
     <ClInclude Include="Shape\shader.h" />
     <ClInclude Include="Shape\shape.h" />
     <ClInclude Include="Shape\shapePRS.h" />
@@ -138,6 +139,7 @@
     <ClCompile Include="Shape\layer.cpp" />
     <ClCompile Include="Shape\light.cpp" />
     <ClCompile Include="Shape\mesh.cpp" />
+    <ClCompile Include="Shape\perlin.cpp" />
     <ClCompile Include="Shape\shader.cpp" />
     <ClCompile Include="Shape\shape.cpp" />
     <ClCompile Include="Shape\shapePRS.cpp" />

@@ -12,38 +12,38 @@ bool Mesh::activeVAO = false;
 
 void Mesh::addPoint(float px, float py, float pz, float u, float v, float nx, float ny, float nz, float r, float g, float b, float a)
 {
-    position.push_back(px);
-    position.push_back(py);
-    position.push_back(pz);
-
-    normal.push_back(nx);
-    normal.push_back(ny);
-    normal.push_back(nz);
-
-    texcoord.push_back(u);
-    texcoord.push_back(v);
-
-    color.push_back(r);
-    color.push_back(g);
-    color.push_back(b);
-    color.push_back(a);
-
-    //if (inited) init();
+	meshVertex point;
+	point.vertex = glm::vec3(px, py, pz);
+	point.coord = glm::vec2(u, v);
+	point.normal = glm::vec3(nx, ny, nz);
+	point.color = glm::vec4(r, g, b, a);
+	addPoint(point);
 }
+
+void Mesh::addPoint(const meshVertex& vertex)
+{
+	mBuffer.push_back(vertex);
+	if (Mesh::activeVAO) inited = false;
+}
+
+void Mesh::updatePoint(int idx, const meshVertex& vertex){
+	if(idx < 0 || idx >= count()) return;
+	mBuffer[idx] = vertex;
+}
+
+
+
+
 
 void Mesh::clear()
 {
-    position.clear();
-    texcoord.clear();
-    color.clear();
-    normal.clear();
-
+	mBuffer.clear();
     inited = false;
 }
 
 void Mesh::buildCube(Mesh & shp, float x1, float x2, float y1, float y2, float z1, float z2)
 {
-    shp.drawStyle = Quads;
+    shp.drawStyle = DrawType::Quads;
 
     shp.clear();
 
@@ -81,7 +81,7 @@ void Mesh::buildCube(Mesh & shp, float x1, float x2, float y1, float y2, float z
 
 void Mesh::buildQuad(Mesh & shp, float x1, float x2, float y1, float y2)
 {
-    shp.drawStyle = Quads;
+    shp.drawStyle = DrawType::Quads;
 
     shp.clear();
 
@@ -99,22 +99,42 @@ void Mesh::init()
     }
 }
 
+#define OFFSET(s, m) (&((s*)0)->m)
+
+void Mesh::initlayout()
+{
+	mlayouts.clear();
+	int stride = sizeof(meshVertex);
+	dataLayout vertex = {nullptr,0,stride,3,OFFSET(meshVertex,vertex)};
+	mlayouts.push_back(vertex);
+	dataLayout coord = { nullptr,1,stride,2,OFFSET(meshVertex,coord) };
+	mlayouts.push_back(coord);
+	dataLayout normal = { nullptr,2,stride,3,OFFSET(meshVertex,normal) };
+	mlayouts.push_back(normal);
+	dataLayout color = { nullptr,3,stride,4,OFFSET(meshVertex,color) };
+	mlayouts.push_back(color);
+
+}
+
 void Mesh::buildVAO()
 {
-    if (position.empty()) return;
+    if (count()==0) return;
 
-    vData.init(position.size() / 3);
+    vData.init();
     vData.bind();
-    vData.setVertex3f(&position[0]);
-    vData.setColor4f(&color[0]);
-    vData.setNormal3f(&normal[0]);
-    vData.setTexCoord2f(&texcoord[0]);
+
+	vData.updateBuffer(&mBuffer[0], mBuffer.size()*sizeof(meshVertex));
+
+	if (mlayouts.size() == 0) initlayout();
+
+	vData.setLayouts(mlayouts);
     vData.unBind();
 }
 
+
 void Mesh::ondraw()
 {
-    if (empty()) return;
+    if (count()==0) return;
     if (!inited) init();
 
     if (!activeVAO) renderClient();
@@ -128,12 +148,12 @@ void Mesh::renderClient()
     glEnableClientState(GL_COLOR_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, &position[0]);
-    glColorPointer(COLOR_SIZE, GL_FLOAT, 0, &color[0]);
-    glNormalPointer(GL_FLOAT, 0, &normal[0]);
-    glTexCoordPointer(TEXCOORD_SIZE, GL_FLOAT, 0, &texcoord[0]);
+    glVertexPointer(3, GL_FLOAT, sizeof(meshVertex), &mBuffer[0].vertex);
+    glColorPointer(4, GL_FLOAT, sizeof(meshVertex), &mBuffer[0].color);
+    glNormalPointer(GL_FLOAT, sizeof(meshVertex), &mBuffer[0].normal);
+    glTexCoordPointer(3, GL_FLOAT, sizeof(meshVertex), &mBuffer[0].coord);
 
-    glDrawArrays(drawStyle, 0, position.size() / 3);
+    glDrawArrays((GLenum)drawStyle, 0, mBuffer.size());
 
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
@@ -143,5 +163,5 @@ void Mesh::renderClient()
 
 void Mesh::renderVAO()
 {
-    vData.renderData(drawStyle);
+    vData.renderData((GLenum)drawStyle,mBuffer.size());
 }

@@ -3,59 +3,80 @@
 
 #define STATICDRAW(b) (b?GL_STATIC_DRAW:GL_DYNAMIC_DRAW)
 
-void AttribArray::init(int ptsNum,int buffs)
+//void AttribVAO::init(int ptsNum,int buffs)
+//{
+//    vertexNum = ptsNum;
+//    BindData::init(4);
+//}
+//
+//void AttribVAO::setVertex3f(GLfloat * arr)
+//{
+//    CHECKBIND({
+//    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[VERTEX_VBO_LAYOUT]);
+//    glBufferData(GL_ARRAY_BUFFER, vertexNum* 3 * sizeof(float), arr, STATICDRAW(true));
+//    glVertexAttribPointer(VERTEX_VBO_LAYOUT, 3, GL_FLOAT, GL_TRUE, 0, (void*)0);
+//    glEnableVertexAttribArray(VERTEX_VBO_LAYOUT);
+//    })
+//}
+//
+//void AttribVAO::setColor4f(GLfloat * arr)
+//{
+//    CHECKBIND({
+//        glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[COLOR_VBO_LAYOUT]);
+//        glBufferData(GL_ARRAY_BUFFER, vertexNum * 4 * sizeof(float), arr, STATICDRAW(true));
+//        glVertexAttribPointer(COLOR_VBO_LAYOUT, 4, GL_FLOAT, GL_TRUE, 0, (void*)0);
+//        glEnableVertexAttribArray(COLOR_VBO_LAYOUT);
+//    })
+//}
+//
+//void AttribVAO::setNormal3f(GLfloat * arr)
+//{
+//    CHECKBIND({
+//        glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[NORMAL_VBO_LAYOUT]);
+//        glBufferData(GL_ARRAY_BUFFER, vertexNum * NORMAL_SIZE * sizeof(float), arr, STATICDRAW(true));
+//        glVertexAttribPointer(NORMAL_VBO_LAYOUT, NORMAL_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
+//        glEnableVertexAttribArray(NORMAL_VBO_LAYOUT);
+//    })
+//}
+//
+//void AttribVAO::setTexCoord2f(GLfloat * arr)
+//{
+//    CHECKBIND({
+//        glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[TEXCOORD_VBO_LAYOUT]);
+//        glBufferData(GL_ARRAY_BUFFER, vertexNum * TEXCOORD_SIZE * sizeof(float), arr, STATICDRAW(true));
+//        glVertexAttribPointer(TEXCOORD_VBO_LAYOUT, TEXCOORD_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
+//        glEnableVertexAttribArray(TEXCOORD_VBO_LAYOUT);
+//    })
+//}
+//
+
+
+
+void AttribVAO::updateBuffer(const void * pData, int bytes)
 {
-    vertexNum = ptsNum;
-    BindData::init(4);
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	glBufferData(GL_ARRAY_BUFFER, bytes, pData, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void AttribArray::setVertex3f(GLfloat * arr)
+void AttribVAO::setLayouts(const std::vector<dataLayout>& layouts)
 {
-    CHECKBIND({
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[VERTEX_VBO_LAYOUT]);
-    glBufferData(GL_ARRAY_BUFFER, vertexNum* VERTEX_SIZE * sizeof(float), arr, STATICDRAW(true));
-    glVertexAttribPointer(VERTEX_VBO_LAYOUT, VERTEX_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
-    glEnableVertexAttribArray(VERTEX_VBO_LAYOUT);
-    })
+	m_layouts = layouts;
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+
+	for (dataLayout& ly : m_layouts) {
+		if(ly.layoutLoc<0) continue;
+		glVertexAttribPointer(ly.layoutLoc, ly.elementsize, GL_FLOAT,GL_FALSE,ly.stride,ly.ptrshift);
+		glEnableVertexAttribArray(ly.layoutLoc);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void AttribArray::setColor4f(GLfloat * arr)
+void AttribVAO::renderData(GLenum mode,int cnt)
 {
-    CHECKBIND({
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[COLOR_VBO_LAYOUT]);
-        glBufferData(GL_ARRAY_BUFFER, vertexNum * COLOR_SIZE * sizeof(float), arr, STATICDRAW(true));
-        glVertexAttribPointer(COLOR_VBO_LAYOUT, COLOR_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
-        glEnableVertexAttribArray(COLOR_VBO_LAYOUT);
-    })
-}
-
-void AttribArray::setNormal3f(GLfloat * arr)
-{
-    CHECKBIND({
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[NORMAL_VBO_LAYOUT]);
-        glBufferData(GL_ARRAY_BUFFER, vertexNum * NORMAL_SIZE * sizeof(float), arr, STATICDRAW(true));
-        glVertexAttribPointer(NORMAL_VBO_LAYOUT, NORMAL_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
-        glEnableVertexAttribArray(NORMAL_VBO_LAYOUT);
-    })
-}
-
-void AttribArray::setTexCoord2f(GLfloat * arr)
-{
-    CHECKBIND({
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbosID[TEXCOORD_VBO_LAYOUT]);
-        glBufferData(GL_ARRAY_BUFFER, vertexNum * TEXCOORD_SIZE * sizeof(float), arr, STATICDRAW(true));
-        glVertexAttribPointer(TEXCOORD_VBO_LAYOUT, TEXCOORD_SIZE, GL_FLOAT, GL_TRUE, 0, (void*)0);
-        glEnableVertexAttribArray(TEXCOORD_VBO_LAYOUT);
-    })
-}
-
-
-
-
-void AttribArray::renderData(GLenum mode)
-{
-    glBindVertexArray(m_objID);
-    glDrawArrays(mode, 0, vertexNum);
+    glBindVertexArray(m_handle);
+    glDrawArrays(mode, 0, cnt);
     glBindVertexArray(0);
 }
 
@@ -68,21 +89,17 @@ BindData::~BindData()
     unInit();
 }
 
-void BindData::init()
-{
-    init(4);
-}
 
 void BindData::unInit() {
     if (!isInited) return;
-    glDeleteVertexArrays(1, &m_objID);
-    glDeleteBuffers(vbocnt, m_vbosID);
+    glDeleteVertexArrays(1, &m_handle);
+    glDeleteBuffers(1, &mVBO);
     isInited = isVaild = isBinded = false;
 }
 
 void BindData::bind()
 {
-    glBindVertexArray(m_objID);
+    glBindVertexArray(m_handle);
     isBinded = true;
 }
 
@@ -92,18 +109,16 @@ void BindData::unBind()
     isBinded = false;
 }
 
-void BindData::init(int cnt)
+void BindData::init()
 {
     if (isInited) return;
-    initBuffs(cnt);
+    initBuffs();
     isInited = true;
 }
 
-void BindData::initBuffs(int cnt)
+void BindData::initBuffs()
 {
-    m_vbosID = new GLuint[cnt]();
-    glGenVertexArrays(1, &m_objID);
-    glGenBuffers(cnt, m_vbosID);
-    vbocnt = cnt;
+    glGenVertexArrays(1, &m_handle);
+    glGenBuffers(1, &mVBO);
 }
 

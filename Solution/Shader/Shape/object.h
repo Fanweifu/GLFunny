@@ -7,12 +7,12 @@ class  glObject
 public:
     glObject() {};
     ~glObject() {};
-    unsigned int ObjectID() { return m_objID; }
+    unsigned int ObjectID() { return m_handle; }
 protected:
     bool isVaild = false;
     bool isInited = false;
     bool isBinded = false;
-    unsigned int m_objID = 0;
+    unsigned int m_handle = 0;
 
     virtual void init() = 0;
     virtual void unInit() = 0;

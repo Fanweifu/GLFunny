@@ -3,8 +3,8 @@
 #include<Shape\layer.h>
 #include<Shape\texture.h>
 #include<GL\freeglut.h>
-
-float step = 0.1;
+#include<glm.hpp>
+float step = 0.1f;
 int smooth = 2;
 Camera camera;
 Layer lyr;
@@ -13,13 +13,10 @@ FBObject fbo;
 DepthTexture depthMap;
 Texture2D texture;
 Shader shadowShd;
-
+glm::vec3 angle;
 void reshape(int width, int height) {
     camera.setWindowSize(width, height);
-    //int shadowScale = 4;
-    //int w = shadowScale*width, h = shadowScale*height;
-    //depthMap.width = w; depthMap.height = h;
-    //fbo.resize(w, h);
+
 }
 
 void moveMouse(int x, int y) {
@@ -49,6 +46,20 @@ void keyFunc(unsigned char key, int x, int y) {
     case 'd':
         camera.localMove(1 * step, 0, 0);
         break;
+
+	case 'x':
+		angle.x += 0.1f;
+		lyr.setRotation(angle.x,angle.y,angle.z);
+		break;
+	case 'y':
+		angle.y += 0.1f;
+		lyr.setRotation(angle.x, angle.y, angle.z);
+		break;
+	case 'z':
+		angle.z += 0.1f;
+		lyr.setRotation(angle.x, angle.y, angle.z);
+		break;
+	
     }
 }
 
@@ -77,7 +88,7 @@ void render() {
     
     fbo.bind();
     fbo.clearBuffers();
-    
+	lyr.isDrawAxis = true;
     lyr.draw();
     fbo.unBind();
 
@@ -135,7 +146,7 @@ void sdfFontTest() {
 
     //texture
     texture.loadImg("..\\Image\\wood.jpg");
-    sdfshp.texture0 = texture;
+    sdfshp.texture0 = texture.ObjectID();
     
     fbo.resize(depthMap.width, depthMap.height);
     depthMap.attchDepthStencilFBO(fbo);
